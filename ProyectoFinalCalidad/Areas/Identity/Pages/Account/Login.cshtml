@@ -1,0 +1,237 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<style>
+    /* ======= CONTENEDOR PRINCIPAL CENTRADO ======= */
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        padding: 2rem 1rem;
+    }
+
+    /* ======= TARJETA DE LOGIN ======= */
+    .login-card {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        max-width: 1000px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
+        animation: fadeInUp 0.7s ease;
+    }
+
+    /* ======= PANEL IZQUIERDO ======= */
+    .login-left {
+        background: linear-gradient(135deg, #009ffd, #2a2a72);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+
+        .login-left h1 {
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-left p {
+            font-size: 1.05rem;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+    /* ======= PANEL DERECHO ======= */
+    .login-right {
+        padding: 3rem 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .login-right h2 {
+            font-weight: 700;
+            color: #0077cc;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+    .form-floating > input {
+        border-radius: 0.6rem;
+        border: 1px solid #dee2e6;
+        height: 3.2rem;
+    }
+
+        .form-floating > input:focus {
+            border-color: #5ab9ea;
+            box-shadow: 0 0 8px rgba(90, 185, 234, 0.5);
+        }
+
+    /* ======= BOTÓN PRINCIPAL ======= */
+    .btn-login {
+        background: linear-gradient(90deg, #009ffd, #4facfe);
+        border: none;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.35);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        color: #fff;
+    }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.45);
+        }
+
+    /* ======= ENLACES ======= */
+    .links-section {
+        margin-top: 1.5rem;
+    }
+
+        .links-section a {
+            color: #0077cc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+            .links-section a:hover {
+                color: #005fa3;
+                text-decoration: underline;
+            }
+
+    /* ======= LOGIN EXTERNO ======= */
+    .external-login button {
+        border-radius: 0.5rem;
+        padding: 0.7rem 1.2rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        transition: all 0.3s ease;
+        border: 1px solid #5ab9ea;
+        color: #0077cc;
+        background-color: #fff;
+    }
+
+        .external-login button:hover {
+            background: linear-gradient(90deg, #009ffd, #4facfe);
+            color: #fff;
+            box-shadow: 0 6px 15px rgba(79, 172, 254, 0.4);
+            border: none;
+        }
+
+    /* ======= RESPONSIVE ======= */
+    @@media (max-width: 900px) {
+        .login-card {
+            grid-template-columns: 1fr;
+        }
+
+        .login-left {
+            display: none;
+        }
+
+        .login-right {
+            padding: 2rem 1.5rem;
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<main>
+    <div class="login-card">
+        <!-- PANEL IZQUIERDO -->
+        <div class="login-left">
+            <h1>Bienvenido de nuevo</h1>
+            <p>Accede a tu cuenta para continuar gestionando tus proyectos y descubrir nuevas herramientas.</p>
+        </div>
+
+        <!-- PANEL DERECHO -->
+        <div class="login-right">
+            <h2>Iniciar sesión</h2>
+            <form id="account" method="post" novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.UserOrDni" class="form-control" autocomplete="username" placeholder="correo@ejemplo.com" />
+                    <label asp-for="Input.UserOrDni">Correo electrónico</label>
+                    <span asp-validation-for="Input.UserOrDni" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.Password" type="password" class="form-control" autocomplete="current-password" placeholder="Contraseña" />
+                    <label asp-for="Input.Password">Contraseña</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" asp-for="Input.RememberMe" type="checkbox" id="RememberMe" />
+                    <label class="form-check-label" for="RememberMe">
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
+                </div>
+
+                <button id="login-submit" type="submit" class="btn btn-login w-100 btn-lg mb-3">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Ingresar
+                </button>
+
+                <div class="links-section d-flex flex-column gap-2 fs-sm">
+                    <a id="forgot-password" asp-page="./ForgotPassword">¿Olvidaste tu contraseña?</a>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registrarse como nuevo usuario</a>
+                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Reenviar confirmación de correo</a>
+                </div>
+            </form>
+
+            <hr class="my-4">
+
+            <!-- LOGIN CON SERVICIOS EXTERNOS -->
+            <section class="external-login">
+                <h3 class="h6 text-secondary mb-3">O inicia sesión con</h3>
+                @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div class="alert alert-info small">
+                        No hay servicios de autenticación externa configurados.
+                        <a href="https://go.microsoft.com/fwlink/?LinkID=532715" target="_blank">Más información aquí.</a>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div class="d-flex flex-wrap gap-3">
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                <button type="submit" class="btn" name="provider" value="@provider.Name">
+                                    <i class="bi bi-person-circle fs-5"></i> @provider.DisplayName
+                                </button>
+                            }
+                        </div>
+                    </form>
+                }
+            </section>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

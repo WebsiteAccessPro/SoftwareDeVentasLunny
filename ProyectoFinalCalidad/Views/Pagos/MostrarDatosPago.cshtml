@@ -1,0 +1,290 @@
+@model ProyectoFinalCalidad.Models.ViewModels.PagoViewModel
+
+<div class="container my-5">
+    <div class="row g-3">
+        <!-- Datos del Cliente -->
+        <div class="col-md-6">
+            <div class="card client-details-card h-100">
+                <div class="card-header client-details-header">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>DATOS DEL CLIENTE</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="detail-item compact">
+                        <div class="detail-label">NOMBRE</div>
+                        <div class="detail-value">@Model.Cliente.Nombres</div>
+                    </div>
+
+                    <div class="detail-item compact">
+                        <div class="detail-label">DOCUMENTO</div>
+                        <div class="detail-value">@Model.Cliente.Dni</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Datos del Contrato -->
+        <div class="col-md-6">
+            <div class="card contract-details-card h-100">
+                <div class="card-header contract-details-header">
+                    <h5 class="mb-0"><i class="fas fa-file-contract me-2"></i>DATOS DEL CONTRATO</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="detail-item compact">
+                        <div class="detail-label">PLAN</div>
+                        <div class="detail-value highlight">@Model.Contrato.PlanServicio.NombrePlan</div>
+                    </div>
+
+                    <div class="detail-item compact">
+                        <div class="detail-label">FECHA DE INICIO</div>
+                        <div class="detail-value">@Model.Contrato.FechaInicio.ToShortDateString()</div>
+                    </div>
+
+                    <div class="detail-item compact">
+                        <div class="detail-label">TIPO DE SERVICIO</div>
+                        <div class="detail-value">@Model.Contrato.PlanServicio.TipoServicio</div>
+                    </div>
+
+                    <div class="detail-item compact">
+                        <div class="detail-label">VELOCIDAD</div>
+                        <div class="detail-value">@Model.Contrato.PlanServicio.Velocidad Mbps</div>
+                    </div>
+
+                    <div class="detail-item compact">
+                        <div class="detail-label">PRECIO MENSUAL</div>
+                        <div class="detail-value highlight">S/ @Model.Contrato.PlanServicio.PrecioMensual</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Pagos -->
+    <div class="card payment-history-card mt-4">
+        <div class="card-header payment-history-header">
+            <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>HISTORIAL DE PAGOS</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="payment-history-table">
+                    <thead>
+                        <tr>
+                            <th>FECHA VENCIMIENTO</th>
+                            <th>MONTO</th>
+                            <th>PAGO REAL</th>
+                            <th>MÉTODO</th>
+                            <th>ESTADO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Pagos?.Any() == true)
+                        {
+                            @foreach (var pago in Model.Pagos)
+                            {
+                                <tr>
+                                    <td>@pago.FechaDeVencimiento.ToShortDateString()</td>
+                                    <td>S/ @pago.Monto</td>
+                                    <td>@(pago.FechaPago.HasValue ? pago.FechaPago.Value.ToShortDateString() : "—")</td>
+                                    <td>@(string.IsNullOrEmpty(pago.MetodoPago) || pago.MetodoPago == "Por especificar" ? "—" : pago.MetodoPago)</td>
+                                    <td>
+                                        @if (pago.EstadoPago == "pendiente")
+                                        {
+                                            <a asp-action="Checkout" asp-route-pagoId="@pago.PagoId" class="payment-action-btn">
+                                                <i class="fas fa-credit-card"></i> Pagar
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="payment-status-badge">
+                                                <i class="fas fa-check-circle"></i> Pagado
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-muted">No hay pagos registrados</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end mt-4">
+        <button onclick="window.history.back()" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> VOLVER
+        </button>
+    </div>
+</div>
+
+<style>
+    /* Estilos base */
+    body {
+        background-color: #f0f8ff;
+    }
+
+    .container.my-5 {
+        max-width: 1000px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(15, 32, 39, 0.1);
+        padding: 30px;
+        margin: 20px auto;
+    }
+
+    /* Estilos para tarjetas superiores */
+    .client-details-card,
+    .contract-details-card,
+    .payment-history-card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(15, 32, 39, 0.08);
+    }
+
+    .client-details-header,
+    .contract-details-header,
+    .payment-history-header {
+        background: linear-gradient(135deg, #0F2027, #203A43);
+        color: white;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 15px 20px;
+        font-size: 15px;
+        text-transform: uppercase;
+    }
+
+    /* Estilos para detalles compactos */
+    .detail-item.compact {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border-bottom: 1px solid rgba(100, 210, 255, 0.1);
+    }
+
+        .detail-item.compact:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        color: #3A7CA5;
+        font-weight: 500;
+        font-size: 13px;
+        text-transform: uppercase;
+    }
+
+    .detail-value {
+        color: #0F2027;
+        font-weight: 400;
+        font-size: 14px;
+    }
+
+        .detail-value.highlight {
+            color: #64D2FF;
+            font-weight: 500;
+        }
+
+    /* Estilos para la tabla de historial */
+    .payment-history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .payment-history-table thead {
+            background: linear-gradient(135deg, #1a3a4a, #0d2b3a);
+            color: white;
+        }
+
+        .payment-history-table th {
+            padding: 15px;
+            font-weight: 500;
+            font-size: 13px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .payment-history-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(100, 210, 255, 0.1);
+        }
+
+        .payment-history-table tr:nth-child(even) {
+            background-color: rgba(100, 210, 255, 0.05);
+        }
+
+    .payment-action-btn {
+        background: transparent;
+        border: 1px solid #ff6b6b;
+        color: #ff6b6b;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+        .payment-action-btn:hover {
+            background: #ff6b6b;
+            color: white;
+            text-decoration: none;
+            text-decoration: none;
+        }
+
+    .payment-status-badge {
+        background-color: rgba(46, 204, 113, 0.15);
+        color: #27ae60;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    /* Estilo para el botón volver */
+    /* Botón de volver - Inspirado en el formulario pero más sutil */
+    .btn-secondary {
+        background-color: white;
+        color: #3A7CA5;
+        border: 1px solid #3A7CA5;
+        font-weight: 500;
+        padding: 8px 20px;
+        transition: all 0.3s;
+    }
+
+        .btn-secondary:hover {
+            background-color: #3A7CA5;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .container.my-5 {
+            padding: 20px;
+        }
+
+        .detail-item.compact {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+            padding: 12px 15px;
+        }
+
+        .payment-history-table {
+            display: block;
+            overflow-x: auto;
+        }
+
+        .btn-secondary {
+            width: 100%;
+        }
+    }
+</style>
+
+<!-- Añadir en el head -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

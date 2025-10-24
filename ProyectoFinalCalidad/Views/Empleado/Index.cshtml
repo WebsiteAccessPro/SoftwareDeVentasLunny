@@ -1,0 +1,125 @@
+@model ProyectoFinalCalidad.Models.Empleado
+@{
+    ViewData["Title"] = "Agregar Nuevo Empleado";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form asp-action="Agregar" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <!-- Sección Información Básica -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="nombres" class="form-label fw-bold"></label>
+                            <input asp-for="nombres" class="form-control" required />
+                            <span asp-validation-for="nombres" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="dni" class="form-label fw-bold"></label>
+                            <input asp-for="dni" class="form-control" required maxlength="8" />
+                            <span asp-validation-for="dni" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="telefono" class="form-label fw-bold"></label>
+                            <input asp-for="telefono" class="form-control" maxlength="9" />
+                            <span asp-validation-for="telefono" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="correo" class="form-label fw-bold"></label>
+                            <input asp-for="correo" type="email" class="form-control" />
+                            <span asp-validation-for="correo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="password" class="form-label fw-bold"></label>
+                            <input asp-for="password" type="password" class="form-control" required minlength="6" />
+                            <span asp-validation-for="password" class="text-danger"></span>
+                            <small class="form-text text-muted">Mínimo 6 caracteres</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección Cargo y Estado -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="cargo_id" class="form-label fw-bold"></label>
+                            <select asp-for="cargo_id" asp-items="ViewBag.Cargos" class="form-select" required>
+                                <option value="">-- Seleccione un cargo --</option>
+                            </select>
+                            <span asp-validation-for="cargo_id" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="estado" class="form-label fw-bold"></label>
+                            <select asp-for="estado" class="form-select" required>
+                                <option value="">-- Seleccione estado --</option>
+                                <option value="activo">Activo</option>
+                                <option value="inhabilitado">Inhabilitado</option>
+                            </select>
+                            <span asp-validation-for="estado" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección Fechas -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="fecha_inicio" class="form-label fw-bold"></label>
+                            <input asp-for="fecha_inicio" type="date" class="form-control" required />
+                            <span asp-validation-for="fecha_inicio" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="mesesDuracion" class="form-label fw-bold">Duración en meses</label>
+                            <input name="mesesDuracion" type="number" class="form-control" min="1" value="6" required />
+                            <small class="form-text text-muted">Número de meses a partir de la fecha de inicio</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="MostrarEmpleados" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver al listado
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar Empleado
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Validación del lado del cliente para fecha_inicio
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const fechaInicio = document.getElementById('fecha_inicio').value;
+            if (!fechaInicio) {
+                e.preventDefault();
+                document.getElementById('fecha_inicio').classList.add('is-invalid');
+                document.querySelector('[data-valmsg-for="fecha_inicio"]').textContent = 'La fecha de inicio es requerida';
+            }
+        });
+    </script>
+}

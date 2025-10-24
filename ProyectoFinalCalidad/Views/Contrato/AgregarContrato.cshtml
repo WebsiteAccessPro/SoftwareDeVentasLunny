@@ -1,0 +1,171 @@
+@model ProyectoFinalCalidad.Models.Contrato
+
+@{
+    ViewData["Title"] = "Agregar Contrato";
+}
+
+<div class="container my-5">
+    <div class="form-card mx-auto animate-fade" style="max-width: 700px;">
+        <div class="form-header text-center text-white py-4 rounded-top" style="background: linear-gradient(90deg, #0F2027, #203A43, #2C5364);">
+            <h2 class="mb-0">
+                <i class="bi bi-file-earmark-plus me-2"></i> @ViewData["Title"]
+            </h2>
+        </div>
+
+        <div class="form-body p-4 bg-dark text-white rounded-bottom shadow">
+            <form asp-action="AgregarContrato" method="post" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="ClienteId" class="form-label fw-semibold">Cliente</label>
+                    <select asp-for="ClienteId" asp-items="ViewBag.Clientes" class="form-control">
+                        <option value="">-- Selecciona Cliente --</option>
+                    </select>
+                    <span asp-validation-for="ClienteId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PlanId" class="form-label fw-semibold">Plan</label>
+                    <select asp-for="PlanId" asp-items="ViewBag.Planes" class="form-control">
+                        <option value="">-- Selecciona Plan --</option>
+                    </select>
+                    <span asp-validation-for="PlanId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EmpleadoId" class="form-label fw-semibold">Empleado Asignado</label>
+                    <select asp-for="EmpleadoId" asp-items="ViewBag.Empleados" class="form-control">
+                        <option value="">-- Selecciona Empleado --</option>
+                    </select>
+                    <span asp-validation-for="EmpleadoId" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FechaInicio" class="form-label fw-semibold">Fecha de Inicio</label>
+                        <input asp-for="FechaInicio" type="date" class="form-control" />
+                        <span asp-validation-for="FechaInicio" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="mesesDuracion" class="form-label fw-semibold">Duración (meses)</label>
+                        <input type="number" name="mesesDuracion" min="1" class="form-control" placeholder="Ej. 12" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 mt-3 fw-semibold">
+                    <i class="bi bi-save me-1"></i> Guardar Contrato
+                </button>
+
+                <div asp-validation-summary="All" class="text-danger mt-3 small"></div>
+            </form>
+
+            @if (ViewBag.Debug != null)
+            {
+                <div class="alert alert-info mt-4">@ViewBag.Debug</div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        body {
+            background-color: #f0f8ff;
+        }
+
+        .form-card {
+            max-width: 700px;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            background: linear-gradient(160deg, #0F2027, #203A43, #2C5364);
+            border: 1px solid rgba(100, 210, 255, 0.3);
+        }
+
+        .form-header {
+            background: linear-gradient(to right, #0d6efd, #20c997);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .form-body {
+            color: white;
+        }
+
+        label {
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid #3A7CA5;
+            color: white;
+            border-radius: 8px;
+            transition: all 0.3s;
+            padding: 10px 12px;
+        }
+
+            .form-control::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            .form-control:focus {
+                border-color: #64D2FF;
+                background-color: rgba(255, 255, 255, 0.15);
+                box-shadow: 0 0 0 3px rgba(100, 210, 255, 0.25);
+            }
+
+        .btn-submit {
+            background: linear-gradient(90deg, #3A7CA5, #64D2FF);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .btn-submit:hover {
+                background: linear-gradient(90deg, #64D2FF, #3A7CA5);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 12px rgba(100, 210, 255, 0.4);
+            }
+
+        .alert-info {
+            background-color: rgba(0, 123, 255, 0.15);
+            border: 1px solid rgba(0, 123, 255, 0.4);
+            color: #64D2FF;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .text-danger {
+            color: #ff7b7b !important;
+        }
+
+        @@keyframes fadeUp {
+            0%
+
+        {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .animate-fade {
+            animation: fadeUp 0.6s ease forwards;
+        }
+    </style>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

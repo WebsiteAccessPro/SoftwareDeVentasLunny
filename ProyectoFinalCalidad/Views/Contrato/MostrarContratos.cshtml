@@ -1,0 +1,152 @@
+@model List<ProyectoFinalCalidad.Models.Contrato>
+
+@{
+    ViewData["Title"] = "Listado de Contratos";
+}
+
+<div class="container mt-5 mb-5 animate-fade">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="card-header text-white py-3 px-4 d-flex justify-content-between align-items-center"
+             style="background: linear-gradient(to right, #0d6efd, #20c997);">
+            <h3 class="mb-0">
+                <i class="bi bi-file-earmark-text me-2"></i>@ViewData["Title"]
+            </h3>
+            <a asp-action="AgregarContrato" asp-controller="Contrato" class="btn btn-light text-success fw-semibold shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i> Nuevo Contrato
+            </a>
+        </div>
+
+        <div class="card-body bg-light p-4">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center mb-0">
+                    <i class="bi bi-info-circle me-2"></i>No hay contratos registrados.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive rounded-3">
+                    <table class="table table-bordered table-hover align-middle mb-0 shadow-sm">
+                        <thead class="text-white" style="background: linear-gradient(to right, #0d6efd, #20c997);">
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Plan</th>
+                                <th>Empleado</th>
+                                <th>Fecha Contrato</th>
+                                <th>Inicio</th>
+                                <th>Fin</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var contrato in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@contrato.Cliente?.Nombres</td>
+                                    <td>@contrato.PlanServicio?.NombrePlan</td>
+                                    <td>@contrato.Empleado?.nombres</td>
+                                    <td>@contrato.FechaContrato.ToString("dd/MM/yyyy")</td>
+                                    <td>@contrato.FechaInicio.ToString("dd/MM/yyyy")</td>
+                                    <td>@contrato.FechaFin.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <span class="badge px-3 py-2 rounded-pill
+                                                    @(contrato.Estado?.ToLower() == "activo" ? "bg-success" : "bg-secondary")">
+                                            @contrato.Estado
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            @if (contrato.Estado == "activo")
+                                            {
+                                                <form asp-action="Deshabilitar" asp-controller="Contrato" method="post" class="d-inline"
+                                                      onsubmit="return confirm('¿Estás seguro de deshabilitar este contrato?');">
+                                                    <input type="hidden" name="id" value="@contrato.Id" />
+                                                    <button type="submit" class="btn btn-outline-danger px-3">
+                                                        <i class="bi bi-x-circle me-1"></i> Deshabilitar
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="Habilitar" asp-controller="Contrato" method="post" class="d-inline"
+                                                      onsubmit="return confirm('¿Deseas habilitar este contrato?');">
+                                                    <input type="hidden" name="id" value="@contrato.Id" />
+                                                    <button type="submit" class="btn btn-outline-success px-3">
+                                                        <i class="bi bi-check-circle me-1"></i> Habilitar
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Animación suave de entrada */
+        @@keyframes fadeUp {
+            0%
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .animate-fade {
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        /* Estilo general */
+        body {
+            background-color: #f8fafc;
+        }
+
+        .card {
+            border-radius: 1rem;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(13, 110, 253, 0.08);
+        }
+
+        .btn {
+            border-radius: 0.6rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .btn:hover {
+                transform: scale(1.03);
+            }
+
+        .badge {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .card-header h3 {
+            font-weight: 600;
+        }
+    </style>
+}

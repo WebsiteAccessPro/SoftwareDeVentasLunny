@@ -1,0 +1,379 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using ProyectoFinalCalidad.Data
+@using Microsoft.EntityFrameworkCore
+@inject UserManager<IdentityUser> UserManager
+@inject ApplicationDbContext DbContext
+
+@{
+    ViewData["Title"] = "Política de Privacidad";
+
+    string userName = "Invitado";
+    IList<string> roles = new List<string>();
+    var claims = new List<KeyValuePair<string, string>>();
+    string cargoEmpleado = "";
+
+    if (User.Identity.IsAuthenticated)
+    {
+        // Usuario en Identity
+        var identityUser = await UserManager.FindByNameAsync(User.Identity.Name);
+
+        if (identityUser != null)
+        {
+            userName = identityUser.Email ?? User.Identity.Name;
+
+            // Roles
+            roles = await UserManager.GetRolesAsync(identityUser);
+            if (!roles.Any())
+                roles = new List<string> { "Usuario" };
+
+            // Claims desde User.Claims (todos los predeterminados)
+            claims = User.Claims
+                .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))
+                .ToList();
+
+            // Claims extra de Identity
+            var identityClaims = await UserManager.GetClaimsAsync(identityUser);
+            foreach (var c in identityClaims)
+            {
+                if (!claims.Any(x => x.Key == c.Type))
+                    claims.Add(new KeyValuePair<string, string>(c.Type, c.Value));
+            }
+
+            // Si es empleado, traer Cargo desde BD
+            if (roles.Contains("Empleado"))
+            {
+                var empleado = await DbContext.Empleados
+                    .Include(e => e.Cargo)
+                    .FirstOrDefaultAsync(e => e.correo.ToLower() == identityUser.Email.ToLower());
+
+                if (empleado != null)
+                {
+                    cargoEmpleado = empleado.Cargo?.titulo_cargo ?? "Pendiente";
+                    // Agregar o reemplazar claim Cargo
+                    var existingCargo = claims.FirstOrDefault(x => x.Key == "Cargo");
+                    if (existingCargo.Key != null)
+                        claims.Remove(existingCargo);
+                    claims.Add(new KeyValuePair<string, string>("Cargo", cargoEmpleado));
+                }
+            }
+        }
+        else
+        {
+            // Usuario autenticado fuera de Identity (Cliente u otro)
+            userName = User.Identity.Name ?? "Desconocido";
+            roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+            if (!roles.Any())
+                roles = new List<string> { "Usuario" };
+
+            claims = User.Claims
+                .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))
+                .ToList();
+        }
+    }
+
+    // Cookie de sesión
+    var cookieValor = ViewData["CookieValor"] as string;
+    string[] cookieLineas = new string[3] { "", "", "" };
+    if (!string.IsNullOrEmpty(cookieValor))
+    {
+        int len = cookieValor.Length;
+        int partLength = len / 3;
+        cookieLineas[0] = cookieValor.Substring(0, partLength);
+        cookieLineas[1] = cookieValor.Substring(partLength, partLength);
+        cookieLineas[2] = cookieValor.Substring(partLength * 2);
+    }
+}
+
+
+
+<style>
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 0;
+    }
+
+    /* ======== ANIMACIÓN ======== */
+    @@keyframes fadeUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ======== TARJETA PRINCIPAL ======== */
+    .custom-card {
+        background: linear-gradient(145deg, #ffffff, #f9fbff);
+        border-radius: 1.2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        padding: 3rem;
+        width: 92%;
+        max-width: 1100px;
+        margin: 60px auto;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #2c2c2c;
+        animation: fadeUp 0.8s ease forwards;
+        position: relative;
+    }
+
+        .custom-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            width: 100%;
+            background: linear-gradient(90deg, #009ffd, #6a4c93);
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .custom-card:hover {
+            box-shadow: 0 16px 45px rgba(106,76,147,0.25);
+            transform: translateY(-4px);
+        }
+
+        /* ======== TÍTULOS ======== */
+        .custom-card h1 {
+            color: #2a2a72;
+            font-weight: 800;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .custom-card h2 {
+            color: #009ffd;
+            font-weight: 700;
+            font-size: 1.35rem;
+            margin-top: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .custom-card p.lead {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+            .custom-card p.lead strong {
+                color: #6a4c93;
+            }
+
+    /* ======== COOKIE BOX ======== */
+    .cookie-value {
+        overflow-x: auto;
+        background: #f1f5f9;
+        padding: 1.2rem;
+        border-radius: 0.8rem;
+        border: 1px solid #dee2e6;
+        font-family: monospace;
+        margin-bottom: 2rem;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+        .cookie-value div {
+            white-space: nowrap;
+            color: #495057;
+            font-size: 0.95rem;
+            padding: 3px 0;
+        }
+
+    /* ======== TABLA DE CLAIMS ======== */
+    .table-container {
+        overflow-x: auto;
+        border-radius: 1rem;
+        background: #fff;
+        box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+        padding: 1.2rem;
+    }
+
+    table.custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+        table.custom-table thead {
+            background: linear-gradient(90deg,#009ffd,#6a4c93);
+            color: white;
+        }
+
+        table.custom-table th, table.custom-table td {
+            text-align: left;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+        }
+
+        table.custom-table th {
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        table.custom-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.25s ease, transform 0.2s ease;
+        }
+
+            table.custom-table tbody tr:hover {
+                background: #f8faff;
+                transform: scale(1.01);
+            }
+
+    /* ======== LISTA DE ROLES ======== */
+    .custom-card ul.list-group {
+        margin-top: 1.2rem;
+        padding-left: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+        gap: 12px;
+    }
+
+        .custom-card ul.list-group li {
+            border-radius: 0.7rem;
+            padding: 0.9rem 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+    /* ======== ESTILOS DE ROLES ======== */
+    .rol-admin {
+        background: #ffe6e6;
+        color: #d32f2f;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(211,47,47,0.15);
+    }
+
+        .rol-admin:hover {
+            background: #ffcccc;
+            box-shadow: 0 4px 15px rgba(211,47,47,0.3);
+            transform: translateY(-2px);
+        }
+
+    .rol-empleado {
+        background: #e6ffe6;
+        color: #2e7d32;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(46,125,50,0.15);
+    }
+
+        .rol-empleado:hover {
+            background: #ccffcc;
+            box-shadow: 0 4px 15px rgba(46,125,50,0.3);
+            transform: translateY(-2px);
+        }
+
+    .rol-usuario {
+        background: #f2f6ff;
+        color: #1a3d7c;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(26,61,124,0.15);
+    }
+
+        .rol-usuario:hover {
+            background: #e0ebff;
+            box-shadow: 0 4px 15px rgba(26,61,124,0.3);
+            transform: translateY(-2px);
+        }
+
+    @@media(max-width:768px) {
+        .custom-card {
+            padding: 2rem 1.5rem;
+        }
+
+            .custom-card h1 {
+                font-size: 1.6rem;
+            }
+
+            .custom-card h2 {
+                font-size: 1.15rem;
+            }
+    }
+</style>
+
+<div class="custom-card">
+    <h1>@ViewData["Title"]</h1>
+    <p class="lead">Bienvenido, <strong>@userName</strong></p>
+
+    <!-- Cookie -->
+    <div class="mb-4">
+        @if (!string.IsNullOrEmpty(cookieValor))
+        {
+            <p><strong>Valor de la cookie de sesión:</strong></p>
+            <div class="cookie-value">
+                @foreach (var linea in cookieLineas)
+                {
+                    <div>@linea</div>
+                }
+            </div>
+        }
+        else
+        {
+            <p><em>No se encontró la cookie de sesión.</em></p>
+        }
+    </div>
+
+    <!-- Claims -->
+    <section class="mb-5">
+        <h2>Información del usuario</h2>
+        @if (claims.Any())
+        {
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr><th>Tipo de Claim</th><th>Valor</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var claim in claims)
+                        {
+                            <tr><td>@claim.Key</td><td>@claim.Value</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p><em>No se encontraron claims para mostrar.</em></p>
+        }
+    </section>
+
+    <!-- Roles -->
+    <section>
+        <h2>Roles asignados</h2>
+        @if (roles.Any())
+        {
+            <ul class="list-group">
+                @foreach (var rol in roles)
+                {
+                    string rolClass = rol switch
+                    {
+                        "Administrador" => "rol-admin",
+                        "Empleado" => "rol-empleado",
+                        "Usuario" => "rol-usuario",
+                        _ => "rol-usuario"
+                    };
+                    <li class="@rolClass">
+                        <i class="bi bi-person-fill me-2"></i> @rol
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p><em>No tienes roles asignados.</em></p>
+        }
+    </section>
+</div>

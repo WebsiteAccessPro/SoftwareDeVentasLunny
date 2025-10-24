@@ -1,0 +1,133 @@
+@model ProyectoFinalCalidad.Models.Contrato
+
+@{
+    ViewData["Title"] = "Confirmación de Pago";
+}
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f5f9fc;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    .confirmation-wrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        max-width: 850px;
+        padding: 20px;
+    }
+
+    .confirmation-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(15, 32, 39, 0.1);
+        overflow: hidden;
+    }
+
+    .confirmation-header {
+        background: linear-gradient(135deg, #203A43, #0F2027);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .confirmation-body {
+        padding: 40px 30px;
+        text-align: center;
+    }
+
+    .btn-confirmation {
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s;
+        margin: 0 15px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        background-color: #3A7CA5;
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #2c5d7d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(58, 124, 165, 0.3);
+        }
+
+    .btn-secondary {
+        background-color: white;
+        color: #3A7CA5;
+        border: 1px solid #3A7CA5;
+    }
+
+    .alert-success {
+        background-color: rgba(46, 204, 113, 0.15);
+        border: 1px solid rgba(46, 204, 113, 0.3);
+        color: #27ae60;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    @@media (max-width: 768px) {
+        .confirmation-wrapper {
+            position: static;
+            transform: none;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-confirmation {
+            width: 80%;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .confirmation-body {
+            padding: 30px 20px;
+        }
+    }
+</style>
+
+<div class="confirmation-wrapper">
+    <div class="confirmation-container">
+        <div class="confirmation-header">
+            <h4 class="mb-0"><i class="fas fa-check-circle me-2"></i>CONFIRMACIÓN DE PAGO</h4>
+        </div>
+
+        <div class="confirmation-body">
+            @if (TempData["MensajeExito"] != null)
+            {
+                <div class="alert alert-success">
+                    <strong>@TempData["MensajeExito"]</strong>
+                </div>
+            }
+
+            <a asp-action="MostrarDatosPago" asp-route-dni="@ViewBag.DniCliente" class="btn-confirmation btn-primary">
+                <i class="fas fa-home me-2"></i> Volver al Inicio
+            </a>
+            <a asp-action="BuscarPorDni" class="btn-confirmation btn-secondary">
+                <i class="fas fa-times me-2"></i> Cerrar
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

@@ -1,0 +1,324 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pagos\\confirmacionpago.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pagos\\confirmacionpago.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\controllers\\pagoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\controllers\\pagoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pagos\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pagos\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pagos\\buscarpordni.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pagos\\buscarpordni.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pagos\\mostrardatospago.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pagos\\mostrardatospago.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\controllers\\contratocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\controllers\\contratocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\contrato\\agregarcontrato.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\contrato\\agregarcontrato.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\contrato\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\contrato\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\controllers\\pedidoinstalacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\controllers\\pedidoinstalacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pedidoinstalacion\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pedidoinstalacion\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pedidoinstalacion\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pedidoinstalacion\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pedidoinstalacion\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pedidoinstalacion\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\controllers\\empleadocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\controllers\\empleadocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\empleado\\editar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\empleado\\editar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\areas\\identity\\pages\\account\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\areas\\identity\\pages\\account\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ConfirmacionPago.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\ConfirmacionPago.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\ConfirmacionPago.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\ConfirmacionPago.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\ConfirmacionPago.cshtml",
+              "ViewState": "AgIAAGgAAAAAAAAAAADwv3QAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:07:37.409Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BuscarPorDni.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAAAGoAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:07:31.98Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Checkout.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
+              "ViewState": "AgIAAEEAAAAAAAAAAADwvx0BAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:03:06.388Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PagosController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PagosController.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\PagosController.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PagosController.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\PagosController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T23:04:04.892Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MostrarDatosPago.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
+              "ViewState": "AgIAAAIBAAAAAAAAAADwvyIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:07:45.516Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ContratoController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAuwCYAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T23:00:51.971Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AgregarContrato.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Contrato\\AgregarContrato.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Contrato\\AgregarContrato.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Contrato\\AgregarContrato.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Contrato\\AgregarContrato.cshtml",
+              "ViewState": "AgIAAIsAAAAAAAAAAADwv6sAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:00:42.499Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Contrato\\Index.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Contrato\\Index.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Contrato\\Index.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Contrato\\Index.cshtml",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:00:36.899Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Index.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Index.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Index.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Index.cshtml",
+              "ViewState": "AgIAAAYBAAAAAAAAAAAAADsBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T22:18:01.69Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Editar.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Empleado\\Editar.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Empleado\\Editar.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Empleado\\Editar.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Empleado\\Editar.cshtml",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAIIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T19:52:20.301Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "PedidoInstalacionController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PedidoInstalacionController.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\PedidoInstalacionController.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PedidoInstalacionController.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\PedidoInstalacionController.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAkwB0AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T19:45:24.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Register.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
+              "ViewState": "AgIAAGYAAAAAAAAAAAAAAHgAAABgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T19:43:29.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\appsettings.json",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\appsettings.json",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\appsettings.json",
+              "RelativeToolTip": "ProyectoFinalCalidad\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-24T19:04:33.537Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Program.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Program.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Program.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Program.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAIwE0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T13:48:33.246Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Details.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Details.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Details.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Details.cshtml",
+              "ViewState": "AgIAANAAAAAAAAAAAAAAAOcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T22:27:21.865Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Create.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Create.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Create.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Create.cshtml",
+              "ViewState": "AgIAALEAAAAAAAAAAAAAAAcBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T22:32:07.819Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "EmpleadoController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\EmpleadoController.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\EmpleadoController.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\EmpleadoController.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\EmpleadoController.cs",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAuwGcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T22:07:45.473Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

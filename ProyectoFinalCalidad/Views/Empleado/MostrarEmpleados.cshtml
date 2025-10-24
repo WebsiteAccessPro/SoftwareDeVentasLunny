@@ -1,0 +1,258 @@
+@model List<ProyectoFinalCalidad.Models.Empleado>
+@{
+    ViewData["Title"] = "Listado de Empleados";
+}
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f0f8ff;
+    }
+
+    .main-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(15, 32, 39, 0.1);
+        padding: 30px;
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-title {
+        color: #203A43;
+        font-weight: 600;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .btn-add {
+        background-color: #3A7CA5;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: none;
+    }
+
+        .btn-add:hover {
+            background-color: #2c5d7d;
+            transform: translateY(-2px);
+        }
+
+
+    .table-container {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(15, 32, 39, 0.08);
+    }
+
+    .table {
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+        .table thead {
+            background: linear-gradient(135deg, #203A43, #0F2027);
+            color: white;
+        }
+
+        .table th {
+            font-weight: 500;
+            padding: 15px;
+            text-align: left;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .table tr:not(:last-child) td {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+    .actions-cell {
+        white-space: nowrap;
+    }
+
+    .action-btn {
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid;
+        text-decoration: none;
+    }
+
+    .btn-edit {
+        color: #3A7CA5;
+        border-color: #3A7CA5;
+        background: transparent;
+    }
+
+    .btn-disable {
+        color: #e74c3c;
+        border-color: #e74c3c;
+        background: transparent;
+    }
+
+    .btn-disabled {
+        color: #95a5a6;
+        border-color: #95a5a6;
+        background: transparent;
+        cursor: not-allowed;
+    }
+
+    .btn-edit:hover {
+        background-color: #3A7CA5;
+        color: white;
+    }
+
+    .btn-disable:hover {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-weight: 500;
+        font-size: 0.8rem;
+        display: inline-block;
+    }
+
+    .active-badge {
+        background-color: rgba(46, 204, 113, 0.15);
+        color: #27ae60;
+        border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .inactive-badge {
+        background-color: rgba(149, 165, 166, 0.15);
+        color: #7f8c8d;
+        border: 1px solid rgba(149, 165, 166, 0.3);
+    }
+
+    @@media (max-width: 768px) {
+        .main-container {
+            padding: 0 15px;
+        }
+
+        .content-card {
+            padding: 20px;
+        }
+
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+    }
+</style>
+
+<div class="main-container">
+    <div class="content-card">
+        <div class="header-section">
+            <h2 class="page-title">@ViewData["Title"]</h2>
+            <a asp-action="Agregar" class="btn btn-add">
+                <i class="fas fa-plus-circle"></i> Agregar Nuevo
+            </a>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>Cargo</th>
+                        <th>Estado</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th class="actions-cell">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var emp in Model)
+                    {
+                        <tr>
+                            <td>@emp.nombres</td>
+                            <td>@emp.dni</td>
+                            <td>@emp.Cargo?.titulo_cargo</td>
+                            <td>
+                                <span class="status-badge @(emp.estado == "activo" ? "active-badge" : "inactive-badge")">
+                                    @emp.estado
+                                </span>
+                            </td>
+                            <td>@(emp.fecha_inicio?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                            <td>@(emp.fecha_fin?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                            <td class="actions-cell">
+                                <div style="display: flex; gap: 8px;">
+                                    <a asp-action="Editar" asp-route-id="@emp.empleado_id"
+                                       class="action-btn btn-edit">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+
+                                    @if (emp.estado == "activo")
+                                    {
+                                        <a asp-action="InhabilitarEmpleado" asp-route-id="@emp.empleado_id"
+                                           class="action-btn btn-disable"
+                                           onclick="return confirm('¿Está seguro que desea inhabilitar este empleado?');">
+                                            <i class="fas fa-user-times"></i> Inhabilitar
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="action-btn btn-disabled" disabled>
+                                            <i class="fas fa-user-times"></i> Inhabilitado
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

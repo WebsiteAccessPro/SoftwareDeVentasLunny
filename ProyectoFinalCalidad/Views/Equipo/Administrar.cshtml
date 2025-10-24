@@ -1,0 +1,124 @@
+﻿@model IEnumerable<ProyectoFinalCalidad.Models.Equipo>
+
+@{
+    ViewData["Title"] = "Administración de Equipos";
+}
+
+<div class="container-fluid">
+    <div class="card shadow-lg border-0 rounded-4 mx-auto card-equipos">
+        <div class="card-header text-white d-flex justify-content-between align-items-center py-3"
+             style="background: linear-gradient(to right, #198754, #0d6efd);">
+            <h3 class="mb-0"><i class="bi bi-hdd-stack me-2"></i>@ViewData["Title"]</h3>
+            <div>
+                <a class="btn btn-light text-success fw-semibold me-2" href="@Url.Action("Agregar", "Equipo")">
+                    <i class="bi bi-plus-circle me-1"></i> Agregar
+                </a>
+                <a class="btn btn-light text-primary fw-semibold" href="@Url.Action("AumentarStock", "Equipo")">
+                    <i class="bi bi-box-seam me-1"></i> Aumentar Stock
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body px-4 py-4">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>No hay equipos registrados.
+                </div>
+            }
+            else
+            {
+                <div class="table-container">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="text-white" style="background: linear-gradient(to right, #198754, #0d6efd);">
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
+                                <th scope="col">Stock</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Fecha Registro</th>
+                                <th scope="col" class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var equipo in Model)
+                            {
+                                <tr>
+                                    <td>@equipo.NombreEquipo</td>
+                                    <td>@equipo.Descripcion</td>
+                                    <td>
+                                        <span class="fw-semibold @(equipo.CantidadStock <= 5 ? "text-danger" : "text-success")">
+                                            @equipo.CantidadStock
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge
+                                                    @(equipo.Estado?.ToLower() == "disponible" ? "bg-success" :
+                                                                                            equipo.Estado?.ToLower() == "pendiente" ? "bg-warning text-dark" :
+                                                                                            equipo.Estado?.ToLower() == "agotado" ? "bg-danger" :
+                                                                                            "bg-secondary")">
+                                    @equipo.Estado
+                                </span>
+                            </td>
+                            <td>@equipo.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-outline-primary me-1"
+                                   href="@Url.Action("Editar", "Equipo", new { id = equipo.EquipoId })"
+                                   aria-label="Editar equipo @equipo.NombreEquipo">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                            </td>
+                        </tr>
+                                                }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 2rem;
+        }
+        .card-equipos {
+            width: 90%;
+            max-width: 1400px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table th, .table td {
+            white-space: nowrap;
+            vertical-align: middle;
+            padding: 0.8rem 1rem;
+        }
+
+        .badge {
+            font-size: 0.9em;
+            padding: 0.4em 0.7em;
+        }
+
+        a.btn:hover {
+            transform: scale(1.03);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(25, 135, 84, 0.08);
+        }
+
+        .fw-semibold {
+            font-weight: 600;
+        }
+    </style>
+}

@@ -1,0 +1,39 @@
+@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Cerrar sesión";
+}
+
+@section Scripts {
+    @if (!(User.Identity?.IsAuthenticated ?? false))
+    {
+        <script>
+            // Redirige a home después de 3 segundos
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 3000);
+        </script>
+    }
+}
+
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4 text-primary fw-bold">@ViewData["Title"]</h1>  <!-- fw-bold = negrita en Bootstrap -->
+    </div>
+
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <div class="d-flex justify-content-center">
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                <button type="submit" class="btn btn-danger btn-lg px-4">Cerrar sesión</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-success text-center" role="alert">
+            Has cerrado sesión correctamente.<br />
+            Redirigiendo al inicio...
+        </div>
+    }
+</div>

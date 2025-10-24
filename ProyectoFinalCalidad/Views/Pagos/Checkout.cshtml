@@ -1,0 +1,298 @@
+@model ProyectoFinalCalidad.Models.Pago
+
+@{
+    ViewData["Title"] = "Procesar Pago";
+}
+    <div class="container my-5" >
+        <h2 class="text-center text-primary mb-4">
+            <i class="fas fa-credit-card"></i> Procesar Pago
+        </h2>
+
+        <div class="row g-4">
+            <!-- Detalles del pago -->
+            <div class="col-lg-6">
+                <div class="card payment-details-card">
+                    <div class="card-header payment-details-header">
+                        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>DETALLES DEL PAGO</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="payment-detail-item">
+                            <div class="payment-detail-label">CONTRATO</div>
+                            <div class="payment-detail-value">@Model.Contrato?.PlanServicio?.NombrePlan</div>
+                        </div>
+
+                        <div class="payment-detail-item">
+                            <div class="payment-detail-label">MONTO A PAGAR</div>
+                            <div class="payment-detail-value highlight">S/ @Model.Monto.ToString("N2")</div>
+                        </div>
+
+                        <div class="payment-detail-item">
+                            <div class="payment-detail-label">FECHA DE VENCIMIENTO</div>
+                            <div class="payment-detail-value">@Model.FechaDeVencimiento.ToShortDateString()</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Método de pago -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-hand-holding-usd"></i> Método de Pago</h5>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="ProcesarPago" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="pagoId" value="@Model.PagoId" />
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="metodoPago" id="efectivo" value="Efectivo" checked>
+                                <label class="form-check-label" for="efectivo">
+                                    <i class="fas fa-money-bill-wave"></i> Efectivo
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="metodoPago" id="transferencia" value="Transferencia">
+                                <label class="form-check-label" for="transferencia">
+                                    <i class="fas fa-university"></i> Transferencia Bancaria
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="radio" name="metodoPago" id="tarjeta" value="Tarjeta">
+                                <label class="form-check-label" for="tarjeta">
+                                    <i class="far fa-credit-card"></i> Tarjeta de Crédito/Débito
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-check-circle"></i> Confirmar Pago
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-end mt-4">
+            <button onclick="window.history.back()" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Volver
+            </button>
+        </div>
+    </div>
+
+<style>
+    body {
+        background-color: #f0f8ff; /* Fondo azul muy claro */
+    }
+
+    /* Botón de volver - Inspirado en el formulario pero más sutil */
+    .btn-secondary {
+        background-color: white;
+        color: #3A7CA5;
+        border: 1px solid #3A7CA5;
+        font-weight: 500;
+        padding: 8px 20px;
+        transition: all 0.3s;
+    }
+
+        .btn-secondary:hover {
+            background-color: #3A7CA5;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .container.my-5 {
+        max-width: 900px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(15, 32, 39, 0.1);
+        padding: 40px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        max-width: 850px;
+    }
+
+    h2.text-primary {
+        color: #0F2027 !important;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+        h2.text-primary:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, #64D2FF, #3A7CA5);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+    hr {
+        border-color: rgba(100, 210, 255, 0.3);
+    }
+
+    /* Tarjetas - Estilo moderno */
+    .card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+    .card-header {
+        background: linear-gradient(135deg, #203A43, #0F2027) !important;
+        color: white !important;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 15px 20px;
+        border-bottom: none;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    /* Lista de detalles */
+    dl.row dt {
+        color: #3A7CA5;
+        font-weight: 500;
+    }
+
+    dl.row dd {
+        color: #0F2027;
+        font-weight: 400;
+    }
+
+    /* Formulario de pago */
+    .form-check-input:checked {
+        background-color: #3A7CA5;
+        border-color: #3A7CA5;
+    }
+
+    .form-check-label {
+        color: #0F2027;
+        font-weight: 500;
+        margin-left: 8px;
+    }
+
+    /* Botón de confirmación */
+    .btn-success {
+        background: linear-gradient(to right, #2ecc71, #27ae60);
+        border: none;
+        padding: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        transition: all 0.3s;
+        box-shadow: 0 3px 10px rgba(46, 204, 113, 0.3);
+    }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .container.my-5 {
+            padding: 25px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+    }
+</style>
+<style>
+    .payment-details-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(15, 32, 39, 0.08);
+        height: 100%;
+    }
+
+    .payment-details-header {
+        background: linear-gradient(135deg, #203A43, #0F2027);
+        color: white;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 18px 25px;
+        border-bottom: none;
+        text-transform: uppercase;
+        font-size: 16px;
+    }
+
+    .payment-detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(100, 210, 255, 0.15);
+    }
+
+        .payment-detail-item:last-child {
+            border-bottom: none;
+            padding-bottom: 5px;
+        }
+
+    .payment-detail-label {
+        color: #3A7CA5;
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        flex: 1;
+    }
+
+    .payment-detail-value {
+        color: #0F2027;
+        font-weight: 400;
+        font-size: 15px;
+        text-align: right;
+        flex: 1;
+        padding-left: 10px;
+    }
+
+        .payment-detail-value.highlight {
+            color: #2ecc71;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+    @@media (max-width: 768px) {
+        .payment-detail-item {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 12px 0;
+        }
+
+        .payment-detail-value {
+            text-align: left;
+            padding-left: 0;
+            padding-top: 5px;
+        }
+    }
+</style>
+<!-- Añadir en el head -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+@section Scripts {
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+}

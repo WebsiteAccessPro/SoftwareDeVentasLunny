@@ -1,0 +1,162 @@
+@model ProyectoFinalCalidad.Models.Cliente
+
+@{
+    ViewData["Title"] = "Agregar Cliente";
+}
+
+<div class="container">
+    <div class="custom-card">
+        <h2>@ViewData["Title"]</h2>
+
+        <form asp-action="AgregarCliente" method="post" class="needs-validation mt-3" novalidate>
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Correo" class="form-label">Correo</label>
+                <input asp-for="Correo" class="form-control input-custom" required />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Contraseña</label>
+                <input asp-for="Password" type="password" class="form-control input-custom" required />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Nombres" class="form-label">Nombres</label>
+                <input asp-for="Nombres" class="form-control input-custom" required />
+                <span asp-validation-for="Nombres" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Dni" class="form-label">DNI</label>
+                <input asp-for="Dni" class="form-control input-custom" required />
+                <span asp-validation-for="Dni" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Direccion" class="form-label">Dirección</label>
+                <input asp-for="Direccion" class="form-control input-custom" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Telefono" class="form-label">Teléfono</label>
+                <input asp-for="Telefono" class="form-control input-custom" />
+            </div>
+
+            <input type="hidden" asp-for="Estado" value="activo" />
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-custom">Registrar</button>
+                <a asp-action="MostrarClientes" class="btn btn-secondary btn-custom ms-2">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 2rem 1rem;
+        }
+
+        /* ======== ANIMACIÓN ======== */
+        @@keyframes fadeUp {
+            0%
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* ======== TARJETA FORMULARIO ======== */
+        .custom-card {
+            background: linear-gradient(145deg, #ffffff, #f9fbff);
+            border-radius: 1.2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            animation: fadeUp 0.8s ease forwards;
+            position: relative;
+        }
+
+            .custom-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 6px;
+                width: 100%;
+                background: linear-gradient(90deg, #009ffd, #6a4c93);
+                border-radius: 1rem 1rem 0 0;
+            }
+
+            .custom-card h2 {
+                color: #009ffd;
+                font-weight: 700;
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+
+        /* ======== INPUTS ======== */
+        .input-custom {
+            border-radius: 0.6rem;
+            border: 1px solid #ced4da;
+            padding: 0.6rem 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+            .input-custom:focus {
+                border-color: #6a4c93;
+                box-shadow: 0 0 8px rgba(106,76,147,0.2);
+                outline: none;
+            }
+
+        /* ======== BOTONES ======== */
+        .btn-custom {
+            border-radius: 0.6rem;
+            padding: 0.55rem 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+            .btn-custom:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+        /* ======== VALIDACIÓN ======== */
+        .text-danger {
+            font-size: 0.85rem;
+        }
+
+        /* ======== RESPONSIVE ======== */
+        @@media(max - width:768px) {
+            .custom-card
+
+        {
+            padding: 2rem 1.5rem;
+        }
+
+        .custom-card h2 {
+            font-size: 1.5rem;
+        }
+
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

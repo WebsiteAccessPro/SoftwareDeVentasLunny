@@ -1,0 +1,263 @@
+@model ProyectoFinalCalidad.Models.PedidoInstalacion
+
+@{
+    ViewData["Title"] = "Registrar Pedido de Instalación";
+}
+<style>
+
+    body {
+        background-color: #f0f8ff;
+    }
+
+    .card-animated {
+        border-left: 6px solid #203A43;
+        border-radius: 1rem;
+        background-color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+        .card-animated:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-header-custom {
+        background: linear-gradient(to right, #0F2027, #203A43, #2C5364);
+        color: white;
+        padding: 1.2rem 1.5rem;
+        border-radius: 1rem 1rem 0 0;
+        font-size: 1.35rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .form-floating input,
+    .form-floating select,
+    .form-floating textarea {
+        border-radius: 0.6rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .form-floating input:focus,
+        .form-floating select:focus,
+        .form-floating textarea:focus {
+            border-color: #203A43;
+            box-shadow: 0 0 0 0.25rem rgba(32, 58, 67, 0.25);
+        }
+
+    .btn-success {
+        background-color: #397DA9;
+        border: none;
+        font-weight: 600;
+        color: white;
+        padding: 0.6rem 1.4rem;
+        transition: all 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .btn-success:hover {
+            background-color: #2f6e93;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-outline-secondary {
+        font-weight: 600;
+        transition: all 0.3s ease;
+        padding: 0.6rem 1.4rem;
+        border-color: #adb5bd;
+        color: #495057;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #dee2e6;
+            transform: scale(1.03);
+        }
+
+    .text-danger {
+        font-size: 0.85rem;
+    }
+
+    .estado-badge {
+        display: inline-block;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        color: white;
+    }
+
+    .estado-pendiente {
+        background-color: #fbc02d;
+        color: #212529;
+    }
+
+    .estado-completado {
+        background-color: #397DA9;
+    }
+
+    .estado-cancelado {
+        background-color: #c62828;
+    }
+
+    .custom-dropdown .dropdown-menu {
+        min-width: 200px;
+    }
+
+        .custom-dropdown .dropdown-menu button {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            font-weight: 600;
+            text-align: left;
+        }
+
+            .custom-dropdown .dropdown-menu button:hover {
+                background-color: #f1f1f1;
+            }
+</style>
+
+<div class="container mt-4">
+    <div class="card card-animated">
+        <div class="card-header card-header-custom">
+            <i class="bi bi-hammer"></i> @ViewData["Title"]
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select asp-for="ContratoId" asp-items="ViewBag.Contratos" class="form-select" required>
+                                <option value="">Seleccione un contrato</option>
+                            </select>
+                            <label for="ContratoId">Número de Contrato</label>
+                            <span asp-validation-for="ContratoId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mt-3">
+                            @{
+                                // Obtener rol y cargo del usuario
+                                var cargoClaim = User.Claims.FirstOrDefault(c => c.Type == "Cargo")?.Value;
+                                var rolClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+
+                                string jefeACargo;
+
+                                if (!string.IsNullOrEmpty(rolClaim) && rolClaim == "Administrador")
+                                {
+                                    jefeACargo = "Administrador General";
+                                }
+                                else if (!string.IsNullOrEmpty(cargoClaim))
+                                {
+                                    jefeACargo = cargoClaim;
+                                }
+                                else
+                                {
+                                    jefeACargo = "Sin cargo";
+                                }
+                            }
+                            <input type="text" class="form-control"
+                                   name="JefeACargo"
+                                   value="@jefeACargo"
+                                   readonly />
+                            <label for="JefeACargo">Jefe a Cargo</label>
+                        </div>
+
+                        <div class="form-floating mt-3">
+                            <select asp-for="EmpleadoId" asp-items="ViewBag.Tecnicos" class="form-select" required>
+                                <option value="">Seleccione un técnico</option>
+                            </select>
+                            <label for="EmpleadoId">Técnico Responsable</label>
+                            <span asp-validation-for="EmpleadoId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mt-3">
+                            <input asp-for="FechaInstalacion" type="date" class="form-control" required />
+                            <label asp-for="FechaInstalacion">Fecha Programada</label>
+                            <span asp-validation-for="FechaInstalacion" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <!-- Estado visual + hidden -->
+                        <label class="form-label fw-bold mb-1">Estado del Pedido</label>
+                        <input type="hidden" asp-for="EstadoInstalacion" id="estadoHidden" />
+
+                        <div class="dropdown custom-dropdown mb-3">
+                            <button class="btn dropdown-toggle estado-badge estado-pendiente" type="button" id="estadoDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                Pendiente
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="estadoDropdown">
+                                <li><button type="button" class="dropdown-item" onclick="seleccionarEstado('pendiente')">Pendiente</button></li>
+                                <li><button type="button" class="dropdown-item" onclick="seleccionarEstado('completado')">Completado</button></li>
+                                <li><button type="button" class="dropdown-item" onclick="seleccionarEstado('cancelado')">Cancelado</button></li>
+                            </ul>
+                        </div>
+                        <span asp-validation-for="EstadoInstalacion" class="text-danger"></span>
+
+                        <div class="form-floating">
+                            <textarea asp-for="Observaciones" class="form-control" style="height: 120px"></textarea>
+                            <label asp-for="Observaciones">Notas Adicionales</label>
+                            <span asp-validation-for="Observaciones" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle-fill"></i> Guardar Pedido
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        function seleccionarEstado(valor) {
+            const hiddenInput = document.getElementById("estadoHidden");
+            const dropdown = document.getElementById("estadoDropdown");
+
+            hiddenInput.value = valor;
+
+            let texto = "";
+            let clase = "btn dropdown-toggle estado-badge ";
+
+            if (valor === "pendiente") {
+                texto = "Pendiente";
+                clase += "estado-pendiente";
+            } else if (valor === "completado") {
+                texto = "Completado";
+                clase += "estado-completado";
+            } else if (valor === "cancelado") {
+                texto = "Cancelado";
+                clase += "estado-cancelado";
+            }
+
+            dropdown.textContent = texto;
+            dropdown.className = clase;
+
+            // Cerrar dropdown
+            bootstrap.Dropdown.getInstance(dropdown)?.hide();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const valorActual = document.getElementById("estadoHidden").value || "pendiente";
+            seleccionarEstado(valorActual);
+        });
+    </script>
+}

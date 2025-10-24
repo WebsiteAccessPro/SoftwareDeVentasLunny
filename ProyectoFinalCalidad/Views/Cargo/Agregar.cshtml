@@ -1,0 +1,34 @@
+@model ProyectoFinalCalidad.Models.Cargo
+@{
+    ViewData["Title"] = "Agregar Cargo";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Agregar" method="post" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label asp-for="titulo_cargo" class="form-label">Título del Cargo</label>
+        <input asp-for="titulo_cargo" class="form-control" required />
+        <div class="invalid-feedback">Ingrese un título.</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="MostrarCargos" class="btn btn-secondary ms-2">Cancelar</a>
+</form>
+
+@section Scripts {
+    <script>
+        (() => {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })();
+    </script>
+}

@@ -1,0 +1,152 @@
+@{
+    ViewData["Title"] = "Panel de Empleados";
+}
+
+<div class="container mt-5 mb-5 animate-fade">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="card-header text-white py-3 px-4"
+             style="background: linear-gradient(to right, #0d6efd, #20c997);">
+            <h3 class="mb-0">
+                <i class="bi bi-people-fill me-2"></i>@ViewData["Title"]
+            </h3>
+        </div>
+
+        <div class="card-body bg-light p-4">
+            <div class="d-flex justify-content-end mb-4">
+                <a asp-action="AgregarEmpleado" class="btn btn-success shadow-sm fw-semibold px-3">
+                    <i class="bi bi-plus-circle me-1"></i> Nuevo Empleado
+                </a>
+            </div>
+
+            <div class="row g-4">
+                <!-- Card: Listado de empleados -->
+                <div class="col-md-4">
+                    <div class="card option-card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="icon-circle bg-success bg-opacity-10 text-success mb-3">
+                                <i class="bi bi-person-lines-fill"></i>
+                            </div>
+                            <h5 class="fw-bold text-success mb-2">Listado de Empleados</h5>
+                            <p class="text-secondary mb-3">
+                                Consulta, edita o inhabilita los empleados registrados.
+                            </p>
+                            <a asp-action="MostrarEmpleados" class="btn btn-outline-success w-100 fw-semibold">
+                                <i class="bi bi-eye me-1"></i> Ver listado
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Buscar empleados -->
+                <div class="col-md-4">
+                    <div class="card option-card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="icon-circle bg-primary bg-opacity-10 text-primary mb-3">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <h5 class="fw-bold text-primary mb-2">Buscar por Cargo o Estado</h5>
+                            <p class="text-secondary mb-3">
+                                Filtra empleados por su cargo o estado activo/inhabilitado.
+                            </p>
+                            <a asp-action="BuscarEmpleados" class="btn btn-outline-primary w-100 fw-semibold">
+                                <i class="bi bi-funnel me-1"></i> Ir a búsqueda
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Gestión de contratos -->
+                <div class="col-md-4">
+                    <div class="card option-card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="icon-circle bg-danger bg-opacity-10 text-danger mb-3">
+                                <i class="bi bi-file-earmark-x"></i>
+                            </div>
+                            <h5 class="fw-bold text-danger mb-2">Gestión de Contratos</h5>
+                            <p class="text-secondary mb-3">
+                                Habilita o deshabilita contratos registrados en el sistema.
+                            </p>
+                            <a asp-controller="Contrato" asp-action="MostrarContratos"
+                               class="btn btn-outline-danger w-100 fw-semibold">
+                                <i class="bi bi-gear me-1"></i> Gestionar contratos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-5 mb-0 shadow-sm rounded-3">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Este módulo permite la gestión de empleados activos e inhabilitados del sistema.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Animación suave de entrada */
+        @@keyframes fadeUp {
+            0%
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .animate-fade {
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        body {
+            background-color: #f8fafc;
+        }
+
+        .card-header h3 {
+            font-weight: 600;
+        }
+
+        .option-card {
+            transition: all 0.25s ease-in-out;
+            border-radius: 1rem;
+        }
+
+            .option-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            }
+
+        .icon-circle {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .btn {
+            border-radius: 0.6rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .btn:hover {
+                transform: scale(1.03);
+            }
+
+        .alert {
+            border: none;
+            font-weight: 500;
+            background-color: #e9f6ff;
+            color: #0d6efd;
+        }
+    </style>
+}

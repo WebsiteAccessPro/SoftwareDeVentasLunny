@@ -1,0 +1,308 @@
+@model ProyectoFinalCalidad.Models.Empleado
+@{
+    ViewData["Title"] = "Agregar Empleado";
+}
+
+<style>
+    body {
+        background-color: #f0f8ff;
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(15, 32, 39, 0.1);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        max-width: 850px;
+    }
+
+    .form-title {
+        color: #203A43;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+    }
+
+    .form-columns {
+        display: flex;
+        gap: 30px;
+    }
+
+    .form-column {
+        flex: 1;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #dfe6e9;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus {
+            border-color: #3A7CA5;
+            box-shadow: 0 0 0 0.25rem rgba(58, 124, 165, 0.25);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
+    /* Password toggle styles */
+    .password-input-group {
+        display: flex;
+    }
+
+    .password-input {
+        flex: 1;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: none;
+    }
+
+    .password-toggle {
+        width: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border: 1px solid #dfe6e9;
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .password-toggle:hover {
+            background-color: #f8f9fa;
+        }
+
+        .password-toggle i {
+            color: #95a5a6;
+            transition: all 0.3s;
+        }
+
+        .password-toggle:hover i {
+            color: #3A7CA5;
+        }
+
+    /* Full-width row */
+    .full-width-row {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s;
+        cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background-color: #3A7CA5;
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #2c5d7d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(58, 124, 165, 0.3);
+        }
+
+    .btn-secondary {
+        background-color: white;
+        color: #3A7CA5;
+        border: 1px solid #3A7CA5;
+    }
+
+    .text-danger {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    @@media (max-width: 768px) {
+        .form-container {
+            padding: 20px;
+        }
+
+        .form-columns {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .btn-container {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">@ViewData["Title"]</h2>
+
+    <form asp-action="AgregarEmpleado" method="post" class="needs-validation" novalidate>
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+        <div class="form-columns">
+            <!-- Columna Izquierda -->
+            <div class="form-column">
+                <!-- Campo Cargo -->
+                <div class="form-group">
+                    <label asp-for="cargo_id" class="form-label">Cargo</label>
+                    <select asp-for="cargo_id" asp-items="ViewBag.Cargos" class="form-control" required>
+                        <option value="">-- Selecciona --</option>
+                    </select>
+                    <span asp-validation-for="cargo_id" class="text-danger"></span>
+                </div>
+
+                <!-- Campo Nombres -->
+                <div class="form-group">
+                    <label asp-for="nombres" class="form-label">Nombre</label>
+                    <input asp-for="nombres" class="form-control" required />
+                    <span asp-validation-for="nombres" class="text-danger"></span>
+                </div>
+
+                <!-- Campo DNI -->
+                <div class="form-group">
+                    <label asp-for="dni" class="form-label">DNI</label>
+                    <input asp-for="dni" class="form-control" required maxlength="8" placeholder="Ingrese 8 dígitos" />
+                    <span asp-validation-for="dni" class="text-danger"></span>
+                </div>
+
+                <!-- Campo Teléfono -->
+                <div class="form-group">
+                    <label asp-for="telefono" class="form-label">Teléfono</label>
+                    <input asp-for="telefono" class="form-control" maxlength="9" placeholder="Ingrese 9 dígitos" />
+                    <span asp-validation-for="telefono" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Columna Derecha -->
+            <div class="form-column">
+                <!-- Campo Correo -->
+                <div class="form-group">
+                    <label asp-for="correo" class="form-label">Correo</label>
+                    <input asp-for="correo" type="email" class="form-control" placeholder="ejemplo@correo.com" />
+                    <span asp-validation-for="correo" class="text-danger"></span>
+                </div>
+
+                <!-- Campo Estado -->
+                <div class="form-group">
+                    <label asp-for="estado" class="form-label">Estado</label>
+                    <select asp-for="estado" class="form-control" required>
+                        <option value="">-- Selecciona estado --</option>
+                        <option value="activo">Activo</option>
+                        <option value="inhabilitado">Inhabilitado</option>
+                    </select>
+                    <span asp-validation-for="estado" class="text-danger"></span>
+                </div>
+
+                <!-- Campo Fecha Inicio -->
+                <div class="form-group">
+                    <label asp-for="fecha_inicio" class="form-label">Fecha Inicio</label>
+                    <input asp-for="fecha_inicio" type="date" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="fecha_inicio" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full-width row for password and duration -->
+        <div class="form-group">
+            <label asp-for="password" class="form-label">Contraseña</label>
+            <div class="password-input-group">
+                <input asp-for="password" type="password" class="form-control password-input" required minlength="6" placeholder="Mínimo 6 caracteres" id="passwordField" />
+                <span class="password-toggle" onclick="togglePasswordVisibility('passwordField')">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+            <span asp-validation-for="password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="mesesDuracion" class="form-label">Duración en meses</label>
+            <input name="mesesDuracion" type="number" class="form-control" min="1" required placeholder="Ej: 12 (meses)" />
+        </div>
+
+        <!-- Botones -->
+        <div class="btn-container">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <a asp-action="MostrarEmpleados" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const fechaInicio = document.getElementById('fecha_inicio').value;
+            if (!fechaInicio) {
+                e.preventDefault();
+                document.getElementById('fecha_inicio').classList.add('is-invalid');
+                document.querySelector('[data-valmsg-for="fecha_inicio"]').textContent = 'La fecha de inicio es requerida';
+            }
+        });
+
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
+            field.setAttribute('type', type);
+
+            // Cambiar ícono
+            const icon = field.nextElementSibling.querySelector('i');
+            icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+    </script>
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

@@ -1,0 +1,121 @@
+@model IEnumerable<ProyectoFinalCalidad.Models.ZonaCobertura>
+
+@{
+    ViewData["Title"] = "Zonas de Cobertura";
+}
+
+<div class="container py-5">
+    <div class="card shadow-lg border-0 rounded-4 animate-fade">
+        <div class="card-header d-flex justify-content-between align-items-center text-white py-3"
+             style="background: linear-gradient(to right, #0d6efd, #20c997);">
+            <h3 class="mb-0">
+                <i class="bi bi-geo-alt-fill me-2"></i>@ViewData["Title"]
+            </h3>
+            <a asp-action="Agregar" class="btn btn-light fw-semibold shadow-sm">
+                <i class="bi bi-plus-circle text-success me-1"></i> Nueva Zona
+            </a>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nombre Zona</th>
+                            <th>Distrito</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            foreach (var zona in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@zona.NombreZona</td>
+                                    <td>@zona.Distrito</td>
+                                    <td>@zona.Descripcion</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-action="Editar" asp-route-id="@zona.Id"
+                                               class="btn btn-sm btn-outline-warning">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <form asp-action="Eliminar" asp-route-id="@zona.Id" method="post"
+                                                  onsubmit="return confirm('¿Estás seguro de eliminar esta zona?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-muted py-4">
+                                    <i class="bi bi-exclamation-circle me-2"></i>No hay zonas registradas.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Animación de entrada */
+        @@keyframes fadeUp {
+            0%
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .animate-fade {
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .card {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        td {
+            vertical-align: middle;
+        }
+
+        .btn {
+            border-radius: 0.6rem;
+            transition: transform 0.2s ease;
+        }
+
+            .btn:hover {
+                transform: scale(1.05);
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f9ff;
+        }
+    </style>
+}

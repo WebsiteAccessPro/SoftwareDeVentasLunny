@@ -1,0 +1,108 @@
+@model ProyectoFinalCalidad.Models.Equipo
+
+@{
+    ViewData["Title"] = Model.EquipoId == 0 ? "Agregar Equipo" : "Editar Equipo";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0 fs-4">@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="AgregarEditar" method="post" class="needs-validation" novalidate>
+                <input type="hidden" asp-for="EquipoId" />
+
+                <!-- Nombre -->
+                <div class="mb-3">
+                    <label asp-for="NombreEquipo" class="form-label fw-semibold">
+                        Nombre del Equipo <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="NombreEquipo" class="form-control" placeholder="Ingrese el nombre del equipo" required aria-required="true" />
+                    <div class="invalid-feedback">Por favor ingrese el nombre del equipo.</div>
+                    <span asp-validation-for="NombreEquipo" class="text-danger"></span>
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-3">
+                    <label asp-for="Descripcion" class="form-label fw-semibold">
+                        Descripción
+                    </label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Escriba una breve descripción del equipo"></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <!-- Estado (solo al editar) -->
+                @if (Model.EquipoId != 0)
+                {
+                    <div class="mb-3">
+                        <label asp-for="Estado" class="form-label fw-semibold">Estado</label>
+                        <select asp-for="Estado" class="form-select" aria-label="Seleccione el estado del equipo">
+                            <option value="disponible">Disponible</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="agotado">Agotado</option>
+                        </select>
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
+                }
+
+                <div class="d-flex justify-content-start mt-4">
+                    <button type="submit" class="btn btn-success me-2">
+                        <i class="bi bi-save"></i> Guardar
+                    </button>
+                    <a asp-action="Administrar" asp-controller="Equipo" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Cancelar
+                    </a>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Bootstrap 5 validation
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+}
+
+@section Styles {
+    <style>
+        .card {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .form-label {
+            color: #212529;
+        }
+
+        .btn-success, .btn-outline-secondary {
+            border-radius: 8px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        }
+
+        /* Contraste accesible */
+        .bg-primary {
+            background-color: #0d6efd !important;
+        }
+    </style>
+}

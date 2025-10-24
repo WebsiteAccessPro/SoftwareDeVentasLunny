@@ -1,0 +1,218 @@
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<style>
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+    }
+
+    /* ======== ANIMACIONES ======== */
+    @@keyframes fadeSlideUp {
+        0%
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .animated-card {
+        opacity: 0;
+        animation: fadeSlideUp 0.7s ease forwards;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .animated-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .animated-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .animated-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .animated-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 159, 253, 0.4);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+    /* ======== HERO ======== */
+    .hero {
+        background: linear-gradient(135deg, #009ffd, #2a2a72);
+        color: #fff;
+        padding: 5rem 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        margin-bottom: 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 20%, transparent 20%);
+            background-size: 30px 30px;
+            animation: moveBg 8s linear infinite;
+        }
+
+    @@keyframes moveBg {
+        from
+
+    {
+        transform: translate(0, 0);
+    }
+
+    to {
+        transform: translate(30px, 30px);
+    }
+
+    }
+
+    .hero img {
+        width: 120px;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        max-width: 650px;
+        margin: 0 auto 2rem;
+        opacity: 0.9;
+    }
+
+    .hero .btn-primary {
+        background: #fff;
+        color: #009ffd;
+        font-weight: 600;
+        border: none;
+        border-radius: 0.6rem;
+        padding: 0.8rem 1.6rem;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+    }
+
+        .hero .btn-primary:hover {
+            background: #e8f3ff;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+        }
+
+    /* ======== CARDS ======== */
+    .feature-card {
+        border: none;
+        border-radius: 1rem;
+        background: #fff;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        top: -20px;
+    }
+
+    .feature-icon {
+        font-size: 3.2rem;
+        color: #009ffd;
+        margin-bottom: 1.2rem;
+    }
+
+    .feature-card h5 {
+        font-weight: 700;
+        color: #2a2a72;
+        margin-bottom: 0.6rem;
+    }
+
+    .feature-card p {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+
+    /* ======== RESPONSIVE ======== */
+    @@media (max-width: 768px) {
+        .hero h1
+
+    {
+        font-size: 2.2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .hero {
+        padding: 3rem 1.5rem;
+    }
+
+    }
+</style>
+
+<!-- HERO SECTION -->
+<div class="container mt-5">
+    <section class="hero">
+        <img src="~/img/logo-lunnys2.png" alt="Logo Lunnys Perú" />
+        <h1>Lunnys Perú</h1>
+        <p>
+            Soluciones modernas en telecomunicaciones para tu hogar y empresa.
+            Conectividad, estabilidad y soporte técnico de confianza.
+        </p>
+        <a href="#servicios" class="btn btn-primary">Ver Servicios</a>
+    </section>
+
+    <!-- FEATURE CARDS -->
+    <section id="servicios" class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card animated-card h-100">
+                <div class="card-body">
+                    <i class="bi bi-wifi feature-icon"></i>
+                    <h5>Internet de Alta Velocidad</h5>
+                    <p>Conexiones rápidas y estables, perfectas para tu hogar o negocio.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card animated-card h-100">
+                <div class="card-body">
+                    <i class="bi bi-tv feature-icon"></i>
+                    <h5>Televisión Digital HD</h5>
+                    <p>Disfruta de tus programas y películas con la mejor calidad de imagen.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card feature-card animated-card h-100">
+                <div class="card-body">
+                    <i class="bi bi-headset feature-icon"></i>
+                    <h5>Soporte Técnico</h5>
+                    <p>Asistencia personalizada las 24 horas, para que nunca te desconectes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

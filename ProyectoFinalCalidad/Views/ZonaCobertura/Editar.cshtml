@@ -1,0 +1,145 @@
+@model ProyectoFinalCalidad.Models.ZonaCobertura
+
+@{
+    ViewData["Title"] = "Editar Zona de Cobertura";
+}
+
+<div class="container py-5">
+    <div class="card shadow-lg border-0 rounded-4 animate-fade">
+        <div class="card-header text-white py-3 d-flex align-items-center"
+             style="background: linear-gradient(to right, #0d6efd, #20c997);">
+            <h3 class="mb-0">
+                <i class="bi bi-pencil-square me-2"></i>@ViewData["Title"]
+            </h3>
+        </div>
+
+        <div class="card-body px-4 py-4">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger mb-4">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["ErrorMessage"]
+                </div>
+            }
+
+            <form asp-action="Editar" asp-controller="ZonaCobertura" asp-route-id="@Model.Id" method="post" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- Nombre de la Zona -->
+                <div class="mb-4">
+                    <label asp-for="NombreZona" class="form-label fw-semibold">
+                        <i class="bi bi-geo me-2 text-primary"></i>Nombre de la Zona <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="NombreZona" class="form-control shadow-sm" required placeholder="Ejemplo: Zona Norte" />
+                    <span asp-validation-for="NombreZona" class="text-danger"></span>
+                </div>
+
+                <!-- Distrito -->
+                <div class="mb-4">
+                    <label asp-for="Distrito" class="form-label fw-semibold">
+                        <i class="bi bi-building me-2 text-success"></i>Distrito <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="Distrito" class="form-control shadow-sm" required placeholder="Ejemplo: Miraflores" />
+                    <span asp-validation-for="Distrito" class="text-danger"></span>
+                </div>
+
+                <!-- Descripción -->
+                <div class="mb-4">
+                    <label asp-for="Descripcion" class="form-label fw-semibold">
+                        <i class="bi bi-card-text me-2 text-info"></i>Descripción
+                    </label>
+                    <textarea asp-for="Descripcion" class="form-control shadow-sm" rows="3" maxlength="255" placeholder="Detalles sobre la zona..."></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-start mt-4">
+                    <button type="submit" class="btn btn-success px-4 me-2">
+                        <i class="bi bi-save2 me-1"></i> Guardar Cambios
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary px-4">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+}
+
+@section Styles {
+    <style>
+        /* Animación */
+        @@keyframes fadeUp {
+            0%
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .animate-fade {
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .card {
+            max-width: 700px;
+            margin: 0 auto;
+            border-radius: 1rem;
+        }
+
+        .form-label {
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        .form-control {
+            border-radius: 0.6rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+
+            .form-control:focus {
+                border-color: #20c997;
+                box-shadow: 0 0 0 0.15rem rgba(32, 201, 151, 0.25);
+            }
+
+        .btn {
+            border-radius: 0.6rem;
+            font-weight: 600;
+        }
+
+            .btn:hover {
+                transform: scale(1.03);
+                transition: 0.2s ease-in-out;
+            }
+    </style>
+}

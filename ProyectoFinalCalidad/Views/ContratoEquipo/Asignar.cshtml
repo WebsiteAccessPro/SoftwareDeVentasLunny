@@ -1,0 +1,55 @@
+@model ProyectoFinalCalidad.ViewModels.ContratoEquipo.AsignarContratoEquipoViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Asignar Equipo a Contrato";
+}
+
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-link"></i> Asignar Equipo a Contrato</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Asignar" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="ContratoId" class="form-label">Contrato</label>
+                    <select asp-for="ContratoId" asp-items="ViewBag.Contratos" class="form-select">
+                        <option value="0">-- Selecciona contrato --</option>
+                    </select>
+                    <span asp-validation-for="ContratoId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EquipoId" class="form-label">Equipo</label>
+                    <select asp-for="EquipoId" asp-items="ViewBag.Equipos" class="form-select">
+                        <option value="0">-- Selecciona equipo --</option>
+                    </select>
+                    <span asp-validation-for="EquipoId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Estado" class="form-label">Estado</label>
+                    <select asp-for="Estado" asp-items="ViewBag.Estados" class="form-select">
+                        <option value="">-- Selecciona estado --</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="fas fa-check-circle"></i> Asignar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Activar validación del lado cliente -->
+    <partial name="_ValidationScriptsPartial" />
+}
