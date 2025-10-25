@@ -25,6 +25,24 @@ public class PagosController : Controller
     }
 
     // ==============================
+    // GET: /Pagos/GenerarPagoAutomatico/{contratoId}
+    // ==============================
+    [HttpGet]
+    public async Task<IActionResult> GenerarPagoAutomatico(int contratoId)
+    {
+        var contrato = await _context.Contratos
+            .Include(c => c.PlanServicio)
+            .FirstOrDefaultAsync(c => c.Id == contratoId);
+
+        if (contrato == null)
+            return NotFound("Contrato no encontrado");
+
+        await GenerarPagoAutomaticoInterno(contratoId);
+        return RedirectToAction("DetallesContrato", new { id = contratoId });
+    }
+
+
+    // ==============================
     // POST: /Pagos/BuscarPorDni
     // ==============================
     [HttpPost]
