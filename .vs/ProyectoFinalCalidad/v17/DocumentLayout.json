@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pagos\\confirmacionpago.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pagos\\confirmacionpago.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\controllers\\pagoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\controllers\\pagoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pagos\\confirmacionpago.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\views\\pagos\\confirmacionpago.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pagos\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -37,10 +41,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\controllers\\pedidoinstalacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\controllers\\pedidoinstalacioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|solutionrelative:proyectofinalcalidad\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{43E8A0BE-DFB2-44B2-9DF4-2988418FAC21}|ProyectoFinalCalidad\\ProyectoFinalCalidad.csproj|c:\\users\\user\\downloads\\proyectofinalcalidad\\proyectofinalcalidad\\views\\pedidoinstalacion\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -78,7 +78,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -98,7 +98,81 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Checkout.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
+              "ViewState": "AgIAAEEAAAAAAAAAAADwvx0BAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:03:06.388Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PagosController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PagosController.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\PagosController.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PagosController.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\PagosController.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAADwvzQAAABgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T23:04:04.892Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MostrarDatosPago.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
+              "ViewState": "AgIAAAIBAAAAAAAAAADwvyIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:07:45.516Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ContratoController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAuwCYAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T23:00:51.971Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Program.cs",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Program.cs",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Program.cs",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Program.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAAAIwEgAAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-24T13:48:33.246Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BuscarPorDni.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
+              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
+              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
+              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAAAGoAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-24T23:07:31.98Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "ConfirmacionPago.cshtml",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\ConfirmacionPago.cshtml",
               "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\ConfirmacionPago.cshtml",
@@ -111,72 +185,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "BuscarPorDni.cshtml",
-              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
-              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
-              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
-              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\BuscarPorDni.cshtml",
-              "ViewState": "AgIAAFUAAAAAAAAAAAAAAGoAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T23:07:31.98Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Checkout.cshtml",
-              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
-              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
-              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
-              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\Checkout.cshtml",
-              "ViewState": "AgIAAEEAAAAAAAAAAADwvx0BAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T23:03:06.388Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PagosController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PagosController.cs",
-              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\PagosController.cs",
-              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PagosController.cs",
-              "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\PagosController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-24T23:04:04.892Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MostrarDatosPago.cshtml",
-              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
-              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
-              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
-              "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Pagos\\MostrarDatosPago.cshtml",
-              "ViewState": "AgIAAAIBAAAAAAAAAADwvyIBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T23:07:45.516Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ContratoController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
-              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
-              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
-              "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\ContratoController.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAuwCYAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-24T23:00:51.971Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "AgregarContrato.cshtml",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Contrato\\AgregarContrato.cshtml",
               "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Contrato\\AgregarContrato.cshtml",
@@ -184,12 +193,11 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Contrato\\AgregarContrato.cshtml",
               "ViewState": "AgIAAIsAAAAAAAAAAADwv6sAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T23:00:42.499Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T23:00:42.499Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Views\\Contrato\\Index.cshtml",
               "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Views\\Contrato\\Index.cshtml",
@@ -197,8 +205,7 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Contrato\\Index.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T23:00:36.899Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T23:00:36.899Z"
             },
             {
               "$type": "Document",
@@ -210,8 +217,7 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Index.cshtml",
               "ViewState": "AgIAAAYBAAAAAAAAAAAAADsBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T22:18:01.69Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T22:18:01.69Z"
             },
             {
               "$type": "Document",
@@ -223,12 +229,11 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\Views\\Empleado\\Editar.cshtml",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAAIIBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T19:52:20.301Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T19:52:20.301Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "PedidoInstalacionController.cs",
               "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Controllers\\PedidoInstalacionController.cs",
               "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Controllers\\PedidoInstalacionController.cs",
@@ -236,8 +241,7 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\PedidoInstalacionController.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAkwB0AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-24T19:45:24.26Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T19:45:24.26Z"
             },
             {
               "$type": "Document",
@@ -261,21 +265,7 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-10-24T19:04:33.537Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Program.cs",
-              "RelativeDocumentMoniker": "ProyectoFinalCalidad\\Program.cs",
-              "ToolTip": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\ProyectoFinalCalidad\\Program.cs",
-              "RelativeToolTip": "ProyectoFinalCalidad\\Program.cs",
-              "ViewState": "AgIAAEcAAAAAAAAAAAAIwE0AAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-24T13:48:33.246Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T19:04:33.537Z"
             },
             {
               "$type": "Document",
@@ -287,8 +277,7 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Details.cshtml",
               "ViewState": "AgIAANAAAAAAAAAAAAAAAOcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T22:27:21.865Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T22:27:21.865Z"
             },
             {
               "$type": "Document",
@@ -300,8 +289,7 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\Views\\PedidoInstalacion\\Create.cshtml",
               "ViewState": "AgIAALEAAAAAAAAAAAAAAAcBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-24T22:32:07.819Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T22:32:07.819Z"
             },
             {
               "$type": "Document",
@@ -313,8 +301,7 @@
               "RelativeToolTip": "ProyectoFinalCalidad\\Controllers\\EmpleadoController.cs",
               "ViewState": "AgIAAEsAAAAAAAAAAAAuwGcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-24T22:07:45.473Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-24T22:07:45.473Z"
             }
           ]
         }

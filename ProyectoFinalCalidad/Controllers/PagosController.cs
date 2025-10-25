@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFinalCalidad.Data;
 using ProyectoFinalCalidad.Models;
@@ -38,6 +38,14 @@ public class PagosController : Controller
             return View();
         }
 
+        // Validar si el cliente estÃ¡ habilitado
+        if (cliente.Estado != "activo")
+        {
+            ViewBag.Mensaje = "El cliente estÃ¡ inhabilitado y no puede realizar pagos.";
+            return View();
+        }
+
+        // Buscar el contrato activo del cliente
         var contrato = await _context.Contratos
             .Include(c => c.PlanServicio)
                 .ThenInclude(ps => ps.ZonaCobertura)
@@ -46,19 +54,19 @@ public class PagosController : Controller
 
         if (contrato == null)
         {
-            ViewBag.Mensaje = "No se encontró un contrato activo para este cliente.";
+            ViewBag.Mensaje = "No se encontrÃ³ un contrato activo para este cliente.";
             return View();
         }
 
-        // Generar pago automático antes de mostrar los datos
         await GenerarPagoAutomaticoInterno(contrato.Id);
 
-        // Redirige a la acción GET limpia (evita reenvío de formulario)
+        // Redirigir a la acciÃ³n GET limpia para mostrar los datos
         return RedirectToAction("MostrarDatosPago", new { dni = cliente.Dni });
     }
 
+
     // ==============================
-    // Método interno (sin redirect)
+    // MÃ©todo interno (sin redirect)
     // ==============================
     private async Task GenerarPagoAutomaticoInterno(int contratoId)
     {
@@ -139,7 +147,7 @@ public class PagosController : Controller
 
         await _context.SaveChangesAsync();
 
-        TempData["MensajeExito"] = "¡Pago exitoso!";
+        TempData["MensajeExito"] = "Â¡Pago exitoso!";
         TempData["ContratoId"] = pago.ContratoId;
         TempData["DniCliente"] = pago.Contrato.Cliente.Dni;
 
