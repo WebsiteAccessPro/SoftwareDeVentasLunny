@@ -1,0 +1,1865 @@
+﻿@model List<ProyectoFinalCalidad.Models.Empleado>
+@{
+    ViewData["Title"] = "Administración de Empleados";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    /* ===== CONTENEDOR PRINCIPAL ===== */
+    .main-container {
+        width: 100%;
+        max-width: 1600px;
+        margin: 30px auto;
+        padding: 0 10px;
+    }
+    
+    /* ===== MODO OSCURO: Botón Limpiar en rojo oscuro ===== */
+    html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+    [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+    .dark-mode #btnLimpiar.btn-danger.btn-filter {
+        background-color: #8B0000; /* rojo oscuro */
+        border-color: #8B0000;
+        color: #f5f7fa;
+    }
+
+        html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+        [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+        .dark-mode #btnLimpiar.btn-danger.btn-filter:hover {
+            background-color: #a40000;
+            border-color: #a40000;
+        }
+
+    html[data-theme="dark"] .btn-add,
+    [data-bs-theme="dark"] .btn-add,
+    .dark-mode .btn-add {
+        background-color: #0b3d2e;
+        border-color: #0b3d2e;
+        color: #f5f7fa;
+    }
+
+        html[data-theme="dark"] .btn-add:hover,
+        [data-bs-theme="dark"] .btn-add:hover,
+        .dark-mode .btn-add:hover {
+            background-color: #06261a;
+            border-color: #06261a;
+        }
+
+    .badge-pending {
+        display: inline-block;
+        padding: 0.25em 0.6em;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        background-color: #ff6f00;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+
+    .actions-cell > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+    }
+
+    /* ======= MODAL MEJORADO ======= */
+    .dashboard-modal {
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        animation: fadeInUp 0.7s ease;
+    }
+
+        .dashboard-modal .modal-header {
+            background: linear-gradient(135deg, #009ffd, #2a2a72);
+            color: #fff;
+            border-bottom: none;
+            padding: 1.5rem 2rem;
+        }
+
+            .dashboard-modal .modal-header .btn-close {
+                filter: brightness(0.9);
+            }
+
+    .dashboard-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: space-between;
+    }
+
+    /* ======= NUEVO ESTILO PARA EL MODAL ======= */
+    .stat-card {
+        flex: 1 1 200px;
+        background: #fff;
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+        }
+
+    .stat-number {
+        color: #0077cc;
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: #555;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    /* Progreso visual */
+    .progress {
+        border-radius: 0.5rem;
+        background: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 0.5rem;
+    }
+
+    /* Gradientes para tarjetas de resumen */
+    .bg-gradient {
+        background: linear-gradient(135deg, #009ffd, #2a2a72);
+        color: #fff;
+    }
+
+    .bg-gradient-light {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: #fff;
+    }
+
+    /* Botones exportar */
+    .stat-export button {
+        border-radius: 0.6rem;
+        font-weight: 600;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+        .stat-export button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+    /* Contenedor del gráfico */
+    .chart-container {
+        background: #fff;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+
+    /* ======= ANIMACIÓN FADE IN ======= */
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* ======= RESPONSIVE ======= */
+    @@media (max-width: 900px) {
+        .dashboard-grid
+
+    {
+        flex-direction: column;
+    }
+
+    .stat-card {
+        width: 100%;
+    }
+
+    }
+
+
+    /* ===== ANIMACIÓN LIGERA ===== */
+    @@keyframes fadeUp {
+        0%
+
+    {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* ===== INPUTS ===== */
+    .input-group {
+        display: flex;
+        width: 100%;
+        margin-bottom: 0.6rem;
+    }
+
+    .input-group-prepend {
+        display: flex;
+    }
+
+    .input-group-text {
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        padding: 0.4rem 0.6rem;
+        font-weight: 500;
+        color: #203A43;
+        border-radius: 0.5rem 0 0 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 0.5rem 0.5rem 0;
+        border: 1px solid #ccc;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.85rem;
+    }
+
+        .input-group .form-control:focus {
+            border-color: #009ffd;
+            box-shadow: 0 0 0 0.2rem rgba(0, 159, 253, 0.25);
+        }
+
+    /* ===== CARD CONTENEDOR ===== */
+    .container-card {
+        background: linear-gradient(145deg, #ffffff, #f9fbff);
+        border-radius: 1.2rem;
+        box-shadow: 0 10px 35px rgba(15, 32, 39, 0.12);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        position: relative;
+        animation: fadeUp 0.7s ease forwards;
+    }
+
+        .container-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            width: 100%;
+            background: linear-gradient(90deg, #009ffd, #6a4c93);
+            border-radius: 1.2rem 1.2rem 0 0;
+        }
+
+    .container-card-title {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #203A43;
+        margin-bottom: 1rem;
+        border-bottom: 3px solid #009ffd;
+        padding-bottom: 8px;
+    }
+
+    /* ===== CARD INTERNO ===== */
+    .content-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 6px 25px rgba(15, 32, 39, 0.1);
+        padding: 1.8rem;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(15, 32, 39, 0.15);
+        }
+
+    /* HEADER CARD */
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+
+    .page-title {
+        font-size: 1.35rem;
+        font-weight: 600;
+    }
+
+    /* ===== BOTONES ===== */
+    .btn-add, .btn-primary, .btn-secondary, .btn-danger, .btn-info, .btn-filter {
+        font-size: 0.95rem;
+        padding: 8px 18px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    /* Filtros */
+    .btn-filter {
+        padding: 8px 18px;
+    }
+
+    /* Colores botones */
+    .btn-add {
+        background-color: #3A7CA5;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-add:hover {
+            background-color: #2c5d7d;
+            transform: translateY(-1px);
+        }
+
+    .btn-primary {
+        background-color: #009ffd;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #006bbd;
+            transform: translateY(-1px);
+        }
+
+    .btn-secondary {
+        background-color: #6a4c93;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: #52396e;
+            transform: translateY(-1px);
+        }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-1px);
+        }
+
+    .btn-info {
+        background-color: #f39c12;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-info:hover {
+            background-color: #d68910;
+            transform: translateY(-1px);
+        }
+
+    /* ===== CONTENEDOR DE LA TABLA ===== */
+    .table-container {
+        border-radius: 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        background: #fff;
+        box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+        box-sizing: border-box;
+    }
+
+    #rowsPerPage {
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+
+    /* ===== TABLA ===== */
+    table.custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+        table-layout: auto;
+    }
+
+        /* Encabezados */
+        table.custom-table thead {
+            background: linear-gradient(90deg,#009ffd,#6a4c93);
+            color: white;
+            font-weight: 600;
+        }
+
+            table.custom-table thead th {
+                text-align: center;
+                padding: 10px 14px;
+                vertical-align: middle;
+            }
+
+        /* Celdas de contenido */
+        table.custom-table th,
+        table.custom-table td {
+            padding: 10px 14px;
+            text-align: left;
+            vertical-align: middle;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 1%;
+        }
+
+            table.custom-table th.actions,
+            table.custom-table td.actions {
+                position: sticky;
+                right: 0;
+                background: #fff;
+                z-index: 3;
+            }
+
+        /* Filas */
+        table.custom-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.25s ease, transform 0.2s ease;
+            transform-origin: center center;
+        }
+
+            /* Animación hover */
+            table.custom-table tbody tr:hover {
+                background: #f8faff;
+                transform: scaleY(1.01);
+            }
+
+        /* Animación interna de celdas */
+        table.custom-table tbody td > div {
+            transition: transform 0.2s ease;
+        }
+
+        table.custom-table tbody td:hover > div {
+            transform: scale(1.01);
+        }
+
+    /* Scroll suave opcional */
+    .table-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+
+
+    /* ===== BADGES ESTADO ===== */
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 50px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        display: inline-block;
+        text-transform: capitalize;
+    }
+
+    .active-badge {
+        background-color: rgba(46, 204, 113, 0.18);
+        color: #27ae60;
+        border: 1px solid rgba(46, 204, 113, 0.35);
+    }
+
+    .inactive-badge {
+        background-color: rgba(149, 165, 166, 0.18);
+        color: #7f8c8d;
+        border: 1px solid rgba(149, 165, 166, 0.35);
+    }
+
+    /* ===== BOTONES DE ACCIÓN EN TABLA ===== */
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        border: 1px solid;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        color: #3A7CA5;
+        border-color: #3A7CA5;
+        background: transparent;
+    }
+
+        .btn-edit:hover {
+            background-color: #3A7CA5;
+            color: #fff;
+        }
+
+    .btn-disable {
+        color: #e74c3c;
+        border-color: #e74c3c;
+        background: transparent;
+    }
+
+        .btn-disable:hover {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+    .btn-disabled {
+        color: #95a5a6;
+        border-color: #95a5a6;
+        background: transparent;
+        cursor: not-allowed;
+    }
+
+    /* ===== FILTROS ===== */
+    .filter-card {
+        position: relative;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.8rem;
+        padding: 0.8rem 0;
+    }
+
+    /* ===== ACCIONES DE FILTROS ===== */
+    .filter-actions {
+        position: static;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 1200px) {
+        .filter-grid
+
+    {
+        grid-template-columns: repeat(3,1fr);
+    }
+
+    }
+
+    @@media (max-width: 992px) {
+        .filter-grid
+
+    {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .main-container
+
+    {
+        padding: 0 15px;
+    }
+
+    .content-card {
+        padding: 15px;
+    }
+
+    .header-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .filter-card {
+        padding-bottom: 80px;
+    }
+
+    .filter-actions {
+        position: static;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .filter-grid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    /* ===== FOOTER DE TABLA ===== */
+    .table-footer {
+        padding: 0.85rem 1.25rem;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        border-radius: 0 0 1rem 1rem;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    /* ===== TEXTO INFORMATIVO ===== */
+    #tableInfo {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+
+    /* ===== PAGINACIÓN ===== */
+    .pagination {
+        display: flex;
+        gap: 0.3rem;
+        margin-bottom: 0;
+    }
+
+        .pagination .page-item {
+            list-style: none;
+        }
+
+            .pagination .page-item .page-link {
+                color: #2563eb;
+                border: 1px solid #d1d5db;
+                background: #fff;
+                border-radius: 0.5rem;
+                font-size: 0.875rem;
+                font-weight: 500;
+                padding: 0.35rem 0.75rem;
+                transition: all 0.25s ease;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            }
+
+                .pagination .page-item .page-link:hover {
+                    background-color: #eff6ff;
+                    border-color: #93c5fd;
+                    color: #1d4ed8;
+                    transform: translateY(-1px);
+                }
+
+            /* ===== PÁGINA ACTIVA ===== */
+            .pagination .page-item.active .page-link {
+                background: linear-gradient(135deg, #2563eb, #3b82f6);
+                color: #fff;
+                border-color: #2563eb;
+                box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+                transform: scale(1.05);
+            }
+
+            /* ===== DESACTIVADO ===== */
+            .pagination .page-item.disabled .page-link {
+                opacity: 0.5;
+                background: #f3f4f6;
+                pointer-events: none;
+            }
+
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        transition: 0.2s;
+    }
+
+        .btn-delete:hover {
+            background-color: #bb2d3b;
+            transform: scale(1.05);
+        }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 576px) {
+        .table-footer
+
+    {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .pagination {
+        justify-content: center;
+    }
+
+    }
+</style>
+
+
+<div class="main-container">
+    <!-- CARD CONTENEDOR DE FILTROS Y TABLA -->
+    <div class="container-card">
+
+        <div class="container-card-title">Administración de Empleados</div>
+
+        <!-- CARD DE FILTROS / CONSULTAS -->
+        <div class="content-card filter-card">
+            <div class="header-section">
+                <h2 class="page-title">Filtros de Empleados</h2>
+            </div>
+
+            <div class="filter-grid">
+                <!-- EMPLEADO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">EMPLEADO</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroEmpleado" placeholder="Nombre o DNI del empleado">
+                </div>
+
+                <!-- ESTADO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">ESTADO</span>
+                    </div>
+                    <select class="form-control" id="filtroEstado">
+                        <option value="">Seleccionar Estado</option>
+                        <option value="activo">Activo</option>
+                        <option value="inhabilitado">Inhabilitado</option>
+                    </select>
+                </div>
+
+                <!-- FECHA INICIO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">FECHA INICIO</span>
+                    </div>
+                    <input type="date" class="form-control" id="filtroFechaInicio">
+                </div>
+
+                <!-- FECHA FIN -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">FECHA FIN</span>
+                    </div>
+                    <input type="date" class="form-control" id="filtroFechaFin">
+                </div>
+
+                <!-- CARGO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">CARGO</span>
+                    </div>
+                    <select class="form-control" id="filtroCargo">
+                        <option value="">Seleccionar Cargo</option>
+                        <option value="jefe_soporte">Jefe de Soporte Técnico</option>
+                        <option value="jefe_almacen">Jefe de Almacén</option>
+                        <option value="jefe_servicio">Jefe de Servicio</option>
+                        <option value="asesor_comercial">Asesor Comercial</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="tecnico_instalacion">Técnico de Instalación</option>
+                    </select>
+                </div>
+
+                <!-- TELÉFONO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">TELÉFONO</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroTelefono" placeholder="Número de teléfono">
+                </div>
+
+                <!-- CORREO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">CORREO</span>
+                    </div>
+                    <input type="email" class="form-control" id="filtroCorreo" placeholder="Correo electrónico">
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button id="btnConsultar" type="button" class="btn btn-info btn-filter">
+                    <i class="bi bi-search"></i> Consultar
+                </button>
+                <button id="btnLimpiar" type="button" class="btn btn-danger btn-filter">
+                    <i class="bi bi-x-circle"></i> Limpiar Filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- CARD DE TABLA DE EMPLEADOS -->
+        <div class="content-card">
+            <div class="header-section d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="rowsPerPage" class="form-label mb-0 fw-semibold">Mostrar:</label>
+                    <select id="rowsPerPage" class="form-select form-select-sm w-auto">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a asp-action="Agregar" class="btn btn-add">
+                        <i class="fas fa-plus-circle"></i> Agregar Nuevo
+                    </a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dashboardModal">
+                        <i class="bi bi-bar-chart"></i> Ver Estadísticas
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container mt-3">
+                <table id="tablaEmpleados" class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>DNI</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Password</th>
+                            <th>Cargo</th>
+                            <th>Estado</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th class="actions-cell">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var emp in Model)
+                        {
+                            <tr>
+                                <td>@Html.Raw(emp.nombres)</td>
+                                <td>@Html.Raw(emp.dni)</td>
+                                <td>@Html.Raw(emp.correo)</td>
+                                <td>@Html.Raw(emp.telefono)</td>
+                                <td>
+                                    @{
+                                        var pass = emp.password ?? "";
+                                        var passVisible = pass.Length > 12 ? pass.Substring(0, 12) + "..." : pass;
+                                    }
+                                    @passVisible
+                                </td>
+                                <td>
+                                    @if (emp.Cargo?.titulo_cargo != null && emp.Cargo.titulo_cargo.ToLower() == "pendiente")
+                                    {
+                                        <span class="badge badge-pending">
+                                            @Html.Raw(emp.Cargo.titulo_cargo)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(emp.Cargo?.titulo_cargo)
+                                    }
+                                </td>
+                                <td>
+                                    <span class="status-badge @(emp.estado == "activo" ? "active-badge" : "inactive-badge")">
+                                        @Html.Raw(emp.estado)
+                                    </span>
+                                </td>
+                                <td>@Html.Raw(emp.fecha_inicio?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                                <td>@Html.Raw(emp.fecha_fin?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                                <td class="actions-cell">
+                                    <div>
+                                        <a asp-action="Editar" asp-route-id="@emp.empleado_id" class="action-btn btn-edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        @if (emp.estado == "activo")
+                                        {
+                                            <a href="#"
+                                               class="action-btn btn-disable"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#InhabilitarEmpleado"
+                                               data-id="@emp.empleado_id"
+                                               data-nombre="@System.Net.WebUtility.HtmlEncode(emp.nombres)">
+                                                <i class="fas fa-user-times"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <button class="action-btn btn-disabled" disabled>
+                                                <i class="fas fa-user-times"></i>
+                                            </button>
+                                        }
+
+                                        <button class="action-btn btn-delete"
+                                                data-id="@emp.empleado_id"
+                                                data-nombre="@emp.nombres"
+                                                data-dni="@emp.dni"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#EliminarEmpleadoModal">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- INFO + PAGINACIÓN -->
+            <div class="table-footer d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                <!-- Texto informativo -->
+                <div class="text-muted" id="tableInfo">
+                    Mostrando registros del 1 al 20 de un total de @Model.Count()
+                </div>
+
+                <!-- Paginación -->
+                <nav>
+                    <ul class="pagination pagination-sm mb-0" id="pagination">
+                        <li class="page-item">
+                            <button id="prevPage" class="page-link">Anterior</button>
+                        </li>
+                        <li class="page-item">
+                            <button id="nextPage" class="page-link">Siguiente</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ELIMINAR EMPLEADO -->
+<div class="modal fade" id="EliminarEmpleadoModal" tabindex="-1" aria-labelledby="EliminarEmpleadoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="EliminarEmpleadoLabel">Eliminar Empleado</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Para confirmar la eliminación del empleado <strong id="nombreEmpleadoEliminar"></strong>, ingresa su DNI:</p>
+                <input type="text" id="dniConfirmacion" class="form-control mt-2" placeholder="Ingrese el DNI para confirmar">
+                <input type="hidden" id="empleadoIdEliminar">
+                <input type="hidden" id="dniEmpleadoCorrecto">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnConfirmarEliminar" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE ESTADÍSTICAS MEJORADO -->
+<div class="modal fade" id="dashboardModal" tabindex="-1" aria-labelledby="dashboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content dashboard-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dashboardModalLabel">
+                    <i class="bi bi-graph-up-arrow"></i> Estadísticas de Empleados
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Resumen general mejorado -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card stat-total p-3 rounded shadow-sm text-center h-100" style="background: linear-gradient(135deg, #009ffd, #2a2a72); color: white;">
+                            <div class="stat-number fs-2 fw-bold text-white">@Model.Count()</div>
+                            <div class="stat-label text-white-50">Total Empleados</div>
+                            <small class="text-white-75">
+                                <i class="bi bi-people-fill"></i> @(Model.Count() > 0 ? $"+{Model.Count(e => e.fecha_inicio.HasValue && e.fecha_inicio.Value.Month == DateTime.Now.Month && e.fecha_inicio.Value.Year == DateTime.Now.Year)} este mes" : "Sin datos")
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card stat-active p-3 rounded shadow-sm text-center bg-success bg-opacity-10 h-100">
+                            <div class="stat-number fs-2 fw-bold text-success">@Model.Count(e => e.estado == "activo")</div>
+                            <div class="stat-label text-success">Activos</div>
+                            <div class="progress mt-2" style="height: 4px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: @((Model.Count() > 0 ? (double)Model.Count(e => e.estado == "activo") / Model.Count() * 100 : 0))%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card stat-inactive p-3 rounded shadow-sm text-center bg-danger bg-opacity-10 h-100">
+                            <div class="stat-number fs-2 fw-bold text-danger">@Model.Count(e => e.estado != "activo")</div>
+                            <div class="stat-label text-danger">Inactivos</div>
+                            <div class="progress mt-2" style="height: 4px;">
+                                <div class="progress-bar bg-danger" role="progressbar" 
+                                     style="width: @((Model.Count() > 0 ? (double)Model.Count(e => e.estado != "activo") / Model.Count() * 100 : 0))%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card stat-cargo p-3 rounded shadow-sm text-center bg-warning bg-opacity-10 h-100">
+                            <div class="stat-number fs-2 fw-bold text-warning">@Model.GroupBy(e => e.Cargo?.titulo_cargo).Count()</div>
+                            <div class="stat-label text-warning">Cargos Diferentes</div>
+                            <small class="text-muted">
+                                <i class="bi bi-briefcase-fill"></i> @(Model.Select(e => e.Cargo?.titulo_cargo).Where(c => !string.IsNullOrEmpty(c)).GroupBy(c => c).OrderByDescending(g => g.Count()).FirstOrDefault()?.Key ?? "N/A")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos principales -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="chart-container p-3 rounded shadow-sm h-100">
+                            <h6 class="text-center mb-3">
+                                <i class="bi bi-pie-chart-fill text-primary"></i> Distribución por Estado
+                            </h6>
+                            <canvas id="estadoChartModal" style="max-height: 250px;"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="chart-container p-3 rounded shadow-sm h-100">
+                            <h6 class="text-center mb-3">
+                                <i class="bi bi-bar-chart-fill text-success"></i> Empleados por Mes
+                            </h6>
+                            <canvas id="mesChartModal" style="max-height: 250px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segunda fila de gráficos -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="chart-container p-3 rounded shadow-sm h-100">
+                            <h6 class="text-center mb-3">
+                                <i class="bi bi-diagram-3-fill text-info"></i> Distribución por Cargo
+                            </h6>
+                            <canvas id="cargoChartModal" style="max-height: 250px;"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="chart-container p-3 rounded shadow-sm h-100">
+                            <h6 class="text-center mb-3">
+                                <i class="bi bi-graph-up text-warning"></i> Crecimiento de Empleados
+                            </h6>
+                            <canvas id="growthChartModal" style="max-height: 250px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de empleados recientes -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="chart-container p-3 rounded shadow-sm">
+                            <h6 class="mb-3">
+                                <i class="bi bi-person-lines-fill text-secondary"></i> Empleados Recientes
+                                <small class="text-muted">(Últimos 5 registrados)</small>
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>DNI</th>
+                                            <th>Cargo</th>
+                                            <th>Fecha Inicio</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var emp in Model.OrderByDescending(e => e.fecha_inicio).Take(5))
+                                        {
+                                            <tr>
+                                                <td>@Html.Raw(emp.nombres)</td>
+                                                <td>@Html.Raw(emp.dni)</td>
+                                                <td>@Html.Raw(emp.Cargo?.titulo_cargo ?? "Sin cargo")</td>
+                                                <td>@(emp.fecha_inicio?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                                                <td>
+                                                    @if (emp.estado == "activo")
+                                                    {
+                                                        <span class="badge bg-success">Activo</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-secondary">Inactivo</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estadísticas adicionales -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="chart-container p-3 rounded shadow-sm text-center h-100">
+                            <h6 class="text-muted mb-2">
+                                <i class="bi bi-calendar-check"></i> Antigüedad Promedio
+                            </h6>
+                            @{
+                                var empleadosConFechas = Model.Where(e => e.fecha_inicio.HasValue).ToList();
+                                double? promedioDias = null;
+                                if (empleadosConFechas.Any())
+                                {
+                                    promedioDias = empleadosConFechas.Average(e => (DateTime.Now - e.fecha_inicio.Value).TotalDays);
+                                }
+                                var promedioMeses = promedioDias / 30.44; // Promedio de días por mes
+                            }
+                            <div class="fs-4 fw-bold text-primary">
+                                @(promedioMeses.HasValue ? $"{promedioMeses.Value:F1} meses" : "N/A")
+                            </div>
+                            <small class="text-muted">@(empleadosConFechas.Count()) empleados con fecha</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="chart-container p-3 rounded shadow-sm text-center h-100">
+                            <h6 class="text-muted mb-2">
+                                <i class="bi bi-envelope-check"></i> Empleados con Email
+                            </h6>
+                            <div class="fs-4 fw-bold text-info">
+                                @Model.Count(e => !string.IsNullOrEmpty(e.correo))
+                            </div>
+                            <small class="text-muted">
+                                @((Model.Count() > 0 ? (double)Model.Count(e => !string.IsNullOrEmpty(e.correo)) / Model.Count() * 100 : 0).ToString("F1"))% del total
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="chart-container p-3 rounded shadow-sm text-center h-100">
+                            <h6 class="text-muted mb-2">
+                                <i class="bi bi-telephone-fill"></i> Empleados con Teléfono
+                            </h6>
+                            <div class="fs-4 fw-bold text-success">
+                                @Model.Count(e => !string.IsNullOrEmpty(e.telefono))
+                            </div>
+                            <small class="text-muted">
+                                @((Model.Count() > 0 ? (double)Model.Count(e => !string.IsNullOrEmpty(e.telefono)) / Model.Count() * 100 : 0).ToString("F1"))% del total
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de exportación mejorados -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="chart-container p-3 rounded shadow-sm">
+                            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                <button class="btn btn-success btn-lg" onclick="exportarEmpleadosExcel()">
+                                    <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+                                </button>
+                                <button class="btn btn-warning btn-lg" onclick="exportarEmpleadosPDF()">
+                                    <i class="bi bi-file-earmark-pdf"></i> Exportar PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Inhabilitar un empleado -->
+<div class="modal fade" id="InhabilitarEmpleado" tabindex="-1" aria-labelledby="inhabilitarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4"
+             style="background: #1e1e2f; color: #f1f1f1;">
+
+            <div class="modal-header border-0"
+                 style="background: linear-gradient(135deg, #d62828, #e63946); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+                <h5 class="modal-title fw-semibold text-white d-flex align-items-center" id="inhabilitarModalLabel">
+                    <i class="fas fa-user-slash me-2"></i> Confirmar Inhabilitación
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body text-center py-4">
+                <p class="fs-5 mb-3 text-light">
+                    ¿Estás seguro que deseas inhabilitar al empleado
+                    <strong class="text-warning" id="empleadoNombre"></strong>?
+                </p>
+                <p class="small text-secondary mb-0">
+                    Esta acción podrá revertirse más adelante.
+                </p>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                <button type="button" class="btn fw-semibold px-4 py-2"
+                        style="background-color: #6c757d; color: white; border-radius: .6rem;"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <form id="inhabilitarForm" method="post" asp-action="InhabilitarEmpleado" asp-controller="Empleado">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="empleadoId" />
+                    <input type="hidden" name="origen" value="admin" />
+                    <button type="submit"
+                            class="btn fw-semibold px-4 py-2 text-white"
+                            style="background-color: #e63946; border-radius: .6rem;">
+                        Inhabilitar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- ==================== LIBRERÍAS PARA EXPORTACIÓN ==================== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- ==================== GRÁFICOS ==================== -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // === Variables globales para destruir los gráficos si existen ===
+        let chartEstado, chartMes, chartCargo, chartGrowth;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const empleadosStatsModal = document.getElementById('dashboardModal');
+            if (empleadosStatsModal) {
+                empleadosStatsModal.addEventListener('shown.bs.modal', function () {
+                    inicializarGraficosEmpleados();
+                });
+            }
+        });
+
+        function inicializarGraficosEmpleados() {
+            // === Destruir gráficos previos si ya existen ===
+            if (chartEstado) chartEstado.destroy();
+            if (chartMes) chartMes.destroy();
+            if (chartCargo) chartCargo.destroy();
+            if (chartGrowth) chartGrowth.destroy();
+
+            // === 1️⃣ Estado ===
+            try {
+                const ctxEstado = document.getElementById('estadoChartModal');
+                if (ctxEstado) {
+                    const empleadosActivos = @Model.Count(e => e.estado == "activo");
+                    const empleadosInactivos = @Model.Count(e => e.estado != "activo");
+
+                    chartEstado = new Chart(ctxEstado, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Activos', 'Inactivos'],
+                            datasets: [{
+                                data: [empleadosActivos, empleadosInactivos],
+                                backgroundColor: ['#28a745', '#dc3545'],
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { position: 'bottom' } }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error en gráfico de estado:', error);
+            }
+
+            // === 2️⃣ Empleados por mes ===
+            try {
+                const ctxMes = document.getElementById('mesChartModal');
+                if (ctxMes) {
+                    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                    const empleadosPorMes = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+                                            Enumerable.Range(1, 12).Select(m => Model.Count(e => e.fecha_inicio.HasValue && e.fecha_inicio.Value.Month == m && e.fecha_inicio.Value.Year == DateTime.Now.Year))
+                                    ));
+
+                chartMes = new Chart(ctxMes, {
+                    type: 'bar',
+                    data: {
+                        labels: meses,
+                        datasets: [{
+                            label: 'Empleados Nuevos',
+                            data: empleadosPorMes,
+                            backgroundColor: '#007bff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error en gráfico por mes:', error);
+        }
+
+            // === 3️⃣ Distribución por cargo ===
+            try {
+                const ctxCargo = document.getElementById('cargoChartModal');
+                if (ctxCargo) {
+                    const cargos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+                                        Model.Where(e => e.Cargo != null)
+                                                  .GroupBy(e => e.Cargo.titulo_cargo)
+                                                  .Select(g => new { Cargo = g.Key, Total = g.Count() })
+                                ));
+
+                if (cargos.length > 0) {
+                    chartCargo = new Chart(ctxCargo, {
+                        type: 'doughnut',
+                        data: {
+                            labels: cargos.map(c => c.Cargo),
+                            datasets: [{
+                                data: cargos.map(c => c.Total),
+                                backgroundColor: ['#ffc107', '#28a745', '#17a2b8', '#6f42c1', '#fd7e14']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { position: 'bottom' } }
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error en gráfico de cargos:', error);
+        }
+
+            // === 4️⃣ Crecimiento acumulado ===
+            try {
+                const ctxGrowth = document.getElementById('growthChartModal');
+                if (ctxGrowth) {
+                    const empleadosPorMes = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+                                        Enumerable.Range(1, 12).Select(m => Model.Count(e => e.fecha_inicio.HasValue && e.fecha_inicio.Value.Month == m && e.fecha_inicio.Value.Year == DateTime.Now.Year))
+                                ));
+                let acumulado = [];
+                empleadosPorMes.reduce((acc, val, i) => acumulado[i] = acc + val, 0);
+
+                    chartGrowth = new Chart(ctxGrowth, {
+                        type: 'line',
+                        data: {
+                            labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                            datasets: [{
+                                label: 'Crecimiento Acumulado',
+                                data: acumulado,
+                                borderColor: '#28a745',
+                                backgroundColor: 'rgba(40,167,69,0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { position: 'bottom' } },
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error en gráfico de crecimiento:', error);
+            }
+        }
+
+        // === Exportar a Excel (XLSX con diseño profesional) ===
+        function exportarEmpleadosExcel() {
+            const tabla = document.getElementById('tablaEmpleados');
+            const filas = Array.from(tabla.querySelectorAll('tbody tr')).filter(f => f.offsetParent !== null);
+
+            const datos = [];
+            const encabezados = ['NOMBRE', 'DNI', 'CORREO', 'TELÉFONO', 'CARGO', 'ESTADO', 'FECHA INICIO', 'FECHA FIN'];
+            datos.push(encabezados);
+
+            filas.forEach(fila => {
+                const celdas = fila.querySelectorAll('td');
+                if (celdas.length >= 8) {
+                    const filaDatos = [
+                        celdas[0].textContent.trim(),
+                        celdas[1].textContent.trim(),
+                        celdas[2].textContent.trim(),
+                        celdas[3].textContent.trim(),
+                        celdas[5].textContent.trim(),
+                        celdas[6].textContent.trim(),
+                        celdas[7].textContent.trim(),
+                        celdas[8].textContent.trim()
+                    ];
+                    datos.push(filaDatos);
+                }
+            });
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(datos);
+
+            const estiloEncabezado = {
+                font: { bold: true, color: { rgb: "FFFFFF" }, name: "Arial", sz: 11 },
+                fill: { fgColor: { rgb: "2E86AB" } },
+                alignment: { horizontal: "center", vertical: "center" },
+                border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } }
+            };
+
+            const estiloDatos = {
+                font: { name: "Arial", sz: 10 },
+                alignment: { horizontal: "left", vertical: "center" },
+                border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } }
+            };
+
+            for (let i = 0; i < datos.length; i++) {
+                for (let j = 0; j < datos[i].length; j++) {
+                    const cellRef = XLSX.utils.encode_cell({ r: i, c: j });
+                    if (!ws[cellRef]) continue;
+                    ws[cellRef].s = i === 0 ? estiloEncabezado : estiloDatos;
+                }
+            }
+
+            ws['!cols'] = [
+                { wch: 25 }, { wch: 12 }, { wch: 30 }, { wch: 15 },
+                { wch: 20 }, { wch: 12 }, { wch: 12 }, { wch: 12 }
+            ];
+
+            const infoAdicional = [
+                [''], ['INFORMACIÓN ADICIONAL'],
+                ['Total de Empleados:', datos.length - 1],
+                ['Empleados Activos:', @Model.Count(e => e.estado == "activo")],
+                ['Empleados Inactivos:', @Model.Count(e => e.estado != "activo")],
+                ['Fecha de Generación:', new Date().toLocaleDateString('es-PE')],
+                ['Hora de Generación:', new Date().toLocaleTimeString('es-PE')]
+            ];
+            XLSX.utils.sheet_add_aoa(ws, infoAdicional, { origin: -1 });
+            XLSX.utils.book_append_sheet(wb, ws, 'Empleados');
+
+            const nombreArchivo = 'REPORTE_EMPLEADOS_' + new Date().toISOString().slice(0, 10) + '.xlsx';
+            XLSX.writeFile(wb, nombreArchivo);
+        }
+
+                function exportarEmpleadosPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('l', 'mm', 'a4');
+
+                // === COLORES Y FUENTE ===
+                const colorPrimario = [46, 134, 171];
+                const colorTexto = [51, 51, 51];
+                doc.setFont('helvetica', '');
+
+                // === ENCABEZADO ===
+                doc.setFillColor(...colorPrimario);
+                doc.rect(0, 0, 297, 25, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(20);
+                doc.setFont('helvetica', 'bold');
+                doc.text('REPORTE DE EMPLEADOS', 148.5, 16, { align: 'center' });
+
+                // === FECHA DE GENERACIÓN ===
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(...colorTexto);
+                doc.setFontSize(11);
+                const fechaActual = new Date().toLocaleDateString('es-PE', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                doc.text(`Fecha de generación: ${fechaActual}`, 20, 38);
+
+                // === ESTADÍSTICAS ===
+                const totalEmpleados = @Model.Count();
+                const activos = @Model.Count(e => e.estado == "activo");
+                const inactivos = @Model.Count(e => e.estado != "activo");
+                const porcentajeActivos = Math.round((activos / totalEmpleados) * 100);
+
+                // === CAJA DE ESTADÍSTICAS ===
+                doc.setFillColor(248, 249, 250);
+                doc.roundedRect(20, 45, 257, 28, 3, 3, 'F');
+                doc.setDrawColor(...colorPrimario);
+                doc.roundedRect(20, 45, 257, 28, 3, 3, 'S');
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.text('ESTADÍSTICAS GENERALES', 148.5, 54, { align: 'center' });
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                const yDatos = 63;
+                const xBase = 40;
+                const espaciado = 60;
+                doc.text(`Total: ${totalEmpleados}`, xBase, yDatos);
+                doc.text(`Activos: ${activos}`, xBase + espaciado, yDatos);
+                doc.text(`Inactivos: ${inactivos}`, xBase + espaciado * 2, yDatos);
+                doc.text(`% Activos: ${porcentajeActivos}%`, xBase + espaciado * 3, yDatos);
+
+                // === TABLA DESDE HTML ===
+                const tabla = document.getElementById('tablaEmpleados');
+                const filas = Array.from(tabla.querySelectorAll('tbody tr')).filter(f => f.offsetParent !== null);
+
+                const datosTabla = [];
+                filas.forEach(fila => {
+                    const celdas = fila.querySelectorAll('td');
+                    if (celdas.length >= 10) {
+                        datosTabla.push([
+                            celdas[0].textContent.trim(), // NOMBRE
+                            celdas[1].textContent.trim(), // DNI
+                            celdas[2].textContent.trim(), // CORREO
+                            celdas[3].textContent.trim(), // TELÉFONO
+                            celdas[5].textContent.trim(), // CARGO
+                            celdas[6].textContent.trim(), // ESTADO
+                            celdas[7].textContent.trim(), // FECHA INICIO
+                            celdas[8].textContent.trim()  // FECHA FIN
+                        ]);
+                    }
+                });
+
+                // === CALCULAR ANCHO Y CENTRAR TABLA ===
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const columnWidths = [40, 25, 60, 30, 45, 30, 35, 30]; // ajustado a tu imagen
+                const totalTableWidth = columnWidths.reduce((a, b) => a + b, 0);
+                const marginLeft = (pageWidth - totalTableWidth) / 2;
+
+                // === TABLA CENTRADA ===
+                doc.autoTable({
+                    startY: 80,
+                    head: [['NOMBRE', 'DNI', 'CORREO', 'TELÉFONO', 'CARGO', 'ESTADO', 'FECHA INICIO', 'FECHA FIN']],
+                    body: datosTabla,
+                    theme: 'grid',
+                    headStyles: {
+                        fillColor: colorPrimario,
+                        textColor: 255,
+                        fontStyle: 'bold',
+                        halign: 'center',
+                        fontSize: 9
+                    },
+                    bodyStyles: {
+                        fontSize: 8,
+                        textColor: colorTexto,
+                        halign: 'center',
+                        valign: 'middle'
+                    },
+                    alternateRowStyles: { fillColor: [248, 249, 250] },
+                    styles: {
+                        cellPadding: 3,
+                        overflow: 'linebreak'
+                    },
+                    columnStyles: {
+                        0: { cellWidth: columnWidths[0] },
+                        1: { cellWidth: columnWidths[1] },
+                        2: { cellWidth: columnWidths[2] },
+                        3: { cellWidth: columnWidths[3] },
+                        4: { cellWidth: columnWidths[4] },
+                        5: { cellWidth: columnWidths[5] },
+                        6: { cellWidth: columnWidths[6] },
+                        7: { cellWidth: columnWidths[7] }
+                    },
+                    margin: { left: marginLeft, right: marginLeft, top: 80 }
+                });
+
+                // === PIE DE PÁGINA ===
+                const finalY = doc.lastAutoTable.finalY + 12;
+                doc.setFont('helvetica', 'italic');
+                doc.setFontSize(9);
+                doc.setTextColor(120, 120, 120);
+                doc.text(
+                    'Este reporte fue generado automáticamente por el Sistema de Gestión de Empleados',
+                    148.5,
+                    finalY,
+                    { align: 'center' }
+                );
+
+                // === GUARDAR PDF ===
+                const nombreArchivo = `REPORTE_EMPLEADOS_${new Date().toISOString().slice(0, 10)}.pdf`;
+                doc.save(nombreArchivo);
+
+            } catch (error) {
+                console.error('Error al generar PDF:', error);
+                alert('Error al generar el reporte PDF. Por favor, intente nuevamente.');
+            }
+        }
+
+    </script>
+
+    <!-- ==================== FILTROS DE EMPLEADOS ==================== -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const filtroEmpleado = document.getElementById("filtroEmpleado");
+            const filtroEstado = document.getElementById("filtroEstado");
+            const filtroFechaInicio = document.getElementById("filtroFechaInicio");
+            const filtroFechaFin = document.getElementById("filtroFechaFin");
+            const filtroCargo = document.getElementById("filtroCargo");
+            const filtroTelefono = document.getElementById("filtroTelefono");
+            const filtroCorreo = document.getElementById("filtroCorreo");
+            const filas = document.querySelectorAll("table tbody tr");
+
+            const btnConsultar = document.getElementById("btnConsultar");
+            const btnLimpiar = document.getElementById("btnLimpiar");
+
+            // Función mejorada para normalizar texto (elimina acentos y convierte a minúsculas)
+            const norm = (s) => {
+                if (!s) return "";
+                return s.toString()
+                    .trim()
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+            };
+
+            btnConsultar.addEventListener("click", function () {
+                const empleadoValor = norm(filtroEmpleado.value);
+                const estadoValor = norm(filtroEstado.value);
+                const cargoValue = norm(filtroCargo.value);
+                const cargoText = filtroCargo.selectedIndex >= 0
+                    ? norm(filtroCargo.options[filtroCargo.selectedIndex].text)
+                    : "";
+
+                const fechaInicioValor = filtroFechaInicio.value;
+                const fechaFinValor = filtroFechaFin.value;
+                const telefonoValor = norm(filtroTelefono.value);
+                const correoValor = norm(filtroCorreo.value);
+
+                const fechaInicioFiltro = fechaInicioValor ? new Date(fechaInicioValor) : null;
+                const fechaFinFiltro = fechaFinValor ? new Date(fechaFinValor) : null;
+
+                filas.forEach(fila => {
+                    const columnas = fila.querySelectorAll("td");
+
+                    const nombre = norm(columnas[0]?.textContent);
+                    const dni = norm(columnas[1]?.textContent);
+                    const correo = norm(columnas[2]?.textContent);
+                    const telefono = norm(columnas[3]?.textContent);
+                    const cargo = norm(columnas[5]?.textContent);
+                    const estado = norm(columnas[6]?.textContent);
+                    const fechaInicioText = (columnas[7]?.textContent || "").trim();
+                    const fechaFinText = (columnas[8]?.textContent || "").trim();
+
+                    const parseFecha = (txt) => {
+                        if (!txt || txt.toLowerCase() === "n/a") return null;
+                        const p = txt.split("/");
+                        if (p.length !== 3) return null;
+                        return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
+                    };
+
+                    const fechaInicioFila = parseFecha(fechaInicioText);
+                    const fechaFinFila = parseFecha(fechaFinText);
+
+                    let visible = true;
+
+                    if (empleadoValor && !(nombre.includes(empleadoValor) || dni.includes(empleadoValor))) visible = false;
+                    if (estadoValor && !estado.includes(estadoValor)) visible = false;
+
+                    if (cargoText && cargoText !== "" && cargoValue) {
+                        if (cargoValue !== "" && !(cargo.includes(cargoText) || cargo.includes(cargoValue))) visible = false;
+                        if (cargoValue === "" && cargoText !== "" && cargoText.toLowerCase() !== "seleccionar cargo" && !cargo.includes(cargoText)) visible = false;
+                    } else if (cargoValue) {
+                        if (!cargo.includes(cargoValue)) visible = false;
+                    }
+
+                    if (telefonoValor && !telefono.includes(telefonoValor)) visible = false;
+                    if (correoValor && !correo.includes(correoValor)) visible = false;
+                    if (fechaInicioFiltro && fechaInicioFila && fechaInicioFila < fechaInicioFiltro) visible = false;
+                    if (fechaFinFiltro && fechaFinFila && fechaFinFila > fechaFinFiltro) visible = false;
+
+                    fila.style.display = visible ? "" : "none";
+                });
+            });
+
+            // limpiar filtros
+            btnLimpiar.addEventListener("click", function () {
+                filtroEmpleado.value = "";
+                filtroEstado.value = "";
+                filtroFechaInicio.value = "";
+                filtroFechaFin.value = "";
+                filtroCargo.value = "";
+                filtroTelefono.value = "";
+                filtroCorreo.value = "";
+                filas.forEach(f => f.style.display = "");
+            });
+        });
+    </script>
+
+    <!-- SCRIPT DE PAGINACIÓN -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabla = document.getElementById("tablaEmpleados");
+            const filas = Array.from(tabla.querySelectorAll("tbody tr"));
+            const info = document.getElementById("tableInfo");
+            const prevBtn = document.getElementById("prevPage");
+            const nextBtn = document.getElementById("nextPage");
+            const pagination = document.getElementById("pagination");
+            const selectFilas = document.getElementById("rowsPerPage");
+
+            let paginaActual = 1;
+            let filasPorPagina = parseInt(selectFilas.value);
+            const totalFilas = filas.length;
+            let totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+
+            function renderPaginacion() {
+                pagination.querySelectorAll(".page-number, .dots").forEach(el => el.remove());
+                totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+                const next = document.getElementById("nextPage").parentElement;
+                const maxPaginasVisibles = 5;
+
+                let paginas = [];
+
+                if (totalPaginas <= maxPaginasVisibles + 2) {
+                    for (let i = 1; i <= totalPaginas; i++) paginas.push(i);
+                } else {
+                    let start = Math.max(2, paginaActual - 2);
+                    let end = Math.min(totalPaginas - 1, paginaActual + 2);
+
+                    if (paginaActual <= 3) {
+                        start = 2;
+                        end = 5;
+                    } else if (paginaActual >= totalPaginas - 2) {
+                        start = totalPaginas - 4;
+                        end = totalPaginas - 1;
+                    }
+
+                    paginas = [1, ...Array.from({ length: end - start + 1 }, (_, i) => start + i), totalPaginas];
+                }
+
+                for (let i = 0; i < paginas.length; i++) {
+                    if (i > 0 && paginas[i] - paginas[i - 1] > 1) {
+                        const dots = document.createElement("li");
+                        dots.className = "page-item disabled dots";
+                        dots.innerHTML = `<span class="page-link">...</span>`;
+                        pagination.insertBefore(dots, next);
+                    }
+
+                    const li = document.createElement("li");
+                    li.className = `page-item page-number ${paginas[i] === paginaActual ? "active" : ""}`;
+                    const btn = document.createElement("button");
+                    btn.className = "page-link";
+                    btn.textContent = paginas[i];
+                    btn.addEventListener("click", () => {
+                        paginaActual = paginas[i];
+                        mostrarPagina();
+                    });
+                    li.appendChild(btn);
+                    pagination.insertBefore(li, next);
+                }
+
+                prevBtn.parentElement.classList.toggle("disabled", paginaActual === 1);
+                nextBtn.parentElement.classList.toggle("disabled", paginaActual === totalPaginas);
+            }
+
+            function mostrarPagina() {
+                const inicio = (paginaActual - 1) * filasPorPagina;
+                const fin = inicio + filasPorPagina;
+
+                filas.forEach((fila, index) => {
+                    fila.style.display = (index >= inicio && index < fin) ? "" : "none";
+                });
+
+                const totalVisibles = filas.filter(f => f.style.display !== "none").length;
+                const visibleInicio = totalVisibles > 0 ? inicio + 1 : 0;
+                const visibleFin = Math.min(fin, totalFilas);
+
+                info.textContent = `Mostrando registros del ${visibleInicio} al ${visibleFin} de un total de ${totalFilas}`;
+                renderPaginacion();
+            }
+
+            prevBtn.addEventListener("click", () => {
+                if (paginaActual > 1) {
+                    paginaActual--;
+                    mostrarPagina();
+                }
+            });
+
+            nextBtn.addEventListener("click", () => {
+                if (paginaActual < totalPaginas) {
+                    paginaActual++;
+                    mostrarPagina();
+                }
+            });
+
+            selectFilas.addEventListener("change", () => {
+                filasPorPagina = parseInt(selectFilas.value);
+                paginaActual = 1;
+                mostrarPagina();
+            });
+
+            mostrarPagina();
+        });
+    </script>
+
+    <!-- Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const eliminarModal = document.getElementById("EliminarEmpleadoModal");
+            const nombreEmpleado = document.getElementById("nombreEmpleadoEliminar");
+            const dniInput = document.getElementById("dniConfirmacion");
+            const dniCorrecto = document.getElementById("dniEmpleadoCorrecto");
+            const empleadoIdInput = document.getElementById("empleadoIdEliminar");
+            const btnConfirmar = document.getElementById("btnConfirmarEliminar");
+
+            eliminarModal.addEventListener("show.bs.modal", function (event) {
+                const button = event.relatedTarget;
+                const id = button.getAttribute("data-id");
+                const nombre = button.getAttribute("data-nombre");
+                const dni = button.getAttribute("data-dni");
+
+                nombreEmpleado.textContent = nombre;
+                dniCorrecto.value = dni;
+                empleadoIdInput.value = id;
+                dniInput.value = "";
+            });
+
+                btnConfirmar.addEventListener("click", function () {
+                const dniIngresado = dniInput.value.trim();
+                const dniEsperado = dniCorrecto.value;
+
+                if (dniIngresado === "") {
+                    alert("Por favor ingresa el DNI para confirmar.");
+                    return;
+                }
+
+                if (dniIngresado !== dniEsperado) {
+                    alert("El DNI ingresado no coincide con el del empleado.");
+                    return;
+                }
+
+                const empleadoId = empleadoIdInput.value;
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                const formData = new FormData();
+                formData.append("__RequestVerificationToken", token);
+                formData.append("id", empleadoId);
+
+                fetch("/Empleado/EliminarEmpleado", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(res => {
+                    if (res.ok) {
+                        location.reload();
+                    } else {
+                        alert("No se pudo eliminar el empleado. Puede tener un contrato asociado.");
+                    }
+                })
+            });
+
+        });
+    </script>
+
+    <!-- ==================== MODAL DE INHABILITACIÓN ==================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('InhabilitarEmpleado');
+            modal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const empleadoId = button.getAttribute('data-id');
+                const empleadoNombre = button.getAttribute('data-nombre');
+
+                document.getElementById('empleadoId').value = empleadoId;
+                document.getElementById('empleadoNombre').innerHTML = empleadoNombre;
+            });
+        });
+    </script>
+}

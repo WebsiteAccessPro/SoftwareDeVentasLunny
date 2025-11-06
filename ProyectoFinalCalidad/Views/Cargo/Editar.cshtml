@@ -3,33 +3,162 @@
     ViewData["Title"] = "Editar Cargo";
 }
 
-<h2>@ViewData["Title"]</h2>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-<form asp-action="Editar" method="post" class="needs-validation" novalidate>
-    <input type="hidden" asp-for="cargo_id" />
-    <div class="mb-3">
-        <label asp-for="titulo_cargo" class="form-label">Título del Cargo</label>
-        <input asp-for="titulo_cargo" class="form-control" required />
-        <div class="invalid-feedback">Ingrese un título.</div>
+<div class="container py-5">
+    <div class="card shadow-lg border-0 rounded-4 animate-fade">
+        <!-- ENCABEZADO -->
+        <div class="card-header text-white py-3 d-flex align-items-center"
+             style="background: linear-gradient(90deg, #009ffd, #6a4c93); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+            <h3 class="mb-0">
+                <i class="fas fa-edit me-2"></i>@ViewData["Title"]
+            </h3>
+        </div>
+
+        <!-- CUERPO DEL FORMULARIO -->
+        <div class="card-body px-4 py-4">
+            <form asp-action="Editar" method="post" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="cargo_id" />
+
+                <!-- Campo: Título del Cargo -->
+                <div class="mb-4">
+                    <label asp-for="titulo_cargo" class="form-label fw-semibold">
+                        <i class="fas fa-id-badge text-primary me-2"></i>Título del Cargo
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="titulo_cargo" class="form-control shadow-sm" required placeholder="Ejemplo: Jefe de Almacén" />
+                    <div class="invalid-feedback">Por favor, ingrese el título del cargo.</div>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="d-flex justify-content-start mt-4">
+                    <button type="submit" class="btn btn-success px-4 me-2">
+                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                    </button>
+                    <a asp-action="MostrarCargos" class="btn btn-secondary px-4">
+                        <i class="fas fa-arrow-left me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+
+            <!-- INFORMACIÓN DEL CARGO -->
+            <div class="mt-5 info-box p-4 rounded-3 shadow-sm">
+                <h5 class="fw-semibold text-primary mb-2">
+                    <i class="fas fa-info-circle me-2"></i>Detalles del Cargo
+                </h5>
+                <p class="text-secondary mb-2">
+                    Este formulario permite actualizar la información de un cargo existente en el sistema.
+                    Asegúrese de mantener una nomenclatura clara y estandarizada para los cargos.
+                </p>
+                <ul class="small text-muted mb-0">
+                    <li>Evite duplicar cargos con nombres similares.</li>
+                    <li>Verifique que el cargo pertenezca al área correspondiente.</li>
+                    <li>Los cambios realizados serán visibles para todos los usuarios autorizados.</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-action="MostrarCargos" class="btn btn-secondary ms-2">Cancelar</a>
-</form>
+</div>
 
 @section Scripts {
     <script>
         (() => {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
             Array.from(forms).forEach(form => {
                 form.addEventListener('submit', event => {
                     if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
+                        event.preventDefault();
+                        event.stopPropagation();
                     }
-                    form.classList.add('was-validated')
-                }, false)
-            })
+                    form.classList.add('was-validated');
+                }, false);
+            });
         })();
     </script>
+}
+
+@section Styles {
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fc;
+        }
+
+        .card {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .card-header h3 {
+            font-weight: 600;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            border-radius: 0.6rem;
+            padding: 0.65rem 1rem;
+        }
+
+        .btn {
+            border-radius: 0.6rem;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-success {
+            background-color: #009ffd;
+            border: none;
+        }
+
+            .btn-success:hover {
+                background-color: #007acc;
+                transform: translateY(-1px);
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                transform: translateY(-1px);
+            }
+
+        .info-box {
+            background-color: #f9fbff;
+            border-left: 4px solid #6a4c93;
+            line-height: 1.6;
+        }
+
+            .info-box h5 {
+                font-size: 1.05rem;
+            }
+
+        .animate-fade {
+            animation: fadeIn 0.7s ease;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+    </style>
 }

@@ -1,171 +1,301 @@
-@model ProyectoFinalCalidad.Models.Contrato
+﻿@model ProyectoFinalCalidad.Models.Contrato
 
 @{
     ViewData["Title"] = "Agregar Contrato";
 }
 
-<div class="container my-5">
-    <div class="form-card mx-auto animate-fade" style="max-width: 700px;">
-        <div class="form-header text-center text-white py-4 rounded-top" style="background: linear-gradient(90deg, #0F2027, #203A43, #2C5364);">
-            <h2 class="mb-0">
-                <i class="bi bi-file-earmark-plus me-2"></i> @ViewData["Title"]
-            </h2>
-        </div>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-        <div class="form-body p-4 bg-dark text-white rounded-bottom shadow">
-            <form asp-action="AgregarContrato" method="post" class="needs-validation" novalidate>
-                @Html.AntiForgeryToken()
+<style>
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --success: #00c16e;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="ClienteId" class="form-label fw-semibold">Cliente</label>
-                    <select asp-for="ClienteId" asp-items="ViewBag.Clientes" class="form-control">
-                        <option value="">-- Selecciona Cliente --</option>
-                    </select>
-                    <span asp-validation-for="ClienteId" class="text-danger small"></span>
-                </div>
+    .form-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 850px;
+        margin: 60px auto;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-in-out;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="PlanId" class="form-label fw-semibold">Plan</label>
-                    <select asp-for="PlanId" asp-items="ViewBag.Planes" class="form-control">
-                        <option value="">-- Selecciona Plan --</option>
-                    </select>
-                    <span asp-validation-for="PlanId" class="text-danger small"></span>
-                </div>
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: 18px 28px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        letter-spacing: 0.3px;
+    }
 
-                <div class="mb-3">
-                    <label asp-for="EmpleadoId" class="form-label fw-semibold">Empleado Asignado</label>
-                    <select asp-for="EmpleadoId" asp-items="ViewBag.Empleados" class="form-control">
-                        <option value="">-- Selecciona Empleado --</option>
-                    </select>
-                    <span asp-validation-for="EmpleadoId" class="text-danger small"></span>
-                </div>
+    .form-body {
+        padding: 40px;
+        background: #fff;
+    }
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="FechaInicio" class="form-label fw-semibold">Fecha de Inicio</label>
-                        <input asp-for="FechaInicio" type="date" class="form-control" />
-                        <span asp-validation-for="FechaInicio" class="text-danger small"></span>
-                    </div>
+    .form-group {
+        margin-bottom: 20px;
+    }
 
-                    <div class="col-md-6 mb-3">
-                        <label for="mesesDuracion" class="form-label fw-semibold">Duraci�n (meses)</label>
-                        <input type="number" name="mesesDuracion" min="1" class="form-control" placeholder="Ej. 12" />
-                    </div>
-                </div>
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+    }
 
-                <button type="submit" class="btn btn-success w-100 mt-3 fw-semibold">
-                    <i class="bi bi-save me-1"></i> Guardar Contrato
-                </button>
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        transition: all 0.25s ease;
+        font-size: 0.9rem;
+    }
 
-                <div asp-validation-summary="All" class="text-danger mt-3 small"></div>
-            </form>
-
-            @if (ViewBag.Debug != null)
-            {
-                <div class="alert alert-info mt-4">@ViewBag.Debug</div>
-            }
-        </div>
-    </div>
-</div>
-
-@section Styles {
-    <style>
-        body {
-            background-color: #f0f8ff;
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 159, 253, 0.15);
+            outline: none;
         }
 
-        .form-card {
-            max-width: 700px;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            background: linear-gradient(160deg, #0F2027, #203A43, #2C5364);
-            border: 1px solid rgba(100, 210, 255, 0.3);
+        .form-control.is-invalid {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(106, 76, 147, 0.15);
         }
 
-        .form-header {
-            background: linear-gradient(to right, #0d6efd, #20c997);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    .text-danger.small {
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .btn-save {
+        background: linear-gradient(90deg, var(--success), var(--primary));
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 16px rgba(0, 159, 253, 0.2);
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 159, 253, 0.25);
+            filter: brightness(1.05);
         }
 
-        .form-body {
-            color: white;
+        .btn-save:disabled {
+            background: #a3a3a3;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
-        label {
-            font-size: 0.95rem;
+    .terms-box {
+        margin-top: 1.5rem;
+        padding: 1rem 1.3rem;
+        border-radius: 12px;
+        background: #f6faff;
+        border: 1px solid #d6e4ff;
+        color: #444;
+        font-size: 0.9rem;
+        animation: fadeIn 1s ease;
+    }
+
+    .terms-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: var(--text-dark);
+    }
+
+        .terms-check input {
+            accent-color: var(--primary);
         }
 
-        .form-control {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 2px solid #3A7CA5;
-            color: white;
-            border-radius: 8px;
-            transition: all 0.3s;
-            padding: 10px 12px;
-        }
-
-            .form-control::placeholder {
-                color: rgba(255, 255, 255, 0.5);
-            }
-
-            .form-control:focus {
-                border-color: #64D2FF;
-                background-color: rgba(255, 255, 255, 0.15);
-                box-shadow: 0 0 0 3px rgba(100, 210, 255, 0.25);
-            }
-
-        .btn-submit {
-            background: linear-gradient(90deg, #3A7CA5, #64D2FF);
-            border: none;
-            color: white;
-            border-radius: 10px;
-            font-weight: 600;
-            padding: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease-in-out;
-        }
-
-            .btn-submit:hover {
-                background: linear-gradient(90deg, #64D2FF, #3A7CA5);
-                transform: translateY(-2px);
-                box-shadow: 0 5px 12px rgba(100, 210, 255, 0.4);
-            }
-
-        .alert-info {
-            background-color: rgba(0, 123, 255, 0.15);
-            border: 1px solid rgba(0, 123, 255, 0.4);
-            color: #64D2FF;
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .text-danger {
-            color: #ff7b7b !important;
-        }
-
-        @@keyframes fadeUp {
-            0%
-
-        {
+    @@keyframes fadeIn {
+        from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(15px);
         }
 
-        100% {
+        to {
             opacity: 1;
             transform: translateY(0);
         }
+    }
 
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
         }
 
-        .animate-fade {
-            animation: fadeUp 0.6s ease forwards;
+        25% {
+            transform: translateX(-4px);
         }
-    </style>
-}
+
+        50% {
+            transform: translateX(4px);
+        }
+
+        75% {
+            transform: translateX(-4px);
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <i class="fas fa-file-contract"></i> @ViewData["Title"]
+    </div>
+
+    <div class="form-body">
+        <form asp-action="AgregarContrato" method="post" novalidate>
+            @Html.AntiForgeryToken()
+
+            <!-- Cliente -->
+            <div class="form-group">
+                <label asp-for="ClienteId" class="form-label"><i class="fas fa-user-tag me-1"></i>Cliente</label>
+                <select asp-for="ClienteId" asp-items="ViewBag.Clientes" class="form-control" required>
+                    <option value="">-- Selecciona Cliente --</option>
+                </select>
+                <span asp-validation-for="ClienteId" class="text-danger small"></span>
+            </div>
+
+            <!-- Plan -->
+            <div class="form-group">
+                <label asp-for="PlanId" class="form-label"><i class="fas fa-layer-group me-1"></i>Plan</label>
+                <select asp-for="PlanId" asp-items="ViewBag.Planes" class="form-control" required>
+                    <option value="">-- Selecciona Plan --</option>
+                </select>
+                <span asp-validation-for="PlanId" class="text-danger small"></span>
+            </div>
+
+            <!-- Empleado -->
+            <div class="form-group">
+                <label asp-for="EmpleadoId" class="form-label"><i class="fas fa-user-tie me-1"></i>Empleado Asignado</label>
+                <select asp-for="EmpleadoId" asp-items="ViewBag.Empleados" class="form-control" required>
+                    <option value="">-- Selecciona Empleado --</option>
+                </select>
+                <span asp-validation-for="EmpleadoId" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <!-- Fecha -->
+                <div class="col-md-6 form-group">
+                    <label asp-for="FechaInicio" class="form-label"><i class="fas fa-calendar-alt me-1"></i>Fecha de Inicio</label>
+                    <input asp-for="FechaInicio" type="date" class="form-control" required />
+                    <span asp-validation-for="FechaInicio" class="text-danger small"></span>
+                </div>
+
+                <!-- Duración -->
+                <div class="col-md-6 form-group">
+                    <label for="mesesDuracion" class="form-label"><i class="fas fa-clock me-1"></i>Duración (meses)</label>
+                    <input id="mesesDuracion" name="mesesDuracion" type="number" min="1" class="form-control" placeholder="Ej. 12" required />
+                    <span class="text-danger small d-none" id="mesesError">Debe ingresar una duración válida (mínimo 1 mes).</span>
+                </div>
+            </div>
+
+            <!-- Términos -->
+            <div class="terms-box mt-3">
+                <p>
+                    <i class="fas fa-info-circle"></i>
+                    Al guardar este contrato, usted acepta los <strong>Términos y Condiciones</strong> del servicio:
+                </p>
+                <ul>
+                    <li><i class="fas fa-shield-alt me-1"></i>Uso responsable del plan contratado.</li>
+                    <li><i class="fas fa-money-bill-wave me-1"></i>Pagos puntuales según las fechas acordadas.</li>
+                    <li><i class="fas fa-file-signature me-1"></i>Duración válida según los meses seleccionados.</li>
+                </ul>
+
+                <div class="terms-check">
+                    <input id="aceptoTerminos" type="checkbox" required />
+                    <label for="aceptoTerminos">He leído y acepto los términos del contrato.</label>
+                </div>
+                <div class="text-danger small mt-1" id="errorTerminos" style="display:none;">
+                    Debe aceptar los términos y condiciones para continuar.
+                </div>
+            </div>
+
+            <button type="submit" id="btnGuardar" class="btn-save mt-4" disabled>
+                <i class="fas fa-paper-plane"></i> Confirmar y Guardar Contrato
+            </button>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const checkbox = document.getElementById("aceptoTerminos");
+            const btnGuardar = document.getElementById("btnGuardar");
+            const errorTerminos = document.getElementById("errorTerminos");
+            const mesesInput = document.getElementById("mesesDuracion");
+            const mesesError = document.getElementById("mesesError");
+            const form = document.querySelector("form");
+
+            // Botón deshabilitado hasta aceptar términos
+            checkbox.addEventListener("change", () => {
+                btnGuardar.disabled = !checkbox.checked;
+                errorTerminos.style.display = checkbox.checked ? "none" : "block";
+            });
+
+            // Validación visual de meses
+            mesesInput.addEventListener("input", () => {
+                if (mesesInput.value === "" || parseInt(mesesInput.value) < 1) {
+                    mesesError.classList.remove("d-none");
+                    mesesInput.classList.add("is-invalid");
+                } else {
+                    mesesError.classList.add("d-none");
+                    mesesInput.classList.remove("is-invalid");
+                }
+            });
+
+            // Validar antes de enviar
+            form.addEventListener("submit", (e) => {
+                let valido = true;
+
+                if (mesesInput.value === "" || parseInt(mesesInput.value) < 1) {
+                    valido = false;
+                    mesesError.classList.remove("d-none");
+                    mesesInput.classList.add("is-invalid");
+                    mesesInput.focus();
+                }
+
+                if (!checkbox.checked) {
+                    valido = false;
+                    errorTerminos.style.display = "block";
+                    checkbox.focus();
+                    checkbox.closest(".terms-check").style.animation = "shake 0.3s ease";
+                    setTimeout(() => checkbox.closest(".terms-check").style.animation = "", 400);
+                }
+
+                if (!valido) e.preventDefault();
+            });
+        });
+    </script>
 }

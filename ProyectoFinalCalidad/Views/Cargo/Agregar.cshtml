@@ -1,34 +1,216 @@
-@model ProyectoFinalCalidad.Models.Cargo
+﻿@model ProyectoFinalCalidad.Models.Cargo
 @{
     ViewData["Title"] = "Agregar Cargo";
 }
 
-<h2>@ViewData["Title"]</h2>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-<form asp-action="Agregar" method="post" class="needs-validation" novalidate>
-    <div class="mb-3">
-        <label asp-for="titulo_cargo" class="form-label">T�tulo del Cargo</label>
-        <input asp-for="titulo_cargo" class="form-control" required />
-        <div class="invalid-feedback">Ingrese un t�tulo.</div>
+<div class="container py-5">
+    <div class="card shadow-lg border-0 rounded-4 animate-fade">
+        <!-- ENCABEZADO -->
+        <div class="card-header text-white py-3 d-flex align-items-center"
+             style="background: linear-gradient(90deg, #009ffd, #6a4c93); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+            <h3 class="mb-0">
+                <i class="fas fa-briefcase me-2"></i>@ViewData["Title"]
+            </h3>
+        </div>
+
+        <!-- CUERPO DEL FORMULARIO -->
+        <div class="card-body px-4 py-4">
+            <form asp-action="Agregar" method="post" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+
+                <!-- Campo: Título del Cargo -->
+                <div class="mb-4">
+                    <label asp-for="titulo_cargo" class="form-label fw-semibold">
+                        <i class="fas fa-id-badge text-primary me-2"></i>Título del Cargo
+                        <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="titulo_cargo" class="form-control shadow-sm" required placeholder="Ejemplo: Asesor Comercial" />
+                    <div class="invalid-feedback">Por favor, ingrese el título del cargo.</div>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-start mt-4">
+                    <button type="submit" class="btn btn-success px-4 me-2">
+                        <i class="fas fa-save me-2"></i>Guardar
+                    </button>
+                    <a asp-action="MostrarCargos" class="btn btn-secondary px-4">
+                        <i class="fas fa-arrow-left me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+
+            <!-- POLÍTICAS / INFORMACIÓN -->
+            <div class="mt-5 policy-box p-4 rounded-3 shadow-sm">
+                <h5 class="fw-semibold text-primary mb-2"><i class="fas fa-file-contract me-2"></i>Políticas de Registro</h5>
+                <p class="text-secondary mb-2">
+                    Al registrar un nuevo cargo en el sistema, usted declara que la información ingresada es veraz y
+                    se ajusta a las políticas internas de la empresa. Los cargos definidos deben corresponder a funciones
+                    reales dentro de la organización.
+                </p>
+                <ul class="small text-muted mb-0">
+                    <li>Los datos registrados serán revisados periódicamente por el área de Recursos Humanos.</li>
+                    <li>El mal uso de la información puede conllevar sanciones administrativas.</li>
+                    <li>Para más información, consulte el <a href="#" class="text-decoration-none text-primary fw-semibold">manual de políticas internas</a>.</li>
+                </ul>
+            </div>
+            <!-- Modal Eliminar -->
+            <div class="modal fade" id="EliminarCargoModal" tabindex="-1" aria-labelledby="EliminarCargoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="EliminarCargoLabel"><i class="fas fa-trash me-2"></i>Eliminar Cargo</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Está seguro de eliminar el cargo <strong id="cargoNombre"></strong>?</p>
+                            <input type="hidden" id="cargoId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" id="btnConfirmarEliminar" class="btn btn-danger">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-action="MostrarCargos" class="btn btn-secondary ms-2">Cancelar</a>
-</form>
+</div>
 
 @section Scripts {
     <script>
         (() => {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
             Array.from(forms).forEach(form => {
                 form.addEventListener('submit', event => {
                     if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
+                        event.preventDefault();
+                        event.stopPropagation();
                     }
-                    form.classList.add('was-validated')
-                }, false)
-            })
+                    form.classList.add('was-validated');
+                }, false);
+            });
         })();
     </script>
+
+    <script>
+        let cargoIdSeleccionado = 0;
+
+        // Cuando se abre el modal, cargamos los datos
+        $('#EliminarCargoModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget);
+            const id = button.data('id');
+            const nombre = button.data('nombre');
+            $('#cargoId').val(id);
+            $('#cargoNombre').text(nombre);
+        });
+
+        // Confirmar eliminación
+        $('#btnConfirmarEliminar').on('click', function () {
+            const id = $('#cargoId').val();
+
+            $.ajax({
+                url: '/Cargo/Eliminar',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#EliminarCargoModal').modal('hide');
+                        alert(response.message);
+                        location.reload(); // recargar tabla
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error al intentar eliminar el cargo.');
+                }
+            });
+        });
+    </script>
+
+
+}
+
+@section Styles {
+    <style>
+
+        .card {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .card-header h3 {
+            font-weight: 600;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            border-radius: 0.6rem;
+            padding: 0.65rem 1rem;
+        }
+
+        .btn {
+            border-radius: 0.6rem;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-success {
+            background-color: #009ffd;
+            border: none;
+        }
+
+            .btn-success:hover {
+                background-color: #007acc;
+                transform: translateY(-1px);
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                transform: translateY(-1px);
+            }
+
+        .policy-box {
+            background-color: #f9fbff;
+            border-left: 4px solid #009ffd;
+            line-height: 1.6;
+        }
+
+            .policy-box h5 {
+                font-size: 1.05rem;
+            }
+
+        .animate-fade {
+            animation: fadeIn 0.7s ease;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+    </style>
 }

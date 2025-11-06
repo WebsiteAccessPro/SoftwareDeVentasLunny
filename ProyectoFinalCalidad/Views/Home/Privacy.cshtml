@@ -1,94 +1,9 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 @using ProyectoFinalCalidad.Data
 @using Microsoft.EntityFrameworkCore
 @inject UserManager<IdentityUser> UserManager
 @inject ApplicationDbContext DbContext
-
-@{
-    ViewData["Title"] = "Política de Privacidad";
-
-    string userName = "Invitado";
-    IList<string> roles = new List<string>();
-    var claims = new List<KeyValuePair<string, string>>();
-    string cargoEmpleado = "";
-
-    if (User.Identity.IsAuthenticated)
-    {
-        // Usuario en Identity
-        var identityUser = await UserManager.FindByNameAsync(User.Identity.Name);
-
-        if (identityUser != null)
-        {
-            userName = identityUser.Email ?? User.Identity.Name;
-
-            // Roles
-            roles = await UserManager.GetRolesAsync(identityUser);
-            if (!roles.Any())
-                roles = new List<string> { "Usuario" };
-
-            // Claims desde User.Claims (todos los predeterminados)
-            claims = User.Claims
-                .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))
-                .ToList();
-
-            // Claims extra de Identity
-            var identityClaims = await UserManager.GetClaimsAsync(identityUser);
-            foreach (var c in identityClaims)
-            {
-                if (!claims.Any(x => x.Key == c.Type))
-                    claims.Add(new KeyValuePair<string, string>(c.Type, c.Value));
-            }
-
-            // Si es empleado, traer Cargo desde BD
-            if (roles.Contains("Empleado"))
-            {
-                var empleado = await DbContext.Empleados
-                    .Include(e => e.Cargo)
-                    .FirstOrDefaultAsync(e => e.correo.ToLower() == identityUser.Email.ToLower());
-
-                if (empleado != null)
-                {
-                    cargoEmpleado = empleado.Cargo?.titulo_cargo ?? "Pendiente";
-                    // Agregar o reemplazar claim Cargo
-                    var existingCargo = claims.FirstOrDefault(x => x.Key == "Cargo");
-                    if (existingCargo.Key != null)
-                        claims.Remove(existingCargo);
-                    claims.Add(new KeyValuePair<string, string>("Cargo", cargoEmpleado));
-                }
-            }
-        }
-        else
-        {
-            // Usuario autenticado fuera de Identity (Cliente u otro)
-            userName = User.Identity.Name ?? "Desconocido";
-            roles = User.Claims
-                .Where(c => c.Type == ClaimTypes.Role)
-                .Select(c => c.Value)
-                .ToList();
-            if (!roles.Any())
-                roles = new List<string> { "Usuario" };
-
-            claims = User.Claims
-                .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))
-                .ToList();
-        }
-    }
-
-    // Cookie de sesión
-    var cookieValor = ViewData["CookieValor"] as string;
-    string[] cookieLineas = new string[3] { "", "", "" };
-    if (!string.IsNullOrEmpty(cookieValor))
-    {
-        int len = cookieValor.Length;
-        int partLength = len / 3;
-        cookieLineas[0] = cookieValor.Substring(0, partLength);
-        cookieLineas[1] = cookieValor.Substring(partLength, partLength);
-        cookieLineas[2] = cookieValor.Substring(partLength * 2);
-    }
-}
-
-
 
 <style>
     main {
@@ -301,7 +216,208 @@
                 font-size: 1.15rem;
             }
     }
+
+    /* ===================== MODO OSCURO PRIVACY ===================== */
+    [data-theme="dark"] .custom-card,
+    [data-bs-theme="dark"] .custom-card,
+    .dark-mode .custom-card {
+        background: linear-gradient(135deg, var(--card-bg-secondary-dark), var(--card-bg-tertiary-dark)) !important;
+        color: var(--text-dark) !important;
+        border: 1px solid var(--border-dark) !important;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.35) !important;
+    }
+
+        [data-theme="dark"] .custom-card::before,
+        [data-bs-theme="dark"] .custom-card::before,
+        .dark-mode .custom-card::before {
+            background: linear-gradient(90deg, var(--accent-dark), #6a4c93) !important;
+        }
+
+        [data-theme="dark"] .custom-card h1,
+        [data-bs-theme="dark"] .custom-card h1,
+        .dark-mode .custom-card h1 {
+            color: var(--text-dark) !important;
+        }
+
+        [data-theme="dark"] .custom-card h2,
+        [data-bs-theme="dark"] .custom-card h2,
+        .dark-mode .custom-card h2 {
+            color: var(--accent-dark) !important;
+        }
+
+        [data-theme="dark"] .custom-card p.lead,
+        [data-bs-theme="dark"] .custom-card p.lead,
+        .dark-mode .custom-card p.lead {
+            color: var(--text-dark) !important;
+        }
+
+            [data-theme="dark"] .custom-card p.lead strong,
+            [data-bs-theme="dark"] .custom-card p.lead strong,
+            .dark-mode .custom-card p.lead strong {
+                color: var(--accent-dark) !important;
+            }
+
+    /* Cookie box */
+    [data-theme="dark"] .cookie-value,
+    [data-bs-theme="dark"] .cookie-value,
+    .dark-mode .cookie-value {
+        background: var(--card-bg-secondary-dark) !important;
+        color: var(--text-dark) !important;
+        border-color: var(--border-dark) !important;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.25) !important;
+    }
+
+        [data-theme="dark"] .cookie-value div,
+        [data-bs-theme="dark"] .cookie-value div,
+        .dark-mode .cookie-value div {
+            color: var(--text-dark) !important;
+        }
+
+    /* Tabla */
+    [data-theme="dark"] .table-container,
+    [data-bs-theme="dark"] .table-container,
+    .dark-mode .table-container {
+        background: var(--card-bg-secondary-dark) !important;
+        border-color: var(--border-dark) !important;
+    }
+
+    [data-theme="dark"] table.custom-table thead,
+    [data-bs-theme="dark"] table.custom-table thead,
+    .dark-mode table.custom-table thead {
+        background: linear-gradient(90deg, var(--card-bg-dark), var(--card-bg-secondary-dark)) !important;
+        color: var(--text-dark) !important;
+    }
+
+    [data-theme="dark"] table.custom-table th,
+    [data-bs-theme="dark"] table.custom-table th,
+    .dark-mode table.custom-table th,
+    [data-theme="dark"] table.custom-table td,
+    [data-bs-theme="dark"] table.custom-table td,
+    .dark-mode table.custom-table td {
+        color: var(--text-dark) !important;
+        border-color: var(--border-dark) !important;
+    }
+
+    [data-theme="dark"] table.custom-table tbody tr:hover,
+    [data-bs-theme="dark"] table.custom-table tbody tr:hover,
+    .dark-mode table.custom-table tbody tr:hover {
+        background: var(--hover-dark) !important;
+    }
+
+    /* Lista de roles */
+    [data-theme="dark"] .custom-card ul.list-group li,
+    [data-bs-theme="dark"] .custom-card ul.list-group li,
+    .dark-mode .custom-card ul.list-group li {
+        color: var(--text-dark) !important;
+    }
+
+    [data-theme="dark"] .rol-admin,
+    [data-bs-theme="dark"] .rol-admin,
+    .dark-mode .rol-admin {
+        background: #3b1f1f !important;
+        color: #ff6b6b !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.35) !important;
+    }
+
+    [data-theme="dark"] .rol-empleado,
+    [data-bs-theme="dark"] .rol-empleado,
+    .dark-mode .rol-empleado {
+        background: #1f3b21 !important;
+        color: #90ee90 !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.35) !important;
+    }
+
+    [data-theme="dark"] .rol-usuario,
+    [data-bs-theme="dark"] .rol-usuario,
+    .dark-mode .rol-usuario {
+        background: #1f273b !important;
+        color: #9ec4ff !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.35) !important;
+    }
 </style>
+
+@{
+    ViewData["Title"] = "Política de Privacidad";
+
+    string userName = "Invitado";
+    IList<string> roles = new List<string>();
+    var claims = new List<KeyValuePair<string, string>>();
+    string cargoEmpleado = "";
+
+    if (User.Identity.IsAuthenticated)
+    {
+        // Usuario en Identity
+        var identityUser = await UserManager.FindByNameAsync(User.Identity.Name);
+
+        if (identityUser != null)
+        {
+            userName = identityUser.Email ?? User.Identity.Name;
+
+            // Roles
+            roles = await UserManager.GetRolesAsync(identityUser);
+            if (!roles.Any())
+                roles = new List<string> { "Usuario" };
+
+            // Claims desde User.Claims (todos los predeterminados)
+            claims = User.Claims
+                .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))
+                .ToList();
+
+            // Claims extra de Identity
+            var identityClaims = await UserManager.GetClaimsAsync(identityUser);
+            foreach (var c in identityClaims)
+            {
+                if (!claims.Any(x => x.Key == c.Type))
+                    claims.Add(new KeyValuePair<string, string>(c.Type, c.Value));
+            }
+
+            // Si es empleado, traer Cargo desde BD
+            if (roles.Contains("Empleado"))
+            {
+                var empleado = await DbContext.Empleados
+                    .Include(e => e.Cargo)
+                    .FirstOrDefaultAsync(e => e.correo.ToLower() == identityUser.Email.ToLower());
+
+                if (empleado != null)
+                {
+                    cargoEmpleado = empleado.Cargo?.titulo_cargo ?? "Pendiente";
+                    // Agregar o reemplazar claim Cargo
+                    var existingCargo = claims.FirstOrDefault(x => x.Key == "Cargo");
+                    if (existingCargo.Key != null)
+                        claims.Remove(existingCargo);
+                    claims.Add(new KeyValuePair<string, string>("Cargo", cargoEmpleado));
+                }
+            }
+        }
+        else
+        {
+            // Usuario autenticado fuera de Identity (Cliente u otro)
+            userName = User.Identity.Name ?? "Desconocido";
+            roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+            if (!roles.Any())
+                roles = new List<string> { "Usuario" };
+
+            claims = User.Claims
+                .Select(c => new KeyValuePair<string, string>(c.Type, c.Value))
+                .ToList();
+        }
+    }
+
+    // Cookie de sesión
+    var cookieValor = ViewData["CookieValor"] as string;
+    string[] cookieLineas = new string[3] { "", "", "" };
+    if (!string.IsNullOrEmpty(cookieValor))
+    {
+        int len = cookieValor.Length;
+        int partLength = len / 3;
+        cookieLineas[0] = cookieValor.Substring(0, partLength);
+        cookieLineas[1] = cookieValor.Substring(partLength, partLength);
+        cookieLineas[2] = cookieValor.Substring(partLength * 2);
+    }
+}
 
 <div class="custom-card">
     <h1>@ViewData["Title"]</h1>

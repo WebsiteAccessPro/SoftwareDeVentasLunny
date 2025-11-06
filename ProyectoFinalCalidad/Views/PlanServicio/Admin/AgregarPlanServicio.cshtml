@@ -1,0 +1,275 @@
+@model ProyectoFinalCalidad.Models.PlanServicio
+@{
+    ViewData["Title"] = "Agregar Plan de Servicio";
+}
+
+<style>
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --danger: #e63946;
+        --success: #28a745;
+    }
+
+    .form-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 850px;
+        margin: 60px auto;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-in-out;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: 18px 28px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        letter-spacing: 0.3px;
+    }
+
+        .form-header i {
+            font-size: 1.5rem;
+        }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    .form-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px 28px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        transition: all 0.25s ease;
+        font-size: 0.9rem;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 159, 253, 0.15);
+            outline: none;
+        }
+
+    .alert-danger {
+        background-color: rgba(230, 57, 70, 0.1);
+        border: 1px solid rgba(230, 57, 70, 0.25);
+        color: var(--danger);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 3px;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 35px;
+    }
+
+    .btn {
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 159, 253, 0.3);
+        }
+
+    .btn-secondary {
+        background: #fff;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--accent);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+
+    .status-activo {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-inactivo {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    @@media (max-width: 768px) {
+        .form-body {
+            padding: 25px;
+        }
+
+        .btn-container {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <i class="fas fa-plus-circle"></i>
+        @ViewData["Title"]
+    </div>
+
+    <div class="form-body">
+        <form asp-action="AgregarPlanServicio" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert-danger">@TempData["ErrorMessage"]</div>
+            }
+
+            <div class="form-columns">
+                <div class="form-group">
+                    <label asp-for="NombrePlan" class="form-label">Nombre del Plan *</label>
+                    <input asp-for="NombrePlan" class="form-control" placeholder="Ej: Internet Básico" required />
+                    <span asp-validation-for="NombrePlan" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TipoServicio" class="form-label">Tipo de Servicio *</label>
+                    <select asp-for="TipoServicio" class="form-control" required>
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Internet">Internet</option>
+                        <option value="Cable">Cable</option>
+                        <option value="Internet+Cable">Internet + Cable</option>
+                        <option value="Telefonía">Telefonía</option>
+                        <option value="Triple Play">Triple Play</option>
+                    </select>
+                    <span asp-validation-for="TipoServicio" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-columns">
+                <div class="form-group">
+                    <label asp-for="Velocidad" class="form-label">Velocidad *</label>
+                    <input asp-for="Velocidad" class="form-control" placeholder="Ej: 100 Mbps" required />
+                    <span asp-validation-for="Velocidad" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PrecioMensual" class="form-label">Precio Mensual (S/.) *</label>
+                    <input asp-for="PrecioMensual" type="number" step="0.01" class="form-control" placeholder="Ej: 99.90" required />
+                    <span asp-validation-for="PrecioMensual" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Descripcion" class="form-label">Descripción</label>
+                <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Describa las características del plan..."></textarea>
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ZonaId" class="form-label">Zona de Cobertura *</label>
+                <select asp-for="ZonaId" class="form-control" required>
+                    <option value="">Seleccione una zona</option>
+                    @foreach (var zona in ViewBag.ZonasCobertura)
+                    {
+                        <option value="@zona.Id">@zona.NombreZona</option>
+                    }
+                </select>
+                <span asp-validation-for="ZonaId" class="text-danger"></span>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar Plan
+                </button>
+                <a asp-action="MostrarPlanServicio" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

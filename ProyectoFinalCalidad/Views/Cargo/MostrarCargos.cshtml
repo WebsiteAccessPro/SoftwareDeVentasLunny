@@ -3,28 +3,600 @@
     ViewData["Title"] = "Cargos";
 }
 
-<h2>@ViewData["Title"]</h2>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-<a asp-action="Agregar" class="btn btn-success mb-3">? Agregar Cargo</a>
+<div class="main-container">
+    <div class="container-card">
 
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>T�tulo</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var cargo in Model)
-        {
-            <tr>
-                <td>@cargo.cargo_id</td>
-                <td>@cargo.titulo_cargo</td>
-                <td>
-                    <a asp-action="Editar" asp-route-id="@cargo.cargo_id" class="btn btn-primary btn-sm">Editar</a>
-                </td>
-            </tr>
+        <div class="container-card-title">@ViewData["Title"]</div>
+
+        <!-- FILTROS -->
+        <div class="content-card filter-card">
+            <div class="header-section">
+                <h2 class="page-title">Filtros de Cargos</h2>
+            </div>
+
+            <div class="filter-grid">
+                <!-- Cargo -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-briefcase me-1"></i>Cargo</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroTitulo" placeholder="Buscar por cargo">
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button id="btnConsultar" type="button" class="btn btn-info btn-filter">
+                    <i class="fas fa-search"></i> Consultar
+                </button>
+                <button id="btnLimpiar" type="button" class="btn btn-danger btn-filter">
+                    <i class="fas fa-xmark"></i> Limpiar
+                </button>
+            </div>
+        </div>
+
+        <!-- TABLA DE CARGOS -->
+        <div class="content-card">
+            <div class="header-section d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <!-- IZQUIERDA: Select de filas -->
+                <div class="d-flex align-items-center gap-2">
+                    <label for="rowsPerPage" class="form-label mb-0 fw-semibold">Mostrar:</label>
+                    <select id="rowsPerPage" class="form-select form-select-sm w-auto">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <!-- DERECHA: Botón Agregar -->
+                <div class="ms-auto">
+                    <a id="btnAgregarCargo" asp-action="Agregar" class="btn btn-success btn-filter">
+                        <i class="fas fa-plus-circle"></i> Agregar Cargo
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-container mt-3">
+                <table id="tablaCargos" class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th class="actions-cell">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cargo in Model)
+                        {
+                            <tr>
+                                <td>@cargo.cargo_id</td>
+                                <td>@cargo.titulo_cargo</td>
+                                <td class="actions-cell">
+                                    <div>
+                                        <a class="action-btn btn-edit" asp-action="Editar" asp-route-id="@cargo.cargo_id" title="Editar Cargo">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a class="action-btn btn-danger" data-bs-toggle="modal" data-bs-target="#EliminarCargoModal" data-id="@cargo.cargo_id" data-nombre="@System.Net.WebUtility.HtmlEncode(cargo.titulo_cargo)">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- INFO + PAGINACIÓN -->
+            <div class="table-footer d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                <div class="text-muted" id="tableInfo">
+                    Mostrando registros del 1 al 10 de un total de @Model.Count()
+                </div>
+
+                <nav>
+                    <ul class="pagination pagination-sm mb-0" id="pagination">
+                        <li class="page-item">
+                            <button id="prevPage" class="page-link">Anterior</button>
+                        </li>
+                        <li class="page-item">
+                            <button id="nextPage" class="page-link">Siguiente</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal para eliminar cargo -->
+<div class="modal fade" id="EliminarCargoModal" tabindex="-1" aria-labelledby="eliminarCargoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #d62828, #e63946); color:white; border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+                <h5 class="modal-title fw-semibold" id="eliminarCargoLabel">
+                    <i class="fas fa-trash me-2"></i> Confirmar Eliminación
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <p class="fs-5 mb-3 text-dark">
+                    ¿Estás seguro que deseas eliminar el cargo
+                    <strong id="cargoNombre"></strong>?
+                </p>
+                <p class="small text-secondary mb-0">Esta acción no se podrá revertir.</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                <button type="button" class="btn fw-semibold px-4 py-2 btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                <form id="eliminarCargoForm" method="post" asp-action="Eliminar" asp-controller="Cargo">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="cargoId" />
+                    <button type="submit" class="btn fw-semibold px-4 py-2 btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FILTROS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const filtroTitulo = document.getElementById("filtroTitulo");
+            const btnConsultar = document.getElementById("btnConsultar");
+            const btnLimpiar = document.getElementById("btnLimpiar");
+            const filas = document.querySelectorAll("table tbody tr");
+            const norm = s => (s||"").toString().trim().toLowerCase();
+
+            btnConsultar.addEventListener("click", () => {
+                const tituloValor = norm(filtroTitulo.value);
+                filas.forEach(fila => {
+                    const celdas = fila.querySelectorAll("td");
+                    const titulo = norm(celdas[1]?.textContent);
+                    fila.style.display = titulo.includes(tituloValor) ? "" : "none";
+                });
+            });
+
+            btnLimpiar.addEventListener("click", () => {
+                filtroTitulo.value = "";
+                filas.forEach(f => f.style.display = "");
+            });
+        });
+    </script>
+
+    <!-- PAGINACIÓN -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabla = document.getElementById("tablaCargos");
+            const filas = Array.from(tabla.querySelectorAll("tbody tr"));
+            const info = document.getElementById("tableInfo");
+            const prevBtn = document.getElementById("prevPage");
+            const nextBtn = document.getElementById("nextPage");
+            const pagination = document.getElementById("pagination");
+            const selectFilas = document.getElementById("rowsPerPage");
+
+            let paginaActual = 1;
+            let filasPorPagina = parseInt(selectFilas.value);
+            const totalFilas = filas.length;
+            let totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+
+            function renderPaginacion() {
+                // limpiar numeración anterior
+                pagination.querySelectorAll(".page-number, .dots").forEach(el => el.remove());
+                totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+
+                const next = document.getElementById("nextPage").parentElement;
+                const maxPaginasVisibles = 5;
+                let paginas = [];
+
+                // generar lista de páginas visible
+                if (totalPaginas <= maxPaginasVisibles + 2) {
+                    for (let i = 1; i <= totalPaginas; i++) paginas.push(i);
+                } else {
+                    let start = Math.max(2, paginaActual - 2);
+                    let end = Math.min(totalPaginas - 1, paginaActual + 2);
+
+                    if (paginaActual <= 3) {
+                        start = 2;
+                        end = 5;
+                    } else if (paginaActual >= totalPaginas - 2) {
+                        start = totalPaginas - 4;
+                        end = totalPaginas - 1;
+                    }
+
+                    paginas = [1, ...Array.from({ length: end - start + 1 }, (_, i) => start + i), totalPaginas];
+                }
+
+                // crear botones numerados
+                for (let i = 0; i < paginas.length; i++) {
+                    if (i > 0 && paginas[i] - paginas[i - 1] > 1) {
+                        const dots = document.createElement("li");
+                        dots.className = "page-item disabled dots";
+                        dots.innerHTML = `<span class="page-link">...</span>`;
+                        pagination.insertBefore(dots, next);
+                    }
+
+                    const li = document.createElement("li");
+                    li.className = `page-item page-number ${paginas[i] === paginaActual ? "active" : ""}`;
+                    const btn = document.createElement("button");
+                    btn.className = "page-link";
+                    btn.textContent = paginas[i];
+                    btn.addEventListener("click", () => {
+                        paginaActual = paginas[i];
+                        mostrarPagina();
+                    });
+                    li.appendChild(btn);
+                    pagination.insertBefore(li, next);
+                }
+
+                prevBtn.parentElement.classList.toggle("disabled", paginaActual === 1);
+                nextBtn.parentElement.classList.toggle("disabled", paginaActual === totalPaginas);
+            }
+
+            function mostrarPagina() {
+                const inicio = (paginaActual - 1) * filasPorPagina;
+                const fin = inicio + filasPorPagina;
+
+                filas.forEach((fila, index) => {
+                    fila.style.display = (index >= inicio && index < fin) ? "" : "none";
+                });
+
+                const totalVisibles = filas.filter(f => f.style.display !== "none").length;
+                const visibleInicio = totalVisibles > 0 ? inicio + 1 : 0;
+                const visibleFin = Math.min(fin, totalFilas);
+
+                info.textContent = `Mostrando registros del ${visibleInicio} al ${visibleFin} de un total de ${totalFilas}`;
+                renderPaginacion();
+            }
+
+            // Botones Anterior / Siguiente
+            prevBtn.addEventListener("click", () => {
+                if (paginaActual > 1) {
+                    paginaActual--;
+                    mostrarPagina();
+                }
+            });
+
+            nextBtn.addEventListener("click", () => {
+                if (paginaActual < totalPaginas) {
+                    paginaActual++;
+                    mostrarPagina();
+                }
+            });
+
+            // Cambiar cantidad de filas
+            selectFilas.addEventListener("change", () => {
+                filasPorPagina = parseInt(selectFilas.value);
+                paginaActual = 1;
+                mostrarPagina();
+            });
+
+            // Inicializar
+            mostrarPagina();
+        });
+    </script>
+
+    <!-- PASAR DATOS AL MODAL -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('EliminarCargoModal');
+            modal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id');
+                const nombre = button.getAttribute('data-nombre');
+                document.getElementById('cargoId').value = id;
+                document.getElementById('cargoNombre').textContent = nombre;
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 10px;
+            font-family: 'Poppins',sans-serif;
         }
-    </tbody>
-</table>
+
+        .actions-cell > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .container-card {
+            background: linear-gradient(145deg,#ffffff,#f9fbff);
+            border-radius: 1.2rem;
+            box-shadow: 0 10px 35px rgba(15,32,39,0.12);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            animation: fadeUp 0.7s ease forwards;
+        }
+
+            .container-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 6px;
+                width: 100%;
+                background: linear-gradient(90deg,#009ffd,#6a4c93);
+                border-radius: 1.2rem 1.2rem 0 0;
+            }
+
+        .container-card-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #203A43;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #009ffd;
+            padding-bottom: 8px;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 6px 25px rgba(15,32,39,0.1);
+            padding: 1.8rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .content-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 35px rgba(15,32,39,0.15);
+            }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+            gap: .8rem;
+            padding: .8rem 0;
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .input-group .input-group-text {
+            font-weight: 500;
+        }
+
+        .table-container {
+            border-radius: 1rem;
+            overflow-x: auto;
+            background: #fff;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+        }
+
+        table.custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            table-layout: auto;
+            text-align: center;
+        }
+
+            table.custom-table thead {
+                background: linear-gradient(90deg,#009ffd,#6a4c93);
+                color: white;
+                font-weight: 600;
+                align-content:center;
+            }
+
+            table.custom-table th, table.custom-table td {
+                padding: 12px 16px;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            table.custom-table tbody tr:nth-child(even) {
+                background-color: #f8f9fc;
+            }
+
+            table.custom-table tbody tr:hover {
+                background-color: #eef4ff;
+                transition: background 0.2s ease-in-out;
+            }
+        /* ===== BOTONES ===== */
+        .btn-add, .btn-primary, .btn-secondary, .btn-danger, .btn-info, .btn-filter {
+            font-size: 0.95rem;
+            padding: 8px 18px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add {
+            background-color: #3A7CA5;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-add:hover {
+                background-color: #2c5d7d;
+                transform: translateY(-1px);
+            }
+
+        .btn-info {
+            background-color: #f39c12;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-info:hover {
+                background-color: #d68910;
+                transform: translateY(-1px);
+            }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-danger:hover {
+                background-color: #c0392b;
+                transform: translateY(-1px);
+            }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: .6rem;
+            font-weight: 500;
+            font-size: .85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid;
+            text-decoration: none;
+            transition: all .2s ease;
+        }
+
+        .btn-edit {
+            color: #3A7CA5;
+            border-color: #3A7CA5;
+            background: transparent;
+        }
+
+            .btn-edit:hover {
+                background-color: #3A7CA5;
+                color: #fff;
+            }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-danger:hover {
+                background-color: #c0392b;
+                transform: translateY(-1px);
+            }
+
+        .btn-success {
+            background-color: #3A7CA5;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-success:hover {
+                background-color: #2c5d7d;
+                transform: translateY(-1px);
+            }
+
+        /* ===== PAGINACIÓN ===== */
+        .pagination {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 0;
+        }
+
+            .pagination .page-item .page-link {
+                color: #2563eb;
+                border: 1px solid #d1d5db;
+                background: #fff;
+                border-radius: 0.5rem;
+                font-size: 0.875rem;
+                font-weight: 500;
+                padding: 0.35rem 0.75rem;
+                transition: all 0.25s ease;
+            }
+
+                .pagination .page-item .page-link:hover {
+                    background-color: #eff6ff;
+                    border-color: #93c5fd;
+                    color: #1d4ed8;
+                    transform: translateY(-1px);
+                }
+
+            .pagination .page-item.active .page-link {
+                background: linear-gradient(135deg, #2563eb, #3b82f6);
+                color: #fff;
+                border-color: #2563eb;
+                box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+                transform: scale(1.05);
+            }
+
+        @@keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== MODO OSCURO (Overrides específicos de MostrarCargos) ===== */
+        /* Limpiar en rojo oscuro */
+        html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+        [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+        .dark-mode #btnLimpiar.btn-danger.btn-filter {
+            background-color: #8B0000; /* rojo oscuro */
+            border-color: #8B0000;
+            color: #f5f7fa;
+        }
+
+        html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+        [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+        .dark-mode #btnLimpiar.btn-danger.btn-filter:hover {
+            background-color: #a40000;
+            border-color: #a40000;
+        }
+
+        /* Agregar Cargo en color oscuro distinto (teal profundo) */
+        html[data-theme="dark"] .header-section .btn-success.btn-filter,
+        [data-bs-theme="dark"] .header-section .btn-success.btn-filter,
+        .dark-mode .header-section .btn-success.btn-filter {
+            background-color: #1f6f8b; /* teal profundo */
+            border-color: #1f6f8b;
+            color: #f5f7fa;
+        }
+
+        html[data-theme="dark"] .header-section .btn-success.btn-filter:hover,
+        [data-bs-theme="dark"] .header-section .btn-success.btn-filter:hover,
+        .dark-mode .header-section .btn-success.btn-filter:hover {
+            background-color: #2a8ba9;
+            border-color: #2a8ba9;
+        }
+
+        /* Botón Agregar Cargo (id específico) en modo oscuro */
+        html[data-theme="dark"] #btnAgregarCargo,
+        [data-bs-theme="dark"] #btnAgregarCargo,
+        .dark-mode #btnAgregarCargo {
+            background-color: #1f6f8b; /* teal profundo */
+            border-color: #1f6f8b;
+            color: #f5f7fa;
+        }
+
+        html[data-theme="dark"] #btnAgregarCargo:hover,
+        [data-bs-theme="dark"] #btnAgregarCargo:hover,
+        .dark-mode #btnAgregarCargo:hover {
+            background-color: #2a8ba9;
+            border-color: #2a8ba9;
+        }
+    </style>
+}

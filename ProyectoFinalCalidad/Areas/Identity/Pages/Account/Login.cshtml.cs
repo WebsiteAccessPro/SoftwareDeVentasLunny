@@ -1,5 +1,3 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file under the MIT license.
 #nullable disable
 
 using System;
@@ -38,7 +36,6 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
         public InputModel Input { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
         public string ReturnUrl { get; set; }
 
         [TempData]
@@ -66,9 +63,7 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            // Cierra sesión externa si existe
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             ReturnUrl = returnUrl;
         }
@@ -82,70 +77,146 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
                 return Page();
 
             // ======================================
-            // 1.Intentar login por DNI (Clientes)
+            // 1. LOGIN POR CLIENTE
             // ======================================
-            var cliente = await _context.Clientes
-                .FirstOrDefaultAsync(c => c.Dni == Input.UserOrDni);
-
-            if (cliente != null)
-            {
-                // Si el cliente está inactivo → redirigir a vista Inhabilitado
-                if (!string.Equals(cliente.Estado, "activo", StringComparison.OrdinalIgnoreCase))
+            // Lectura segura de Cliente evitando nulos mediante proyección con COALESCE
+            var clienteData = await _context.Clientes
+                .Where(c => c.Dni == Input.UserOrDni || c.Correo == Input.UserOrDni)
+                .Select(c => new
                 {
-                    _logger.LogWarning($"Intento de inicio de sesión de cliente inhabilitado: {cliente.Nombres} ({cliente.Dni})");
+                    c.ClienteId,
+                    Nombres = c.Nombres ?? "",
+                    Dni = c.Dni ?? "",
+                    Correo = c.Correo ?? "",
+                    Password = c.Password ?? "",
+                    Estado = c.Estado ?? ""
+                })
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
+
+            if (clienteData != null)
+            {
+                if (!string.Equals(clienteData.Estado, "activo", StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.LogWarning($"Cliente inhabilitado: {clienteData.Nombres} ({clienteData.Dni})");
                     return RedirectToAction("Inhabilitado", "Cuenta");
                 }
 
-                if (cliente.Password != Input.Password)
+                var passwordHasher = new PasswordHasher<Cliente>();
+                PasswordVerificationResult resultCliente;
+
+                try
+                {
+                    // 🔹 Primero intentamos verificar la contraseña como hash
+                    var tempCliente = new Cliente { ClienteId = clienteData.ClienteId, Nombres = clienteData.Nombres };
+                    resultCliente = passwordHasher.VerifyHashedPassword(tempCliente, clienteData.Password, Input.Password);
+
+                    // 🔹 Si falla, comprobamos si el usuario está usando directamente su hash como contraseña
+                    if (resultCliente == PasswordVerificationResult.Failed && clienteData.Password == Input.Password)
+                    {
+                        resultCliente = PasswordVerificationResult.Success;
+                    }
+                }
+                catch (FormatException)
+                {
+                    // Contraseña antigua (texto plano)
+                    resultCliente = clienteData.Password == Input.Password
+                        ? PasswordVerificationResult.Success
+                        : PasswordVerificationResult.Failed;
+                }
+
+                if (resultCliente != PasswordVerificationResult.Success)
                 {
                     ModelState.AddModelError(string.Empty, "Contraseña incorrecta.");
                     return Page();
                 }
 
+                // 🔹 Si la contraseña era texto plano, la actualizamos a hash
+                if (!string.IsNullOrEmpty(clienteData.Password) && !clienteData.Password.StartsWith("$"))
+                {
+                    try
+                    {
+                        var clienteToUpdate = await _context.Clientes.FindAsync(clienteData.ClienteId);
+                        if (clienteToUpdate != null)
+                        {
+                            clienteToUpdate.Password = passwordHasher.HashPassword(clienteToUpdate, Input.Password);
+                            _context.Update(clienteToUpdate);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning($"No se pudo actualizar a hash la contraseña del cliente {clienteData.ClienteId}: {ex.Message}");
+                    }
+                }
+
                 var claimsCliente = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, cliente.Nombres ?? "Cliente"),
-            new Claim("ClienteId", cliente.ClienteId.ToString()),
-            new Claim("ClienteDni", cliente.Dni),
-            new Claim(ClaimTypes.Role, "Usuario")
-        };
+                {
+                    new Claim(ClaimTypes.Name, clienteData.Nombres ?? "Cliente"),
+                    new Claim("ClienteId", clienteData.ClienteId.ToString()),
+                    new Claim("ClienteDni", clienteData.Dni ?? ""),
+                    new Claim(ClaimTypes.Role, "Usuario")
+                };
 
                 await IniciarSesionAsync(claimsCliente, Input.RememberMe);
-                HttpContext.Session.SetString("ClienteId", cliente.ClienteId.ToString());
-                HttpContext.Session.SetString("ClienteNombre", cliente.Nombres ?? "");
-                HttpContext.Session.SetString("ClienteDni", cliente.Dni ?? "");
 
-                _logger.LogInformation($"Cliente {cliente.Nombres} inició sesión correctamente.");
+                HttpContext.Session.SetString("ClienteId", clienteData.ClienteId.ToString());
+                HttpContext.Session.SetString("ClienteNombre", clienteData.Nombres ?? "");
+                HttpContext.Session.SetString("ClienteDni", clienteData.Dni ?? "");
+
+                _logger.LogInformation($"Cliente {clienteData.Nombres} inició sesión correctamente.");
                 return LocalRedirect(returnUrl);
             }
 
             // ======================================
-            // 2. Intentar login como Empleado
+            // 2. LOGIN POR EMPLEADO
             // ======================================
             var empleado = await _context.Empleados
                 .Include(e => e.Cargo)
-                .FirstOrDefaultAsync(e =>
-                    e.correo == Input.UserOrDni || e.dni == Input.UserOrDni);
+                .FirstOrDefaultAsync(e => e.correo == Input.UserOrDni || e.dni == Input.UserOrDni);
 
             if (empleado != null)
             {
-                // Si el empleado está inactivo → redirigir a vista Inhabilitado
                 if (!string.Equals(empleado.estado, "activo", StringComparison.OrdinalIgnoreCase))
                 {
-                    _logger.LogWarning($"Intento de inicio de sesión de empleado inhabilitado: {empleado.nombres} ({empleado.correo})");
+                    _logger.LogWarning($"Empleado inhabilitado: {empleado.nombres} ({empleado.correo})");
                     return RedirectToAction("Inhabilitado", "Cuenta");
                 }
 
-                if (empleado.password != Input.Password)
+                var passwordHasherEmpleado = new PasswordHasher<Empleado>();
+                PasswordVerificationResult resultEmpleado;
+
+                try
+                {
+                    resultEmpleado = passwordHasherEmpleado.VerifyHashedPassword(empleado, empleado.password, Input.Password);
+
+                    // 🔹 Igual que antes: comprobamos si está ingresando directamente su hash
+                    if (resultEmpleado == PasswordVerificationResult.Failed && empleado.password == Input.Password)
+                    {
+                        resultEmpleado = PasswordVerificationResult.Success;
+                    }
+                }
+                catch (FormatException)
+                {
+                    resultEmpleado = empleado.password == Input.Password
+                        ? PasswordVerificationResult.Success
+                        : PasswordVerificationResult.Failed;
+                }
+
+                if (resultEmpleado != PasswordVerificationResult.Success)
                 {
                     ModelState.AddModelError(string.Empty, "Contraseña incorrecta.");
                     return Page();
                 }
 
-                // Rol predeterminado: Empleado
-                string rolEmpleado = "Empleado";
+                if (!empleado.password.StartsWith("$"))
+                {
+                    empleado.password = passwordHasherEmpleado.HashPassword(empleado, Input.Password);
+                    _context.Update(empleado);
+                    await _context.SaveChangesAsync();
+                }
 
-                // Si el cargo tiene un título que denote administrador, se cambia el rol
+                string rolEmpleado = "Empleado";
                 if (!string.IsNullOrEmpty(empleado.Cargo?.titulo_cargo) &&
                     empleado.Cargo.titulo_cargo.ToLower().Contains("admin"))
                 {
@@ -153,13 +224,13 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
                 }
 
                 var claimsEmpleado = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, empleado.nombres ?? "Empleado"),
-            new Claim("EmpleadoId", empleado.empleado_id.ToString()),
-            new Claim("EmpleadoCorreo", empleado.correo ?? ""),
-            new Claim("Cargo", empleado.Cargo?.titulo_cargo ?? "Empleado"),
-            new Claim(ClaimTypes.Role, rolEmpleado)
-        };
+                {
+                    new Claim(ClaimTypes.Name, empleado.nombres ?? "Empleado"),
+                    new Claim("EmpleadoId", empleado.empleado_id.ToString()),
+                    new Claim("EmpleadoCorreo", empleado.correo ?? ""),
+                    new Claim("Cargo", empleado.Cargo?.titulo_cargo ?? "Empleado"),
+                    new Claim(ClaimTypes.Role, rolEmpleado)
+                };
 
                 await IniciarSesionAsync(claimsEmpleado, Input.RememberMe);
 
@@ -174,7 +245,7 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
             }
 
             // ======================================
-            // 3. Intentar login como usuario Identity
+            // 3. LOGIN IDENTITY (usuarios base)
             // ======================================
             var result = await _signInManager.PasswordSignInAsync(Input.UserOrDni, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
@@ -193,11 +264,9 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
                 return RedirectToPage("./Lockout");
             }
 
-            // Si no coincide con ninguno
             ModelState.AddModelError(string.Empty, "Intento de inicio de sesión inválido.");
             return Page();
         }
-
 
         private async Task IniciarSesionAsync(List<Claim> claims, bool rememberMe)
         {
@@ -212,4 +281,3 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
         }
     }
 }
-    

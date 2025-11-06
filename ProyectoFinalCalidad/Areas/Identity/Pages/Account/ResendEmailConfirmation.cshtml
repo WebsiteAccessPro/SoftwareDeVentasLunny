@@ -1,7 +1,7 @@
 @page
 @model ResendEmailConfirmationModel
 @{
-    ViewData["Title"] = "Reenviar confirmaci髇 de correo";
+    ViewData["Title"] = "Reenviar confirmaci贸n de correo";
 }
 
 <style>
@@ -121,7 +121,7 @@
                 outline: none;
             }
 
-    /* ======== BOT覰 ======== */
+    /* ======== BOTON ======== */
     button[type="submit"] {
         background: linear-gradient(90deg, #009ffd, #4facfe);
         border: none;
@@ -210,18 +210,80 @@
     }
 </style>
 
+<style>
+    /* ======= MODO OSCURO (solo superficies blancas) ======= */
+    html[data-theme="dark"] .resend-card,
+    [data-bs-theme="dark"] .resend-card,
+    .dark-mode .resend-card {
+        background: #1e1e1e;
+        color: #e0e0e0;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    html[data-theme="dark"] .resend-left,
+    [data-bs-theme="dark"] .resend-left,
+    .dark-mode .resend-left {
+        color: #e0e0e0;
+    }
+
+    /* Inputs y etiquetas */
+    html[data-theme="dark"] .resend-left .form-control,
+    [data-bs-theme="dark"] .resend-left .form-control,
+    .dark-mode .resend-left .form-control,
+    html[data-theme="dark"] .input-wrapper input,
+    [data-bs-theme="dark"] .input-wrapper input,
+    .dark-mode .input-wrapper input {
+        background-color: #232323;
+        color: #e0e0e0;
+        border-color: #3a3a3a;
+    }
+
+    html[data-theme="dark"] .resend-left .form-control::placeholder,
+    [data-bs-theme="dark"] .resend-left .form-control::placeholder,
+    .dark-mode .resend-left .form-control::placeholder {
+        color: #9aa0a6;
+    }
+
+    html[data-theme="dark"] .input-label,
+    [data-bs-theme="dark"] .input-label,
+    .dark-mode .input-label {
+        color: #cfd2d6;
+    }
+
+    html[data-theme="dark"] .resend-left .input-wrapper input:focus,
+    [data-bs-theme="dark"] .resend-left .input-wrapper input:focus,
+    .dark-mode .resend-left .input-wrapper input:focus {
+        border-color: #5ab9ea;
+        box-shadow: 0 0 8px rgba(90, 185, 234, 0.35);
+        outline: none;
+    }
+
+    /* Nota de pie */
+    html[data-theme="dark"] .footer-note,
+    [data-bs-theme="dark"] .footer-note,
+    .dark-mode .footer-note {
+        color: #b0b0b0;
+    }
+
+    html[data-theme="dark"] .footer-note a,
+    [data-bs-theme="dark"] .footer-note a,
+    .dark-mode .footer-note a {
+        color: #4fc3f7;
+    }
+</style>
+
 <div class="resend-card">
     <!-- PANEL IZQUIERDO -->
     <div class="resend-left">
         <h1>@ViewData["Title"]</h1>
-        <h2>Introduce tu correo electr髇ico</h2>
+        <h2>Introduce tu correo electr贸nico</h2>
         <hr />
 
         <form method="post" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
             <div class="input-group">
-                <label asp-for="Input.Email" class="input-label">Correo electr髇ico</label>
+                <label asp-for="Input.Email" class="input-label">Correo electr贸nico</label>
                 <div class="input-wrapper">
                     <i class="bi bi-envelope-check"></i>
                     <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="usuario@dominio.com" />
@@ -230,11 +292,11 @@
             </div>
 
             <button type="submit">
-                <i class="bi bi-arrow-repeat me-2"></i> Reenviar confirmaci髇
+                <i class="bi bi-arrow-repeat me-2"></i> Reenviar confirmaci贸n
             </button>
 
             <div class="footer-note">
-                <p>縔a confirmaste tu cuenta? <a asp-page="/Account/Login">Inicia sesi髇</a></p>
+                <p>驴Ya confirmaste tu cuenta? <a asp-page="/Account/Login">Inicia sesi贸n</a></p>
             </div>
         </form>
     </div>

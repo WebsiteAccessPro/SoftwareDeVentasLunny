@@ -1,171 +1,215 @@
-@model ProyectoFinalCalidad.Models.Empleado
+ï»¿@model ProyectoFinalCalidad.Models.Empleado
 @{
     ViewData["Title"] = "Editar Empleado";
 }
 
 <style>
-    body {
-        background-color: #f0f8ff;
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --danger: #e63946;
+        --success: #28a745;
     }
 
     .form-container {
-        max-width: 800px;
-        margin: 0 auto;
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(15, 32, 39, 0.1);
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         width: 100%;
         max-width: 850px;
+        margin: 60px auto;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-in-out;
     }
 
-    .form-title {
-        color: #203A43;
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: 18px 28px;
+        font-size: 1.4rem;
         font-weight: 600;
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        letter-spacing: 0.3px;
+    }
+
+        .form-header i {
+            font-size: 1.5rem;
+        }
+
+    .form-body {
+        padding: 40px;
     }
 
     .form-columns {
-        display: flex;
-        gap: 30px;
-    }
-
-    .form-column {
-        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px 28px;
     }
 
     .form-group {
-        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
     }
 
     .form-label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 500;
-        color: #2c3e50;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+        font-size: 0.95rem;
     }
 
     .form-control {
         width: 100%;
-        padding: 10px 15px;
-        border: 1px solid #dfe6e9;
-        border-radius: 8px;
-        transition: all 0.3s;
-        font-family: 'Poppins', sans-serif;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        transition: all 0.25s ease;
+        font-size: 0.9rem;
     }
 
         .form-control:focus {
-            border-color: #3A7CA5;
-            box-shadow: 0 0 0 0.25rem rgba(58, 124, 165, 0.25);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 159, 253, 0.15);
             outline: none;
         }
 
-        .form-control::placeholder {
-            color: #95a5a6;
-            font-size: 0.9rem;
-        }
+    /* === SECCIÃ“N DE CONTRASEÃ‘A === */
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--accent);
+        margin-top: 35px;
+        margin-bottom: 15px;
+        border-left: 4px solid var(--accent);
+        padding-left: 8px;
+    }
 
-    .input-group {
+    .password-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    .password-input-group {
+        position: relative;
         display: flex;
         align-items: center;
     }
 
-        .input-group .form-control {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
+    .password-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        transition: border-color 0.25s;
+        padding-right: 85px;
+    }
+
+        .password-input:focus {
+            border-color: var(--primary);
         }
 
-    .input-group-btn {
-        border: 1px solid #dfe6e9;
-        border-left: none;
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
-        background: white;
-        padding: 0 12px;
-        height: 42px;
-        display: flex;
-        align-items: center;
+    .password-copy,
+    .password-toggle {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
         cursor: pointer;
-        transition: all 0.3s;
+        padding: 5px;
+        color: var(--text-light);
+        transition: color 0.3s, transform 0.3s;
     }
 
-        .input-group-btn:hover {
-            background-color: #f8f9fa;
+        .password-copy:hover,
+        .password-toggle:hover {
+            color: var(--primary);
+            transform: translateY(-50%) scale(1.1);
         }
+
+    .password-copy {
+        right: 40px;
+    }
+
+    .password-toggle {
+        right: 8px;
+    }
+
+    .password-copy.copied i {
+        color: var(--success);
+    }
+
+    .alert-danger {
+        background-color: rgba(230, 57, 70, 0.1);
+        border: 1px solid rgba(230, 57, 70, 0.25);
+        color: var(--danger);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 3px;
+    }
 
     .btn-container {
         display: flex;
-        gap: 15px;
-        margin-top: 30px;
         justify-content: center;
+        gap: 15px;
+        margin-top: 35px;
     }
 
     .btn {
-        padding: 10px 25px;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.3s;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 600;
         cursor: pointer;
-        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
+        font-size: 0.95rem;
     }
 
     .btn-primary {
-        background-color: #3A7CA5;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
         color: white;
         border: none;
     }
 
         .btn-primary:hover {
-            background-color: #2c5d7d;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(58, 124, 165, 0.3);
+            box-shadow: 0 8px 18px rgba(0, 159, 253, 0.3);
         }
 
     .btn-secondary {
-        background-color: white;
-        color: #3A7CA5;
-        border: 1px solid #3A7CA5;
+        background: #fff;
+        border: 1px solid var(--accent);
+        color: var(--accent);
     }
 
-    .text-danger {
-        color: #e74c3c;
-        font-size: 0.85rem;
-        margin-top: 5px;
-        display: block;
-    }
-
-    .text-muted {
-        color: #95a5a6;
-        font-size: 0.8rem;
-    }
-
-    .alert-danger {
-        background-color: rgba(231, 76, 60, 0.15);
-        border: 1px solid rgba(231, 76, 60, 0.3);
-        color: #e74c3c;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 20px;
-    }
-
-    @@media (max-width: 768px) {
-        .form-container {
-            padding: 20px;
+        .btn-secondary:hover {
+            background-color: var(--accent);
+            color: #fff;
+            transform: translateY(-2px);
         }
 
-        .form-columns {
-            flex-direction: column;
-            gap: 0;
+    @@media (max-width: 768px) {
+        .form-body {
+            padding: 25px;
         }
 
         .btn-container {
@@ -176,70 +220,32 @@
             width: 100%;
         }
     }
-    /* Estilo específico para el grupo de contraseña */
-    .password-group {
-        margin-bottom: 1.5rem;
-    }
 
-    .password-input-group {
-        display: flex;
-        margin-bottom: 8px;
-    }
-
-    .password-input {
-        flex: 1;
-        padding: 10px 15px;
-        border: 1px solid #dfe6e9;
-        border-right: none;
-        border-radius: 8px 0 0 8px;
-        transition: all 0.3s;
-    }
-
-    .password-toggle {
-        width: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: white;
-        border: 1px solid #dfe6e9;
-        border-left: none;
-        border-radius: 0 8px 8px 0;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-        .password-toggle:hover {
-            background-color: #f8f9fa;
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
         }
 
-        .password-toggle i {
-            color: #95a5a6;
-            transition: all 0.3s;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-
-        .password-toggle:hover i {
-            color: #3A7CA5;
-        }
+    }
 </style>
 
 <div class="form-container">
-    <h2 class="form-title">@ViewData["Title"]</h2>
+    <div class="form-header">
+        <i class="fas fa-user-edit"></i>
+        @ViewData["Title"]
+    </div>
 
-    <form asp-action="EditarEmpleado" asp-controller="Empleado" asp-route-id="@Model.empleado_id" method="post" class="needs-validation" novalidate>
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
-        <input type="hidden" asp-for="empleado_id" />
+    <div class="form-body">
+        <form asp-action="EditarEmpleado" asp-controller="Empleado" asp-route-id="@Model.empleado_id" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="empleado_id" />
 
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="alert alert-danger">
-                @TempData["ErrorMessage"]
-            </div>
-        }
-
-        <div class="form-columns">
-            <!-- Columna Izquierda -->
-            <div class="form-column">
-                <!-- Campo Cargo -->
+            <div class="form-columns">
                 <div class="form-group">
                     <label asp-for="cargo_id" class="form-label">Cargo</label>
                     <select asp-for="cargo_id" asp-items="ViewBag.Cargos" class="form-control">
@@ -248,136 +254,124 @@
                     <span asp-validation-for="cargo_id" class="text-danger"></span>
                 </div>
 
-                <!-- Campo Nombres -->
                 <div class="form-group">
                     <label asp-for="nombres" class="form-label">Nombre</label>
                     <input asp-for="nombres" class="form-control" required />
                     <span asp-validation-for="nombres" class="text-danger"></span>
                 </div>
 
-                <!-- Campo DNI -->
                 <div class="form-group">
                     <label asp-for="dni" class="form-label">DNI</label>
-                    <input asp-for="dni" class="form-control" required maxlength="8" placeholder="Ingrese 8 dígitos" />
+                    <input asp-for="dni" class="form-control" maxlength="8" placeholder="Ingrese 8 dÃ­gitos" />
                     <span asp-validation-for="dni" class="text-danger"></span>
                 </div>
 
-                <!-- Campo Teléfono -->
                 <div class="form-group">
-                    <label asp-for="telefono" class="form-label">Teléfono</label>
-                    <input asp-for="telefono" class="form-control" maxlength="9" placeholder="Ingrese 9 dígitos" />
+                    <label asp-for="telefono" class="form-label">TelÃ©fono</label>
+                    <input asp-for="telefono" class="form-control" maxlength="9" placeholder="Ingrese 9 dÃ­gitos" />
                     <span asp-validation-for="telefono" class="text-danger"></span>
                 </div>
-            </div>
 
-            <!-- Columna Derecha -->
-            <div class="form-column">
-                <!-- Campo Correo -->
                 <div class="form-group">
                     <label asp-for="correo" class="form-label">Correo</label>
                     <input asp-for="correo" type="email" class="form-control" placeholder="ejemplo@correo.com" />
                     <span asp-validation-for="correo" class="text-danger"></span>
                 </div>
 
-                <!-- Campo Estado -->
                 <div class="form-group">
                     <label asp-for="estado" class="form-label">Estado</label>
-                    <select asp-for="estado" class="form-control" required>
+                    <select asp-for="estado" class="form-control">
                         <option value="activo">Activo</option>
                         <option value="inhabilitado">Inhabilitado</option>
                     </select>
                     <span asp-validation-for="estado" class="text-danger"></span>
                 </div>
 
-                <!-- Campo Fecha Inicio -->
                 <div class="form-group">
                     <label asp-for="fecha_inicio" class="form-label">Fecha Inicio</label>
                     <input asp-for="fecha_inicio" type="date" class="form-control" required />
                     <span asp-validation-for="fecha_inicio" class="text-danger"></span>
                 </div>
 
-                <!-- Campo Fecha Fin -->
                 <div class="form-group">
                     <label asp-for="fecha_fin" class="form-label">Fecha Fin</label>
                     <input asp-for="fecha_fin" type="date" class="form-control" />
                     <span asp-validation-for="fecha_fin" class="text-danger"></span>
                 </div>
             </div>
-        </div>
 
-        <!-- Campo Password (ancho completo) -->
-        <div class="password-group">
-            <label class="form-label">Contraseña</label>
+            <div class="section-title">GestiÃ³n de ContraseÃ±a</div>
 
-            <!-- Mostrar contraseña actual (solo lectura) -->
-            <div class="password-input-group">
-                <input type="password"
-                       class="password-input"
-                       id="currentPassword"
-                       value="@Model.password"
-                       readonly
-                       placeholder="Contraseña actual" />
-                <span class="password-toggle" onclick="togglePasswordVisibility('currentPassword')">
-                    <i class="fas fa-eye"></i>
-                </span>
-            </div>
-
-            <!-- Campo para nueva contraseña -->
             <div class="password-group">
-                <label class="form-label">Contraseña</label>
-
-                <!-- Campo para nueva contraseña -->
-                <div class="password-input-group">
-                    <input type="password"
-                           class="password-input"
-                           name="NewPassword"
-                           id="NewPassword"
-                           placeholder="Ingrese nueva contraseña (dejar vacío para mantener la actual)" />
-                    <span class="password-toggle" onclick="togglePasswordVisibility('NewPassword')">
-                        <i class="fas fa-eye"></i>
-                    </span>
+                <div class="form-group">
+                    <label class="form-label">ContraseÃ±a Actual</label>
+                    <div class="password-input-group">
+                        <input type="password" class="password-input" id="currentPassword" value="@Model.password" readonly />
+                        <button type="button" class="password-copy" onclick="copyPassword('currentPassword', this)" title="Copiar contraseÃ±a">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('currentPassword', this)" title="Mostrar/Ocultar contraseÃ±a">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Campo oculto para mantener la contraseña actual -->
+                <div class="form-group">
+                    <label class="form-label">Nueva ContraseÃ±a</label>
+                    <div class="password-input-group">
+                        <input type="password" class="password-input" name="NewPassword" id="NewPassword" placeholder="Ingrese nueva contraseÃ±a" />
+                        <button type="button" class="password-copy" onclick="copyPassword('NewPassword', this)" title="Copiar nueva contraseÃ±a">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('NewPassword', this)" title="Mostrar/Ocultar contraseÃ±a">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <input type="hidden" asp-for="password" />
             </div>
-        </div>
 
-        <!-- Botones -->
-        <div class="btn-container">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Guardar Cambios
-            </button>
-            <a asp-action="MostrarEmpleados" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
-        </div>
-    </form>
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+                @{
+                    var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+                    var accionCancelar = (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                    ? "MostrarEmpleadosAdmin"
+                    : "MostrarEmpleados";
+                }
+                <a asp-action="@accionCancelar" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
-        // Validación del lado del cliente
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const fechaInicio = document.getElementById('fecha_inicio').value;
-            if (!fechaInicio) {
-                e.preventDefault();
-                document.getElementById('fecha_inicio').classList.add('is-invalid');
-                document.querySelector('[data-valmsg-for="fecha_inicio"]').textContent = 'La fecha de inicio es requerida';
-            }
-        });
-
-        function togglePasswordVisibility(fieldId) {
+        function togglePasswordVisibility(fieldId, trigger) {
             const field = document.getElementById(fieldId);
-            const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
-            field.setAttribute('type', type);
-
-            // Cambiar ícono
-            const icon = field.nextElementSibling.querySelector('i');
+            const type = field.type === 'password' ? 'text' : 'password';
+            field.type = type;
+            const icon = trigger.querySelector('i');
             icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+
+        function copyPassword(fieldId, trigger) {
+            const field = document.getElementById(fieldId);
+            navigator.clipboard.writeText(field.value || '').then(() => {
+                trigger.classList.add('copied');
+                const icon = trigger.querySelector('i');
+                icon.className = 'fas fa-check';
+                setTimeout(() => {
+                    trigger.classList.remove('copied');
+                    icon.className = 'fas fa-copy';
+                }, 1500);
+            }).catch(() => alert('No se pudo copiar al portapapeles.'));
         }
     </script>
 }

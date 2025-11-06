@@ -1,162 +1,292 @@
-@model ProyectoFinalCalidad.Models.Cliente
-
+ï»¿@model ProyectoFinalCalidad.Models.Cliente
 @{
     ViewData["Title"] = "Agregar Cliente";
 }
 
-<div class="container">
-    <div class="custom-card">
-        <h2>@ViewData["Title"]</h2>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-        <form asp-action="AgregarCliente" method="post" class="needs-validation mt-3" novalidate>
-            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+<style>
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --danger: #e63946;
+        --scale-font: 1.03;
+        --scale-padding: 1.08;
+    }
 
-            <div class="mb-3">
-                <label asp-for="Correo" class="form-label">Correo</label>
-                <input asp-for="Correo" class="form-control input-custom" required />
-                <span asp-validation-for="Correo" class="text-danger"></span>
-            </div>
+    .form-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 36px rgba(0, 0, 0, 0.10);
+        width: 100%;
+        max-width: 960px;
+        margin: 12px 18px;
+        overflow: hidden;
+        animation: fadeIn 0.45s ease-in-out;
+    }
 
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label">Contraseña</label>
-                <input asp-for="Password" type="password" class="form-control input-custom" required />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: calc(16px * var(--scale-padding)) 28px;
+        font-size: calc(1.35rem * var(--scale-font));
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
 
-            <div class="mb-3">
-                <label asp-for="Nombres" class="form-label">Nombres</label>
-                <input asp-for="Nombres" class="form-control input-custom" required />
-                <span asp-validation-for="Nombres" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Dni" class="form-label">DNI</label>
-                <input asp-for="Dni" class="form-control input-custom" required />
-                <span asp-validation-for="Dni" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Direccion" class="form-label">Dirección</label>
-                <input asp-for="Direccion" class="form-control input-custom" />
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Telefono" class="form-label">Teléfono</label>
-                <input asp-for="Telefono" class="form-control input-custom" />
-            </div>
-
-            <input type="hidden" asp-for="Estado" value="activo" />
-
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary btn-custom">Registrar</button>
-                <a asp-action="MostrarClientes" class="btn btn-secondary btn-custom ms-2">Cancelar</a>
-            </div>
-        </form>
-    </div>
-</div>
-
-@section Styles {
-    <style>
-
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 1;
-            padding: 2rem 1rem;
-        }
-
-        /* ======== ANIMACIÓN ======== */
-        @@keyframes fadeUp {
-            0%
-
-        {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        }
-
-        /* ======== TARJETA FORMULARIO ======== */
-        .custom-card {
-            background: linear-gradient(145deg, #ffffff, #f9fbff);
-            border-radius: 1.2rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            padding: 2.5rem;
-            animation: fadeUp 0.8s ease forwards;
-            position: relative;
-        }
-
-            .custom-card::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 6px;
-                width: 100%;
-                background: linear-gradient(90deg, #009ffd, #6a4c93);
-                border-radius: 1rem 1rem 0 0;
-            }
-
-            .custom-card h2 {
-                color: #009ffd;
-                font-weight: 700;
-                font-size: 1.8rem;
-                margin-bottom: 1.5rem;
-            }
-
-        /* ======== INPUTS ======== */
-        .input-custom {
-            border-radius: 0.6rem;
-            border: 1px solid #ced4da;
-            padding: 0.6rem 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-            .input-custom:focus {
-                border-color: #6a4c93;
-                box-shadow: 0 0 8px rgba(106,76,147,0.2);
-                outline: none;
-            }
-
-        /* ======== BOTONES ======== */
-        .btn-custom {
-            border-radius: 0.6rem;
-            padding: 0.55rem 1.2rem;
-            transition: all 0.2s ease;
-        }
-
-            .btn-custom:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            }
-
-        /* ======== VALIDACIÓN ======== */
-        .text-danger {
-            font-size: 0.85rem;
-        }
-
-        /* ======== RESPONSIVE ======== */
-        @@media(max - width:768px) {
-            .custom-card
-
-        {
-            padding: 2rem 1.5rem;
-        }
-
-        .custom-card h2 {
+        .form-header i {
             font-size: 1.5rem;
         }
 
+    .form-body {
+        padding: calc(30px * var(--scale-padding));
+    }
+
+    .form-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 22px 26px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        font-size: calc(1rem * var(--scale-font));
+    }
+
+    .form-control {
+        width: 100%;
+        padding: calc(12px * var(--scale-padding)) calc(14px * var(--scale-padding));
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #fff;
+        transition: all 0.18s ease;
+        font-size: calc(0.98rem * var(--scale-font));
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 159, 253, 0.10);
+            outline: none;
         }
-    </style>
-}
+
+    .password-input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .password-input {
+        flex: 1;
+        border: 1px solid var(--border);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+    }
+
+    .password-toggle {
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
+        border-left: none;
+        border-radius: 0 12px 12px 0;
+        cursor: pointer;
+    }
+
+        .password-toggle i {
+            color: var(--text-light);
+            font-size: 1.05rem;
+        }
+
+    .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 26px;
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        padding: calc(12px * var(--scale-padding)) 26px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: calc(0.98rem * var(--scale-font));
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        border: none;
+        box-shadow: 0 6px 18px rgba(0, 159, 253, 0.12);
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn-secondary {
+        background: #fff;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
+
+    @@media (max-width: 768px) {
+        .form-body {
+            padding: 18px;
+        }
+
+        .form-container {
+            margin: 10px;
+            max-width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .form-columns {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<main>
+    <div class="form-container">
+        <div class="form-header">
+            <i class="fas fa-user-plus"></i>
+            @ViewData["Title"]
+        </div>
+
+        <div class="form-body">
+            <form asp-action="AgregarCliente" method="post" novalidate>
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-columns">
+                    <!-- Columna Izquierda -->
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Nombres" class="form-label">Nombre completo</label>
+                            <input asp-for="Nombres" class="form-control" required />
+                            <span asp-validation-for="Nombres" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Dni" class="form-label">DNI</label>
+                            <input asp-for="Dni" maxlength="15" class="form-control" placeholder="Ingrese DNI" required />
+                            <span asp-validation-for="Dni" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Direccion" class="form-label">DirecciÃ³n</label>
+                            <input asp-for="Direccion" class="form-control" />
+                            <span asp-validation-for="Direccion" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha -->
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Correo" class="form-label">Correo</label>
+                            <input asp-for="Correo" type="email" class="form-control" placeholder="ejemplo@correo.com" required />
+                            <span asp-validation-for="Correo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Telefono" class="form-label">TelÃ©fono</label>
+                            <input asp-for="Telefono" maxlength="9" class="form-control" placeholder="Ingrese 9 dÃ­gitos" />
+                            <span asp-validation-for="Telefono" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Estado" class="form-label">Estado</label>
+                            <select asp-for="Estado" class="form-control" required>
+                                <option value="">-- Selecciona estado --</option>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                            <span asp-validation-for="Estado" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FechaRegistro" class="form-label">Fecha de registro</label>
+                            <input asp-for="FechaRegistro" type="date" class="form-control"
+                                   value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="FechaRegistro" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ContraseÃ±a -->
+                <div class="form-group mt-3">
+                    <label asp-for="Password" class="form-label">ContraseÃ±a</label>
+                    <div class="password-input-group">
+                        <input asp-for="Password" type="password" class="form-control password-input"
+                               required minlength="6" placeholder="MÃ­nimo 6 caracteres" id="passwordField" />
+                        <span class="password-toggle" onclick="togglePasswordVisibility('passwordField')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <a asp-action="MostrarClientes" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const type = field.type === 'password' ? 'text' : 'password';
+            field.type = type;
+
+            const icon = field.nextElementSibling.querySelector('i');
+            icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+    </script>
 }

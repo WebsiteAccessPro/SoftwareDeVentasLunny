@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
@@ -62,27 +62,51 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "El correo es obligatorio")]
             [EmailAddress]
             [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "La contraseña es obligatoria")]
             [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} y máximo {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Contraseña")]
             public string Password { get; set; }
 
+            [Required(ErrorMessage = "Debes confirmar tu contraseña")]
             [DataType(DataType.Password)]
             [Display(Name = "Confirmar contraseña")]
             [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
             public string ConfirmPassword { get; set; }
+
+            [Required(ErrorMessage = "El nombre es obligatorio")]
+            [StringLength(100)]
+            [Display(Name = "Nombre completo")]
+            public string Nombres { get; set; }
+
+            [Required(ErrorMessage = "El DNI es obligatorio")]
+            [StringLength(15)]
+            [Display(Name = "DNI")]
+            public string Dni { get; set; }
+
+            [Required(ErrorMessage = "El teléfono es obligatorio")]
+            [StringLength(20)]
+            [Display(Name = "Teléfono")]
+            public string Telefono { get; set; }
+
+            [Required(ErrorMessage = "La dirección es obligatoria")]
+            [StringLength(255)]
+            [Display(Name = "Dirección")]
+            public string Direccion { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public bool Completed { get; set; }
+
+        public async Task OnGetAsync(string returnUrl = null, bool? completed = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            Completed = completed ?? false;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -102,55 +126,51 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("Usuario Identity creado correctamente.");
 
-                    // Asignar rol predeterminado
-                    string rolAsignado = "Empleado";
+                    // Asignar rol predeterminado CLIENTE
+                    string rolAsignado = "Cliente";
                     if (!await _roleManager.RoleExistsAsync(rolAsignado))
                     {
                         await _roleManager.CreateAsync(new IdentityRole(rolAsignado));
-                        _logger.LogInformation("Rol 'Empleado' creado porque no existía.");
+                        _logger.LogInformation("Rol 'Cliente' creado porque no existía.");
                     }
 
                     await _userManager.AddToRoleAsync(user, rolAsignado);
-
-                    // Registrar empleado en tabla Empleado
+                    
+                    // Registrar cliente en tabla Cliente
                     try
                     {
-                        _logger.LogInformation("Intentando crear registro en tabla Empleado...");
+                        _logger.LogInformation("Intentando crear registro en tabla Cliente...");
 
-                        var random = new Random();
-                        string telefonoAleatorio = random.Next(900000000, 999999999).ToString();
-
-                        var nuevoEmpleado = new Empleado
+                        var nuevoCliente = new Cliente
                         {
-                            cargo_id = 6,
-                            correo = Input.Email,
-                            password = Input.Password,
-                            estado = "pendiente",
-                            fecha_inicio = DateTime.Now,
-                            fecha_fin = null,
-                            nombres = "Null",
-                            dni = Guid.NewGuid().ToString().Substring(0, 8),
-                            telefono = telefonoAleatorio
+                            Nombres = Input.Nombres,
+                            Dni = Input.Dni,
+                            Telefono = Input.Telefono,
+                            Correo = Input.Email,
+                            Direccion = (Input.Direccion ?? string.Empty).Trim(),
+                            Password = (Input.Password?.Length ?? 0) > 16 ? Input.Password.Substring(0, 16) : Input.Password,
+                            Estado = "activo",
+                            FechaRegistro = DateTime.Now
                         };
 
-                        _context.Empleados.Add(nuevoEmpleado);
+                        _context.Clientes.Add(nuevoCliente);
                         int filas = await _context.SaveChangesAsync();
 
                         if (filas > 0)
-                            _logger.LogInformation("Registro insertado correctamente en tabla Empleado.");
+                            _logger.LogInformation("Registro insertado correctamente en tabla Cliente.");
                         else
-                            _logger.LogWarning("No se insertó ningún registro en la tabla Empleado.");
+                            _logger.LogWarning("No se insertó ningún registro en la tabla Cliente.");
                     }
                     catch (DbUpdateException ex)
                     {
                         string msg = ex.InnerException?.Message ?? ex.Message;
-                        _logger.LogError($"Error al guardar en tabla Empleado: {msg}");
+                        _logger.LogError($"Error al guardar en tabla Cliente: {msg}");
                         ModelState.AddModelError(string.Empty, $"Error BD: {msg}");
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Error general al crear empleado: {ex}");
-                        ModelState.AddModelError(string.Empty, "No se pudo crear el registro en la tabla Empleado. Revisa los logs.");
+                        _logger.LogError($"Error general al crear cliente: {ex}");
+                        ModelState.AddModelError(string.Empty, "No se pudo crear el registro en la tabla Cliente. Revisa los logs.");
                     }
 
                     // Confirmación de correo electrónico
@@ -172,8 +192,8 @@ namespace ProyectoFinalCalidad.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        // No redirigimos al inicio directamente, mostramos pantalla de confirmación en Register
+                        return RedirectToPage("/Account/Register", new { completed = true });
                     }
                 }
 

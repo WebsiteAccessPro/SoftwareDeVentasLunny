@@ -4,16 +4,16 @@
     ViewData["Title"] = "Editar Zona de Cobertura";
 }
 
-<div class="container py-5">
-    <div class="card shadow-lg border-0 rounded-4 animate-fade">
-        <div class="card-header text-white py-3 d-flex align-items-center"
-             style="background: linear-gradient(to right, #0d6efd, #20c997);">
-            <h3 class="mb-0">
-                <i class="bi bi-pencil-square me-2"></i>@ViewData["Title"]
-            </h3>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<main>
+    <div class="form-container">
+        <div class="form-header">
+            <i class="bi bi-pencil-square"></i>
+            @ViewData["Title"]
         </div>
 
-        <div class="card-body px-4 py-4">
+        <div class="form-body">
             @if (TempData["ErrorMessage"] != null)
             {
                 <div class="alert alert-danger mb-4">
@@ -26,51 +26,51 @@
                 <input type="hidden" asp-for="Id" />
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <!-- Nombre de la Zona -->
-                <div class="mb-4">
-                    <label asp-for="NombreZona" class="form-label fw-semibold">
-                        <i class="bi bi-geo me-2 text-primary"></i>Nombre de la Zona <span class="text-danger">*</span>
-                    </label>
-                    <input asp-for="NombreZona" class="form-control shadow-sm" required placeholder="Ejemplo: Zona Norte" />
-                    <span asp-validation-for="NombreZona" class="text-danger"></span>
-                </div>
+                <div class="form-columns">
+                    <!-- Columna Izquierda -->
+                    <div class="form-group">
+                        <label asp-for="NombreZona" class="form-label">
+                            <i class="bi bi-geo me-2 text-primary"></i>Nombre de la Zona <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="NombreZona" class="form-control" required placeholder="Ejemplo: Zona Norte" />
+                        <span asp-validation-for="NombreZona" class="text-danger"></span>
+                    </div>
 
-                <!-- Distrito -->
-                <div class="mb-4">
-                    <label asp-for="Distrito" class="form-label fw-semibold">
-                        <i class="bi bi-building me-2 text-success"></i>Distrito <span class="text-danger">*</span>
-                    </label>
-                    <input asp-for="Distrito" class="form-control shadow-sm" required placeholder="Ejemplo: Miraflores" />
-                    <span asp-validation-for="Distrito" class="text-danger"></span>
-                </div>
+                    <!-- Columna Derecha -->
+                    <div class="form-group">
+                        <label asp-for="Distrito" class="form-label">
+                            <i class="bi bi-building me-2 text-success"></i>Distrito <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Distrito" class="form-control" required placeholder="Ejemplo: Miraflores" />
+                        <span asp-validation-for="Distrito" class="text-danger"></span>
+                    </div>
 
-                <!-- Descripción -->
-                <div class="mb-4">
-                    <label asp-for="Descripcion" class="form-label fw-semibold">
-                        <i class="bi bi-card-text me-2 text-info"></i>Descripción
-                    </label>
-                    <textarea asp-for="Descripcion" class="form-control shadow-sm" rows="3" maxlength="255" placeholder="Detalles sobre la zona..."></textarea>
-                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    <div class="form-group">
+                        <label asp-for="Descripcion" class="form-label">
+                            <i class="bi bi-card-text me-2 text-info"></i>Descripción
+                        </label>
+                        <textarea asp-for="Descripcion" class="form-control" rows="3" maxlength="255" placeholder="Detalles sobre la zona..."></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
                 </div>
 
                 <!-- Botones -->
-                <div class="d-flex justify-content-start mt-4">
-                    <button type="submit" class="btn btn-success px-4 me-2">
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">
                         <i class="bi bi-save2 me-1"></i> Guardar Cambios
                     </button>
-                    <a asp-action="Index" class="btn btn-secondary px-4">
+                    <a asp-action="Index" class="btn btn-secondary">
                         <i class="bi bi-arrow-left-circle me-1"></i> Cancelar
                     </a>
                 </div>
             </form>
         </div>
     </div>
-</div>
+</main>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
     <script>
         (() => {
             'use strict';
@@ -90,56 +90,156 @@
 
 @section Styles {
     <style>
-        /* Animación */
-        @@keyframes fadeUp {
-            0%
+        :root {
+            --primary: #009ffd;
+            --accent: #6a4c93;
+            --text-dark: #1e2a35;
+            --text-light: #6b7280;
+            --border: #d0d7de;
+            --bg-light: #f9fafb;
+            --danger: #e63946;
+            --scale-font: 1.0; /* tamaño medio */
+            --scale-padding: 1.0;
+        }
+
+        .form-container {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 860px;
+            margin: 20px auto;
+            overflow: hidden;
+            animation: fadeIn 0.45s ease-in-out;
+        }
+
+        .form-header {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            padding: calc(16px * var(--scale-padding)) 28px;
+            font-size: calc(1.3rem * var(--scale-font));
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+        }
+
+            .form-header i {
+                font-size: 1.5rem;
+            }
+
+        .form-body {
+            padding: calc(28px * var(--scale-padding));
+        }
+
+        .form-columns {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            font-size: calc(1rem * var(--scale-font));
+        }
+
+        .form-control {
+            width: 100%;
+            padding: calc(12px * var(--scale-padding)) calc(14px * var(--scale-padding));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
+            transition: all 0.18s ease;
+            font-size: calc(0.97rem * var(--scale-font));
+        }
+
+            .form-control:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(0, 159, 253, 0.12);
+                outline: none;
+            }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 12px;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            padding: calc(10px * var(--scale-padding)) 22px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: calc(0.97rem * var(--scale-font));
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 14px rgba(0, 159, 253, 0.12);
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-1px);
+            }
+
+        .btn-secondary {
+            background: #fff;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        @@media (max-width: 768px) {
+            .form-body
+
+        {
+            padding: 18px;
+        }
+
+        .form-container {
+            margin: 10px;
+            max-width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .form-columns {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        }
+
+        @@keyframes fadeIn {
+            from
 
         {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(6px);
         }
 
-        100% {
+        to {
             opacity: 1;
             transform: translateY(0);
         }
 
         }
-
-        .animate-fade {
-            animation: fadeUp 0.6s ease forwards;
-        }
-
-        .card {
-            max-width: 700px;
-            margin: 0 auto;
-            border-radius: 1rem;
-        }
-
-        .form-label {
-            color: #2c3e50;
-            font-size: 1rem;
-        }
-
-        .form-control {
-            border-radius: 0.6rem;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-        }
-
-            .form-control:focus {
-                border-color: #20c997;
-                box-shadow: 0 0 0 0.15rem rgba(32, 201, 151, 0.25);
-            }
-
-        .btn {
-            border-radius: 0.6rem;
-            font-weight: 600;
-        }
-
-            .btn:hover {
-                transform: scale(1.03);
-                transition: 0.2s ease-in-out;
-            }
     </style>
 }

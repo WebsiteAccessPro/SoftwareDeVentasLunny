@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Hotspots>
+  <Hotspot>
+    <Assembly>ProyectoFinalCalidad</Assembly>
+    <Class>ProyectoFinalCalidad.Areas.Identity.Pages.Account.LoginModel</Class>
+    <MethodName>MoveNext()</MethodName>
+    <ShortName />
+    <Line>72</Line>
+    <FileIndex>0</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>72</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+  <Hotspot>
+    <Assembly>ProyectoFinalCalidad</Assembly>
+    <Class>ProyectoFinalCalidad.Data.Migrations.AddFechaRegistroToEquipo</Class>
+    <MethodName>BuildTargetModel(...)</MethodName>
+    <ShortName />
+    <Line>20</Line>
+    <FileIndex>1</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>66</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+  <Hotspot>
+    <Assembly>ProyectoFinalCalidad</Assembly>
+    <Class>ProyectoFinalCalidad.Data.Migrations.ApplicationDbContextModelSnapshot</Class>
+    <MethodName>BuildModel(...)</MethodName>
+    <ShortName />
+    <Line>17</Line>
+    <FileIndex>0</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>66</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+  <Hotspot>
+    <Assembly>ProyectoFinalCalidad</Assembly>
+    <Class>ProyectoFinalCalidad.Controllers.PedidoInstalacionController</Class>
+    <MethodName>MoveNext()</MethodName>
+    <ShortName />
+    <Line>97</Line>
+    <FileIndex>0</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>42</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+  <Hotspot>
+    <Assembly>ProyectoFinalCalidad</Assembly>
+    <Class>ProyectoFinalCalidad.Data.Migrations.AddFechaRegistroToEquipo</Class>
+    <MethodName>Up(...)</MethodName>
+    <ShortName />
+    <Line>13</Line>
+    <FileIndex>0</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>40</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+  <Hotspot>
+    <Assembly>ProyectoFinalCalidad</Assembly>
+    <Class>CheckEstadoUsuarioMiddleware</Class>
+    <MethodName>MoveNext()</MethodName>
+    <ShortName />
+    <Line>16</Line>
+    <FileIndex>0</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>36</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+</Hotspots>

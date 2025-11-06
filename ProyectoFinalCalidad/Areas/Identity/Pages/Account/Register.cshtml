@@ -11,15 +11,64 @@
         justify-content: center;
         align-items: center;
         flex: 1;
+        padding: 2rem 1rem;
     }
 
     .register-container {
         width: 100%;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        padding: 2rem 1rem;
+        padding: 1rem;
+        gap: 1rem;
     }
+
+    /* ======= PROGRESO ======= */
+    .register-progress {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 1000px;
+        margin-bottom: 1.5rem;
+    }
+
+    .step-indicator {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
+        padding: .8rem 1.15rem;
+        border-radius: 999px;
+        border: 1px solid #d7e3ef;
+        color: #52667a;
+        background: #f6fbff;
+        transition: transform .2s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+
+    .step-indicator .icon-wrap {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #e9f4ff;
+        color: #0b7bd9;
+        box-shadow: inset 0 0 0 2px rgba(11,123,217,.12);
+        font-size: 1.1rem;
+    }
+
+    .step-indicator .step-label { letter-spacing: .02em; }
+
+        .step-indicator.active {
+            border-color: #5ab9ea;
+            color: #0b5fa3;
+            background: #e7f4ff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(11, 127, 217, .18);
+        }
 
     /* ======= TARJETA PRINCIPAL ======= */
     .register-card {
@@ -34,18 +83,42 @@
         animation: fadeInUp 0.6s ease;
     }
 
-    /* ======= PANEL IZQUIERDO ======= */
+    /* ======= PANEL IZQUIERDO (INFO) ======= */
     .register-left {
+        background: linear-gradient(135deg, #009ffd, #2a2a72);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        padding: 3rem 2rem;
+    }
+
+        .register-left h1 {
+            font-size: 2rem;
+            margin-bottom: .75rem;
+        }
+
+        .register-left p {
+            font-size: 1.05rem;
+            opacity: .95;
+            line-height: 1.5;
+            max-width: 320px;
+        }
+
+    /* ======= PANEL DERECHO (FORM) ======= */
+    .register-right {
         padding: 3rem 2.5rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
 
-        .register-left h2 {
+        .register-right h2 {
             font-weight: 700;
             color: #0077cc;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             text-align: center;
         }
 
@@ -53,20 +126,43 @@
         border-radius: 0.6rem;
         border: 1px solid #dee2e6;
         height: 3.2rem;
-        margin-bottom: 1.4rem;
+        margin-bottom: 1.2rem;
         transition: all 0.3s ease;
     }
 
         .form-floating > input:focus {
             border-color: #5ab9ea;
-            box-shadow: 0 0 8px rgba(90, 185, 234, 0.4);
         }
 
     .text-danger {
         font-size: 0.9rem;
     }
 
-    /* ======= BOT�N REGISTRO ======= */
+    .invalid-feedback {
+        font-size: 0.9rem;
+        margin-top: -0.6rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .form-floating .is-invalid ~ .invalid-feedback {
+        display: block;
+    }
+
+    /* ======= MULTISTEP ======= */
+    .step {
+        display: none;
+        animation: fadeInUp .35s ease;
+    }
+
+        .step.active {
+            display: block;
+        }
+
+    .step-actions {
+        display: flex;
+        gap: .75rem;
+    }
+
     .btn-register-form {
         background: linear-gradient(90deg, #009ffd, #2a2a72);
         border: none;
@@ -76,9 +172,8 @@
         transition: all 0.25s ease;
         color: #fff;
         border-radius: 0.6rem;
-        padding: 0.9rem;
-        width: 100%;
-        font-size: 1.1rem;
+        padding: 0.9rem 1rem;
+        font-size: 1.05rem;
     }
 
         .btn-register-form:hover {
@@ -86,9 +181,17 @@
             box-shadow: 0 6px 20px rgba(42, 42, 114, 0.4);
         }
 
+    .btn-outline {
+        border: 1px solid #c9d7e3;
+        background: #fff;
+        color: #2a2a72;
+        border-radius: .6rem;
+        padding: .9rem 1rem;
+    }
+
     .footer-note {
-        margin-top: 1.5rem;
-        font-size: 0.9rem;
+        margin-top: 1rem;
+        font-size: .9rem;
         text-align: center;
         color: #6c757d;
     }
@@ -104,30 +207,39 @@
                 text-decoration: underline;
             }
 
-    /* ======= PANEL DERECHO ======= */
-    .register-right {
-        background: linear-gradient(135deg, #009ffd, #2a2a72);
-        color: #fff;
+    /* ======= CONFIRMACIÓN ======= */
+    .confirm-box {
         display: flex;
-        align-items: center;
-        justify-content: center;
         flex-direction: column;
+        align-items: center;
         text-align: center;
-        padding: 3rem 2rem;
+        gap: .75rem;
+        padding: 2rem 1rem;
     }
 
-        .register-right h1 {
-            font-weight: 700;
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
+    .confirm-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #e7f9ee;
+        display: grid;
+        place-items: center;
+        color: #28a745;
+        font-size: 2rem;
+        animation: pop .4s ease;
+    }
+
+    @@keyframes pop {
+        from {
+            transform: scale(.9);
+            opacity: .6;
         }
 
-        .register-right p {
-            font-size: 1.05rem;
-            opacity: 0.95;
-            line-height: 1.5;
-            max-width: 320px;
+        to {
+            transform: scale(1);
+            opacity: 1;
         }
+    }
 
     /* ======= RESPONSIVE ======= */
     @@media (max-width: 900px) {
@@ -135,19 +247,23 @@
             grid-template-columns: 1fr;
         }
 
-        .register-right {
+        .register-left {
             display: none;
         }
 
-        .register-left {
+        .register-right {
             padding: 2rem 1.5rem;
+        }
+
+        .register-progress {
+            padding: 0 .5rem;
         }
     }
 
     @@keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(14px);
         }
 
         to {
@@ -157,48 +273,216 @@
     }
 </style>
 
-<!-- ======= CONTENIDO ======= -->
+<style>
+    /* ======= MODO OSCURO (solo superficies blancas) ======= */
+    html[data-theme="dark"] .register-card,
+    [data-bs-theme="dark"] .register-card,
+    .dark-mode .register-card {
+        background: #1e1e1e;
+        color: #e0e0e0;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    html[data-theme="dark"] .register-right,
+    [data-bs-theme="dark"] .register-right,
+    .dark-mode .register-right {
+        color: #e0e0e0;
+    }
+
+    /* Progreso (superficies claras) */
+    html[data-theme="dark"] .register-progress .step-indicator,
+    [data-bs-theme="dark"] .register-progress .step-indicator,
+    .dark-mode .register-progress .step-indicator {
+        background: #232323;
+        border-color: #3a3a3a;
+        color: #cfd2d6;
+        box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+
+    html[data-theme="dark"] .register-progress .step-indicator.active,
+    [data-bs-theme="dark"] .register-progress .step-indicator.active,
+    .dark-mode .register-progress .step-indicator.active {
+        background: #263238;
+        border-color: #5ab9ea;
+        color: #4fc3f7;
+    }
+
+    html[data-theme="dark"] .register-progress .icon-wrap,
+    [data-bs-theme="dark"] .register-progress .icon-wrap,
+    .dark-mode .register-progress .icon-wrap {
+        background: #1f1f1f;
+        color: #4fc3f7;
+        box-shadow: inset 0 0 0 2px rgba(79,195,247,.18);
+    }
+
+    /* Inputs y labels */
+    html[data-theme="dark"] .register-right .form-control,
+    [data-bs-theme="dark"] .register-right .form-control,
+    .dark-mode .register-right .form-control {
+        background-color: #232323;
+        color: #e0e0e0;
+        border-color: #3a3a3a;
+    }
+
+    html[data-theme="dark"] .register-right .form-control::placeholder,
+    [data-bs-theme="dark"] .register-right .form-control::placeholder,
+    .dark-mode .register-right .form-control::placeholder {
+        color: #9aa0a6;
+    }
+
+    html[data-theme="dark"] .register-right .form-floating > label,
+    [data-bs-theme="dark"] .register-right .form-floating > label,
+    .dark-mode .register-right .form-floating > label {
+        color: #cfd2d6;
+    }
+
+    html[data-theme="dark"] .register-right .form-floating > input:focus,
+    [data-bs-theme="dark"] .register-right .form-floating > input:focus,
+    .dark-mode .register-right .form-floating > input:focus {
+        border-color: #5ab9ea;
+        box-shadow: 0 0 8px rgba(90, 185, 234, 0.35);
+    }
+
+    /* Botón outline con fondo blanco -> fondo oscuro (mantener colores de marca en texto/borde) */
+    html[data-theme="dark"] .btn-outline,
+    [data-bs-theme="dark"] .btn-outline,
+    .dark-mode .btn-outline {
+        background: #1e1e1e;
+        border-color: #3a3a3a;
+        color: #2a2a72;
+    }
+
+    /* Nota de pie */
+    html[data-theme="dark"] .footer-note,
+    [data-bs-theme="dark"] .footer-note,
+    .dark-mode .footer-note {
+        color: #b0b0b0;
+    }
+
+    html[data-theme="dark"] .footer-note a,
+    [data-bs-theme="dark"] .footer-note a,
+    .dark-mode .footer-note a {
+        color: #4fc3f7;
+    }
+</style>
+
 <main>
     <div class="register-container">
+        <!-- PROGRESO -->
+        <div class="register-progress" id="progressBar">
+            <div class="step-indicator" data-step="1">
+                <span class="icon-wrap"><i class="bi bi-shield-lock"></i></span>
+                <span class="step-label">Credenciales</span>
+            </div>
+            <div class="step-indicator" data-step="2">
+                <span class="icon-wrap"><i class="bi bi-person-lines-fill"></i></span>
+                <span class="step-label">Perfil</span>
+            </div>
+            <div class="step-indicator" data-step="3">
+                <span class="icon-wrap"><i class="bi bi-clipboard-check"></i></span>
+                <span class="step-label">Confirmación</span>
+            </div>
+        </div>
+
         <div class="register-card">
-            <!-- PANEL IZQUIERDO -->
+            <!-- PANEL IZQUIERDO (INFO) -->
             <div class="register-left">
-                <h2>Crear cuenta</h2>
-                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
-
-                    <div class="form-floating">
-                        <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="name@example.com" />
-                        <label asp-for="Input.Email">Correo electr�nico</label>
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-floating">
-                        <input asp-for="Input.Password" type="password" class="form-control" autocomplete="new-password" placeholder="Contrase�a" />
-                        <label asp-for="Input.Password">Contrase�a</label>
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-floating">
-                        <input asp-for="Input.ConfirmPassword" type="password" class="form-control" autocomplete="new-password" placeholder="Confirmar contrase�a" />
-                        <label asp-for="Input.ConfirmPassword">Confirmar contrase�a</label>
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                    </div>
-
-                    <button id="registerSubmit" type="submit" class="btn btn-register-form">
-                        <i class="bi bi-person-plus me-2"></i> Registrarse
-                    </button>
-
-                    <div class="footer-note">
-                        <p>�Ya tienes una cuenta? <a asp-page="/Account/Login">Inicia sesi�n</a></p>
-                    </div>
-                </form>
+                <h1>¡Bienvenido!</h1>
+                <p>Por favor regístrate para acceder a nuestras herramientas y comenzar tu experiencia.</p>
             </div>
 
-            <!-- PANEL DERECHO -->
+            <!-- PANEL DERECHO (FORM MULTISTEP) -->
             <div class="register-right">
-                <h1>�Bienvenido!</h1>
-                <p>Reg�strate para acceder a todas nuestras herramientas y comenzar tu experiencia.</p>
+                @if (Model.Completed)
+
+
+
+                {
+                    <div class="step active">
+                        <div class="confirm-box">
+                            <div class="confirm-icon"><i class="bi bi-check2"></i></div>
+                            <h3>¡Registro completado con éxito!</h3>
+                            <p>Tu cuenta ha sido creada correctamente.</p>
+                            <div class="step-actions">
+                                <a class="btn btn-register-form" asp-page="/Account/Login"><i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión</a>
+                                <a class="btn btn-outline" href="/"><i class="bi bi-house-door me-1"></i> Ir al inicio</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+
+                else
+
+
+
+                {
+                    <h2>Crear cuenta</h2>
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
+
+                        <!-- Paso 1: Cuenta -->
+                        <div class="step" id="step1">
+                            <div class="form-floating">
+                                <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="name@example.com" />
+                                <label asp-for="Input.Email"></label>
+                                <span asp-validation-for="Input.Email" class="invalid-feedback"></span>
+                            </div>
+
+                            <div class="form-floating">
+                                <input asp-for="Input.Password" type="password" class="form-control" autocomplete="new-password" placeholder="Contraseña" />
+                                <label asp-for="Input.Password">Contraseña</label>
+                                <span asp-validation-for="Input.Password" class="invalid-feedback"></span>
+                            </div>
+
+                            <div class="form-floating">
+                                <input asp-for="Input.ConfirmPassword" type="password" class="form-control" autocomplete="new-password" placeholder="Confirmar contraseña" />
+                                <label asp-for="Input.ConfirmPassword">Confirmar contraseña</label>
+                                <span asp-validation-for="Input.ConfirmPassword" class="invalid-feedback"></span>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" id="nextToStep2" class="btn btn-register-form"><i class="bi bi-arrow-right-circle me-1"></i> Siguiente</button>
+                            </div>
+                        </div>
+
+                        <!-- Paso 2: Datos personales -->
+                        <div class="step" id="step2">
+                            <div class="form-floating">
+                                <input asp-for="Input.Nombres" class="form-control" placeholder="Nombre completo" />
+                                <label asp-for="Input.Nombres">Nombre completo</label>
+                                <span asp-validation-for="Input.Nombres" class="invalid-feedback"></span>
+                            </div>
+
+                            <div class="form-floating">
+                                <input asp-for="Input.Dni" class="form-control" placeholder="DNI" />
+                                <label asp-for="Input.Dni">DNI</label>
+                                <span asp-validation-for="Input.Dni" class="invalid-feedback"></span>
+                            </div>
+
+                            <div class="form-floating">
+                                <input asp-for="Input.Telefono" class="form-control" placeholder="Teléfono" />
+                                <label asp-for="Input.Telefono">Teléfono</label>
+                                <span asp-validation-for="Input.Telefono" class="invalid-feedback"></span>
+                            </div>
+
+                            <div class="form-floating">
+                                <input asp-for="Input.Direccion" class="form-control" placeholder="Dirección" />
+                                <label asp-for="Input.Direccion">Dirección</label>
+                                <span asp-validation-for="Input.Direccion" class="invalid-feedback"></span>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" id="backToStep1" class="btn btn-outline"><i class="bi bi-arrow-left-circle me-1"></i> Atrás</button>
+                                <button id="registerSubmit" type="submit" class="btn btn-register-form"><i class="bi bi-person-plus me-1"></i> Registrarse</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="footer-note">
+                        <p>¿Ya tienes una cuenta? <a asp-page="/Account/Login">Inicia sesión</a></p>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -206,4 +490,113 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var completed = @Model.Completed.ToString().ToLower();
+            var step1 = document.getElementById('step1');
+            var step2 = document.getElementById('step2');
+            var indicators = document.querySelectorAll('.step-indicator');
+
+            function setActiveStep(n) {
+                indicators.forEach(function (el) {
+                    el.classList.toggle('active', parseInt(el.getAttribute('data-step')) === n);
+                });
+                if (step1) step1.classList.toggle('active', n === 1);
+                if (step2) step2.classList.toggle('active', n === 2);
+            }
+
+            // Si completed, marcamos paso 3
+            if (completed === 'true') {
+                indicators.forEach(function (el) {
+                    el.classList.toggle('active', parseInt(el.getAttribute('data-step')) === 3);
+                });
+                return; // no configurar navegación
+            }
+
+            setActiveStep(1);
+
+            var nextBtn = document.getElementById('nextToStep2');
+            var backBtn = document.getElementById('backToStep1');
+            var form = document.getElementById('registerForm');
+
+            function validateStep1() {
+                var email = document.querySelector('[name="Input.Email"]');
+                var pass = document.querySelector('[name="Input.Password"]');
+                var confirm = document.querySelector('[name="Input.ConfirmPassword"]');
+                var ok = true;
+                function setMsg(el, msg) {
+                    var fb = el?.closest('.form-floating')?.querySelector('.invalid-feedback');
+                    if (fb) fb.textContent = msg || '';
+                }
+                function clearMsg(el) {
+                    var fb = el?.closest('.form-floating')?.querySelector('.invalid-feedback');
+                    if (fb) fb.textContent = '';
+                }
+                [email, pass, confirm].forEach(function (el) {
+                    if (el && !el.value) {
+                        ok = false;
+                        el.classList.add('is-invalid');
+                        var msg = el === email ? 'El correo es obligatorio' : (el === pass ? 'La contraseña es obligatoria' : 'Debes confirmar tu contraseña');
+                        setMsg(el, msg);
+                    } else {
+                        el && el.classList.remove('is-invalid');
+                        clearMsg(el);
+                    }
+                });
+                if (pass && confirm && pass.value && confirm.value && pass.value !== confirm.value) {
+                    ok = false;
+                    confirm.classList.add('is-invalid');
+                    setMsg(confirm, 'Las contraseñas no coinciden');
+                }
+                return ok;
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function () {
+                    if (validateStep1()) setActiveStep(2);
+                });
+            }
+
+            if (backBtn) {
+                backBtn.addEventListener('click', function () { setActiveStep(1); });
+            }
+
+            // Validación básica del Paso 2 antes de enviar
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    var nombres = document.querySelector('[name="Input.Nombres"]');
+                    var dni = document.querySelector('[name="Input.Dni"]');
+                    var telefono = document.querySelector('[name="Input.Telefono"]');
+                    var direccion = document.querySelector('[name="Input.Direccion"]');
+                    var ok2 = true;
+
+                    function setMsg(el, msg) {
+                        var fb = el?.closest('.form-floating')?.querySelector('.invalid-feedback');
+                        if (fb) fb.textContent = msg || '';
+                    }
+                    function clearMsg(el) {
+                        var fb = el?.closest('.form-floating')?.querySelector('.invalid-feedback');
+                        if (fb) fb.textContent = '';
+                    }
+
+                    [nombres, dni, telefono, direccion].forEach(function (el) {
+                        if (el && !el.value.trim()) {
+                            ok2 = false;
+                            el.classList.add('is-invalid');
+                            var msg = el === nombres ? 'El nombre es obligatorio' : (el === dni ? 'El DNI es obligatorio' : (el === telefono ? 'El teléfono es obligatorio' : 'La dirección es obligatoria'));
+                            setMsg(el, msg);
+                        } else {
+                            el && el.classList.remove('is-invalid');
+                            clearMsg(el);
+                        }
+                    });
+
+                    if (!ok2) {
+                        e.preventDefault();
+                        setActiveStep(2);
+                    }
+                });
+            }
+        });
+    </script>
 }

@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Identity;
+ï»¿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProyectoFinalCalidad.Data;
 using ProyectoFinalCalidad.Models;
 using System;
@@ -19,97 +20,218 @@ namespace ProyectoFinalCalidad.Controllers
             _userManager = userManager;
         }
 
-        // Mostrar lista de clientes
-        public IActionResult MostrarClientes()
+        // =========================================================
+        // MOSTRAR CLIENTES (auto detecta si es admin o usuario)
+        // =========================================================
+        public async Task<IActionResult> MostrarClientes()
         {
-            var clientes = _context.Clientes.ToList();
+            var clientes = await _context.Clientes.AsNoTracking().ToListAsync();
+
+            // Detectar el rol del usuario logueado
+            var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+
+            if (!string.IsNullOrEmpty(rolUsuario) &&
+                rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+            {
+                // Si es administrador, usa la vista en carpeta Admin
+                return View("Admin/MostrarClientesAdmin", clientes);
+            }
+
+            // Si no, vista normal
             return View(clientes);
         }
 
-        // GET: Mostrar formulario registro
+        // =========================================================
+        // GET: AGREGAR CLIENTE
+        // =========================================================
         [HttpGet]
         public IActionResult AgregarCliente()
         {
-            return View(new Cliente());
-        }
-
-        // POST: Registrar cliente y usuario Identity
-        [HttpPost]
-        public async Task<IActionResult> AgregarCliente(Cliente model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            // Validar DNI único
-            if (_context.Clientes.Any(c => c.Dni == model.Dni))
+            var model = new Cliente
             {
-                ModelState.AddModelError("Dni", "El DNI ya está registrado.");
-                return View(model);
-            }
-
-            // Validar correo único en Identity
-            if (await _userManager.FindByEmailAsync(model.Correo) != null)
-            {
-                ModelState.AddModelError("Correo", "El correo ya está en uso.");
-                return View(model);
-            }
-
-            // Crear usuario en Identity
-            var user = new IdentityUser
-            {
-                UserName = model.Correo,
-                Email = model.Correo
+                Estado = "activo",
+                FechaRegistro = DateTime.Now
             };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                model.Estado = "activo";
-                model.FechaRegistro = DateTime.Now;
-
-                _context.Clientes.Add(model);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("MostrarClientes");
-            }
-
-            // Mostrar errores de Identity
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
             return View(model);
         }
 
-        // GET: Editar cliente
-        public IActionResult EditarCliente(int id)
+        // =========================================================
+        // POST: AGREGAR CLIENTE
+        // =========================================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AgregarCliente(Cliente cliente)
         {
-            var cliente = _context.Clientes.Find(id);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    TempData["ErrorMessage"] = "Verifica los datos ingresados antes de continuar.";
+                    return View("AgregarCliente", cliente);
+                }
+
+                if (await _context.Clientes.AnyAsync(c => c.Dni == cliente.Dni))
+                {
+                    TempData["ErrorMessage"] = "Este DNI ya estÃ¡ registrado.";
+                    return View("AgregarCliente", cliente);
+                }
+
+                if (await _context.Clientes.AnyAsync(c => c.Correo == cliente.Correo))
+                {
+                    TempData["ErrorMessage"] = "Este correo ya estÃ¡ registrado.";
+                    return View("AgregarCliente", cliente);
+                }
+
+                var passwordHasher = new PasswordHasher<Cliente>();
+                cliente.Password = passwordHasher.HashPassword(cliente, cliente.Password);
+                cliente.Estado = "activo";
+                cliente.FechaRegistro = DateTime.Now;
+
+                _context.Clientes.Add(cliente);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Cliente agregado correctamente.";
+
+                // Detectar rol y redirigir segÃºn el tipo de usuario
+                var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+
+                if (!string.IsNullOrEmpty(rolUsuario) &&
+                    rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                {
+                    return RedirectToAction(nameof(MostrarClientes));
+                }
+
+                return RedirectToAction(nameof(MostrarClientes));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error al guardar: {ex.Message}";
+                return View("AgregarCliente", cliente);
+            }
+        }
+
+        // =========================================================
+        // EDITAR CLIENTE
+        // =========================================================
+        [HttpGet]
+        public async Task<IActionResult> EditarCliente(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var cliente = await _context.Clientes.FindAsync(id);
             if (cliente == null)
                 return NotFound();
 
             return View(cliente);
         }
 
-        // POST: Editar cliente
         [HttpPost]
-        public IActionResult EditarCliente(Cliente model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditarCliente(int id, Cliente model, string? NewPassword)
         {
-            var cli = _context.Clientes.Find(model.ClienteId);
-            if (cli != null)
+            try
             {
-                cli.Nombres = model.Nombres;
-                cli.Direccion = model.Direccion;
-                cli.Correo = model.Correo;
-                cli.Telefono = model.Telefono;
-                cli.Estado = model.Estado;
+                var clienteExistente = await _context.Clientes.FindAsync(id);
+                if (clienteExistente == null)
+                {
+                    TempData["ErrorMessage"] = "Cliente no encontrado.";
+                    return RedirectToAction(nameof(MostrarClientes));
+                }
 
-                _context.SaveChanges();
+                clienteExistente.Nombres = model.Nombres;
+                clienteExistente.Dni = model.Dni;
+                clienteExistente.Direccion = model.Direccion;
+                clienteExistente.Correo = model.Correo;
+                clienteExistente.Telefono = model.Telefono;
+                clienteExistente.Estado = model.Estado;
+                clienteExistente.FechaRegistro = model.FechaRegistro;
+
+                if (!string.IsNullOrWhiteSpace(NewPassword))
+                {
+                    var passwordHasher = new PasswordHasher<Cliente>();
+                    clienteExistente.Password = passwordHasher.HashPassword(clienteExistente, NewPassword);
+                }
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Cliente actualizado correctamente.";
+
+                // RedirecciÃ³n segÃºn el rol
+                var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+                if (!string.IsNullOrEmpty(rolUsuario) &&
+                    rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                {
+                    return RedirectToAction(nameof(MostrarClientes));
+                }
+
+                return RedirectToAction(nameof(MostrarClientes));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error al actualizar cliente: {ex.Message}";
+                return View("EditarCliente", model);
+            }
+        }
+
+        // =========================================================
+        // INHABILITAR CLIENTE
+        // =========================================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> InhabilitarCliente(int id, string? origen)
+        {
+            var cliente = await _context.Clientes.FindAsync(id);
+            if (cliente == null)
+                return NotFound();
+
+            cliente.Estado = "inactivo";
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Cliente inhabilitado correctamente";
+
+            // Si viene del admin
+            if (!string.IsNullOrEmpty(origen) && origen.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                return RedirectToAction(nameof(MostrarClientes));
+
+            // Detectar por rol
+            var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (!string.IsNullOrEmpty(rolUsuario) &&
+                rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(MostrarClientes));
             }
 
-            return RedirectToAction("MostrarClientes");
+            return RedirectToAction(nameof(MostrarClientes));
+        }
+
+        // =========================================================
+        // ELIMINAR CLIENTE
+        // =========================================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarCliente(int id)
+        {
+            try
+            {
+                var cliente = await _context.Clientes.FindAsync(id);
+                if (cliente == null)
+                    return NotFound();
+
+                _context.Clientes.Remove(cliente);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (DbUpdateException ex) when (ex.InnerException != null &&
+                                               ex.InnerException.Message.Contains("REFERENCE"))
+            {
+                return BadRequest(new { mensaje = "No se pudo eliminar el cliente porque tiene un contrato asociado." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = $"Error al eliminar: {ex.Message}" });
+            }
         }
     }
 }

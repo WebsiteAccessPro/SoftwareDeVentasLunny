@@ -2,159 +2,231 @@
 
 @{
     ViewData["Title"] = Model.EquipoId == 0 ? "Agregar Equipo" : "Editar Equipo";
+
+    // Detección de rol actual
+    var esAdmin = User.IsInRole("Administrador");
+    var rutaCancelar = esAdmin ? "MostrarEquiposAdmin" : "MostrarEquipos";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg border-0 rounded-4 animate-fade">
-        <div class="card-header text-white py-3" style="background: linear-gradient(to right, #0d6efd, #198754);">
-            <h3 class="mb-0">
-                <i class="bi bi-gear-fill me-2"></i>@ViewData["Title"]
-            </h3>
-        </div>
+<style>
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --danger: #e63946;
+        --success: #00c16e;
+    }
 
-        <div class="card-body px-4 py-4">
-            <form asp-action="AgregarEditar" method="post" class="needs-validation" novalidate>
-                <input type="hidden" asp-for="EquipoId" />
+    .form-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 850px;
+        margin: 60px auto;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-in-out;
+    }
 
-                <!-- Nombre del Equipo -->
-                <div class="mb-4">
-                    <label asp-for="NombreEquipo" class="form-label fw-semibold">
-                        <i class="bi bi-hdd me-2 text-primary"></i>Nombre del Equipo <span class="text-danger">*</span>
-                    </label>
-                    <input asp-for="NombreEquipo" class="form-control shadow-sm" required />
-                    <div class="invalid-feedback">Por favor ingrese el nombre del equipo.</div>
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: 18px 28px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        letter-spacing: 0.3px;
+    }
+
+        .form-header i {
+            font-size: 1.5rem;
+        }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    .form-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px 28px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        transition: all 0.25s ease;
+        font-size: 0.9rem;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 159, 253, 0.15);
+            outline: none;
+        }
+
+    .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 35px;
+    }
+
+    .btn {
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, var(--success), var(--primary));
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 159, 253, 0.3);
+        }
+
+    .btn-secondary {
+        background: #fff;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--accent);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 768px) {
+        .form-body {
+            padding: 25px;
+        }
+
+        .btn-container {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <i class="fas fa-tools"></i>
+        @ViewData["Title"]
+    </div>
+
+    <div class="form-body">
+        <form asp-action="Agregar" asp-controller="Equipo" method="post">
+            <input type="hidden" asp-for="EquipoId" />
+
+            <div class="form-columns">
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label asp-for="NombreEquipo" class="form-label">Nombre del Equipo</label>
+                    <input asp-for="NombreEquipo" class="form-control" required placeholder="Ejemplo: Router TP-Link" />
+                    <span asp-validation-for="NombreEquipo" class="text-danger"></span>
                 </div>
 
                 <!-- Descripción -->
-                <div class="mb-4">
-                    <label asp-for="Descripcion" class="form-label fw-semibold">
-                        <i class="bi bi-card-text me-2 text-info"></i>Descripción
-                    </label>
-                    <textarea asp-for="Descripcion" class="form-control shadow-sm" rows="3" placeholder="Escribe una breve descripción..."></textarea>
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="3" required placeholder="Escribe una breve descripción..."></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
                 </div>
 
-                <!-- Cantidad en Stock (solo al crear nuevo equipo) -->
+                <!-- Cantidad -->
                 @if (Model.EquipoId == 0)
                 {
-                    <div class="mb-4">
-                        <label asp-for="CantidadStock" class="form-label fw-semibold">
-                            <i class="bi bi-box-seam me-2 text-success"></i>Cantidad en Stock <span class="text-danger">*</span>
-                        </label>
-                        <input asp-for="CantidadStock" type="number" min="0" class="form-control shadow-sm" required placeholder="Ejemplo: 15" />
-                        <div class="invalid-feedback">Por favor ingrese la cantidad en stock.</div>
+                    <div class="form-group">
+                        <label asp-for="CantidadStock" class="form-label">Cantidad en Stock</label>
+                        <input asp-for="CantidadStock" type="number" min="0" class="form-control" required placeholder="Ejemplo: 10" />
+                        <span asp-validation-for="CantidadStock" class="text-danger"></span>
                     </div>
                 }
 
                 <!-- Estado -->
-                <div class="mb-4">
-                    <label asp-for="Estado" class="form-label fw-semibold">
-                        <i class="bi bi-toggle-on me-2 text-secondary"></i>Estado
-                    </label>
-                    <select asp-for="Estado" class="form-select shadow-sm" aria-label="Seleccione el estado del equipo">
+                <div class="form-group">
+                    <label asp-for="Estado" class="form-label">Estado</label>
+                    <select asp-for="Estado" class="form-control" required>
+                        <option value="">-- Seleccione estado --</option>
                         <option value="disponible">Disponible</option>
                         <option value="pendiente">Pendiente</option>
                         <option value="agotado">Agotado</option>
                     </select>
+                    <span asp-validation-for="Estado" class="text-danger"></span>
                 </div>
 
-                <!-- Fecha de Registro (solo si ya existe el equipo) -->
+                <!-- Fecha -->
                 @if (Model.FechaRegistro != default)
                 {
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-calendar-event me-2 text-warning"></i>Fecha de Registro
-                        </label>
-                        <input type="text" value="@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")"
-                               class="form-control shadow-sm" readonly />
+                    <div class="form-group">
+                        <label class="form-label">Fecha Registro</label>
+                        <input type="text" value="@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")" class="form-control" readonly />
                     </div>
                 }
+            </div>
 
-                <!-- Botones -->
-                <div class="d-flex justify-content-start mt-4">
-                    <button type="submit" class="btn btn-success px-4 me-2">
-                        <i class="bi bi-save2 me-1"></i> Guardar
-                    </button>
-                    <a asp-action="Administrar" asp-controller="Equipo" class="btn btn-secondary px-4">
-                        <i class="bi bi-arrow-left-circle me-1"></i> Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+                <a asp-action="@rutaCancelar" asp-controller="Equipo" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        (() => {
-            'use strict';
-            const forms = document.querySelectorAll('.needs-validation');
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        })();
-    </script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
 
-@section Styles {
-    <style>
-        /* Animación de entrada */
-        @@keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade {
-            animation: fadeUp 0.6s ease forwards;
-        }
-
-        .card {
-            max-width: 750px;
-            margin: 0 auto;
-            border-radius: 1rem;
-        }
-
-        .card-header {
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
-
-        .form-label {
-            color: #2c3e50;
-            font-size: 1rem;
-        }
-
-        .form-control, .form-select {
-            border-radius: 0.6rem;
-            padding: 0.7rem 0.9rem;
-            font-size: 1rem;
-        }
-
-            .form-control:focus, .form-select:focus {
-                border-color: #198754;
-                box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.25);
-            }
-
-        .btn {
-            border-radius: 0.6rem;
-            font-weight: 600;
-        }
-
-            .btn:hover {
-                transform: scale(1.03);
-                transition: 0.2s ease-in-out;
-            }
-    </style>
-}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

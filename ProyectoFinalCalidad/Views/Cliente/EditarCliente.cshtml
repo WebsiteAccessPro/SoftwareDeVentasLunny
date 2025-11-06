@@ -4,107 +4,371 @@
     ViewData["Title"] = "Editar Cliente";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg border-0 rounded-4">
-        <div class="card-header text-white text-center py-3" style="background: linear-gradient(to right, #0d6efd, #198754);">
-            <h3 class="mb-0"><i class="bi bi-pencil-square me-2"></i>@ViewData["Title"]</h3>
-        </div>
+<style>
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --danger: #e63946;
+        --success: #28a745;
+    }
 
-        <div class="card-body p-4">
-            <form asp-action="EditarCliente" method="post" class="needs-validation" novalidate>
-                <input type="hidden" asp-for="ClienteId" />
+    .form-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 850px;
+        margin: 60px auto;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-in-out;
+    }
 
-                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: 18px 28px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        letter-spacing: 0.3px;
+    }
 
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="Nombres" class="form-label fw-semibold">Nombres</label>
-                        <input asp-for="Nombres" class="form-control" required aria-required="true" />
-                        <span asp-validation-for="Nombres" class="text-danger small"></span>
-                    </div>
+        .form-header i {
+            font-size: 1.5rem;
+        }
 
-                    <div class="col-md-6">
-                        <label asp-for="Dni" class="form-label fw-semibold">DNI</label>
-                        <input asp-for="Dni" class="form-control" required aria-required="true" />
-                        <span asp-validation-for="Dni" class="text-danger small"></span>
-                    </div>
+    .form-body {
+        padding: 40px;
+    }
 
-                    <div class="col-md-6">
-                        <label asp-for="Correo" class="form-label fw-semibold">Correo</label>
-                        <input asp-for="Correo" type="email" class="form-control" required aria-required="true" />
-                        <span asp-validation-for="Correo" class="text-danger small"></span>
-                    </div>
+    .form-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px 28px;
+    }
 
-                    <div class="col-md-6">
-                        <label asp-for="Telefono" class="form-label fw-semibold">Tel�fono</label>
-                        <input asp-for="Telefono" class="form-control" />
-                        <span asp-validation-for="Telefono" class="text-danger small"></span>
-                    </div>
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
 
-                    <div class="col-md-6">
-                        <label asp-for="Direccion" class="form-label fw-semibold">Direcci�n</label>
-                        <input asp-for="Direccion" class="form-control" />
-                    </div>
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+    }
 
-                    <div class="col-md-6">
-                        <label asp-for="Estado" class="form-label fw-semibold">Estado</label>
-                        <select asp-for="Estado" class="form-select" aria-label="Estado del cliente">
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
-                        </select>
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        transition: all 0.25s ease;
+        font-size: 0.9rem;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 159, 253, 0.15);
+            outline: none;
+        }
+
+    /* === SECCIÓN DE CONTRASEÑA === */
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--accent);
+        margin-top: 35px;
+        margin-bottom: 15px;
+        border-left: 4px solid var(--accent);
+        padding-left: 8px;
+    }
+
+    .password-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    .password-input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .password-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        transition: border-color 0.25s;
+        padding-right: 85px; /* Espacio para los iconos */
+    }
+
+        .password-input:focus {
+            border-color: var(--primary);
+        }
+
+    .password-copy,
+    .password-toggle {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        color: var(--text-light);
+        transition: color 0.3s, transform 0.3s;
+    }
+
+        .password-copy:hover,
+        .password-toggle:hover {
+            color: var(--primary);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+    .password-copy {
+        right: 40px;
+    }
+
+    .password-toggle {
+        right: 8px;
+    }
+
+    .password-copy.copied i {
+        color: var(--success);
+    }
+
+    /* === ALERTAS Y BOTONES === */
+    .alert-danger {
+        background-color: rgba(230, 57, 70, 0.1);
+        border: 1px solid rgba(230, 57, 70, 0.25);
+        color: var(--danger);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 3px;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 35px;
+    }
+
+    .btn {
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 159, 253, 0.3);
+        }
+
+    .btn-secondary {
+        background: #fff;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--accent);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 768px) {
+        .form-body {
+            padding: 25px;
+        }
+
+        .btn-container {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <i class="fas fa-user-edit"></i>
+        @ViewData["Title"]
+    </div>
+
+    <div class="form-body">
+        <form asp-action="EditarCliente" asp-controller="Cliente" asp-route-id="@Model.ClienteId" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="ClienteId" />
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert-danger">@TempData["ErrorMessage"]</div>
+            }
+
+            <div class="form-columns">
+                <div class="form-group">
+                    <label asp-for="Nombres" class="form-label">Nombres</label>
+                    <input asp-for="Nombres" class="form-control" required />
+                    <span asp-validation-for="Nombres" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Dni" class="form-label">DNI</label>
+                    <input asp-for="Dni" class="form-control" maxlength="15" placeholder="Ingrese DNI o documento" />
+                    <span asp-validation-for="Dni" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Telefono" class="form-label">Teléfono</label>
+                    <input asp-for="Telefono" class="form-control" maxlength="20" placeholder="Ingrese número de contacto" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Correo" class="form-label">Correo</label>
+                    <input asp-for="Correo" type="email" class="form-control" placeholder="ejemplo@correo.com" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Direccion" class="form-label">Dirección</label>
+                    <input asp-for="Direccion" class="form-control" placeholder="Ingrese dirección completa" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Estado" class="form-label">Estado</label>
+                    <select asp-for="Estado" class="form-control">
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FechaRegistro" class="form-label">Fecha Registro</label>
+                    <input asp-for="FechaRegistro" type="date" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="section-title">Gestión de Contraseña</div>
+
+            <div class="password-group">
+                <!-- CONTRASEÑA ACTUAL -->
+                <div class="form-group">
+                    <label class="form-label">Contraseña Actual</label>
+                    <div class="password-input-group">
+                        <input type="password" class="password-input" id="currentPassword" value="@Model.Password" readonly />
+                        <button type="button" class="password-copy" onclick="copyPassword('currentPassword', this)" title="Copiar contraseña actual" aria-label="Copiar contraseña actual">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('currentPassword', this)" title="Mostrar/Ocultar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end mt-4">
-                    <button type="submit" class="btn btn-primary px-4">
-                        <i class="bi bi-save2 me-1"></i> Guardar Cambios
-                    </button>
-                    <a asp-action="MostrarClientes" class="btn btn-secondary ms-2 px-4">
-                        <i class="bi bi-x-circle me-1"></i> Cancelar
-                    </a>
+                <!-- NUEVA CONTRASEÑA -->
+                <div class="form-group">
+                    <label class="form-label">Nueva Contraseña</label>
+                    <div class="password-input-group">
+                        <input type="password" class="password-input" name="NewPassword" id="NewPassword" placeholder="Ingrese nueva contraseña" />
+                        <button type="button" class="password-copy" onclick="copyPassword('NewPassword', this)" title="Copiar nueva contraseña">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('NewPassword', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
-            </form>
-        </div>
+
+                <input type="hidden" asp-for="Password" />
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+                <a asp-action="MostrarClientes" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
-        (() => {
-            'use strict';
-            const forms = document.querySelectorAll('.needs-validation');
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        })();
+        function togglePasswordVisibility(fieldId, trigger) {
+            const field = document.getElementById(fieldId);
+            const type = field.type === 'password' ? 'text' : 'password';
+            field.type = type;
+            const icon = trigger.querySelector('i');
+            icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+
+        function copyPassword(fieldId, trigger) {
+            const field = document.getElementById(fieldId);
+            navigator.clipboard.writeText(field.value || '').then(() => {
+                trigger.classList.add('copied');
+                const icon = trigger.querySelector('i');
+                icon.className = 'fas fa-check';
+                setTimeout(() => {
+                    trigger.classList.remove('copied');
+                    icon.className = 'fas fa-copy';
+                }, 1500);
+            }).catch(() => alert('No se pudo copiar al portapapeles.'));
+        }
     </script>
 }
 
-@section Styles {
-    <style>
-        label {
-            color: #0d6efd;
-        }
-
-        .form-control:focus {
-            border-color: #198754;
-            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-        }
-
-        button i {
-            vertical-align: middle;
-        }
-
-        .card {
-            max-width: 850px;
-            margin: 0 auto;
-        }
-    </style>
-}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

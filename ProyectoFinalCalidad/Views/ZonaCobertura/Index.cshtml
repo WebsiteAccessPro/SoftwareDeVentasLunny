@@ -4,79 +4,651 @@
     ViewData["Title"] = "Zonas de Cobertura";
 }
 
-<div class="container py-5">
-    <div class="card shadow-lg border-0 rounded-4 animate-fade">
-        <div class="card-header d-flex justify-content-between align-items-center text-white py-3"
-             style="background: linear-gradient(to right, #0d6efd, #20c997);">
-            <h3 class="mb-0">
-                <i class="bi bi-geo-alt-fill me-2"></i>@ViewData["Title"]
-            </h3>
-            <a asp-action="Agregar" class="btn btn-light fw-semibold shadow-sm">
-                <i class="bi bi-plus-circle text-success me-1"></i> Nueva Zona
-            </a>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<div class="main-container">
+    <div class="container-card">
+
+        <div class="container-card-title">@ViewData["Title"]</div>
+
+        <!-- FILTROS -->
+        <div class="content-card filter-card">
+            <div class="header-section">
+                <h2 class="page-title">Filtros de Zonas</h2>
+            </div>
+
+            <div class="filter-grid">
+                <!-- Nombre Zona -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">ZONA</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroZona" placeholder="Nombre de la zona">
+                </div>
+
+                <!-- Distrito -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">DISTRITO</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroDistrito" placeholder="Nombre del distrito">
+                </div>
+
+                <!-- Descripción -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">DESCRIPCIÓN</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroDescripcion" placeholder="Descripción del distrito">
+                </div>
+
+            </div>
+
+            <div class="filter-actions">
+                <button id="btnConsultar" type="button" class="btn btn-info btn-filter">
+                    <i class="bi bi-search"></i> Consultar
+                </button>
+                <button id="btnLimpiar" type="button" class="btn btn-danger btn-filter">
+                    <i class="bi bi-x-circle"></i> Limpiar Filtros
+                </button>
+            </div>
         </div>
 
-        <div class="card-body p-4">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle text-center mb-0">
-                    <thead class="table-light">
+        <!-- TABLA DE ZONAS -->
+        <div class="content-card">
+
+            <div class="header-section d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="rowsPerPage" class="form-label mb-0 fw-semibold">Mostrar:</label>
+                    <select id="rowsPerPage" class="form-select form-select-sm w-auto">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a asp-action="Agregar" class="btn btn-add">
+                        <i class="fas fa-plus-circle"></i> Nueva Zona
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-container mt-3">
+
+                <table id="tablaZonas" class="custom-table">
+                    <thead>
                         <tr>
                             <th>Nombre Zona</th>
                             <th>Distrito</th>
                             <th>Descripción</th>
-                            <th>Acciones</th>
+                            <th class="actions-cell">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model.Any())
-                        {
-                            foreach (var zona in Model)
-                            {
-                                <tr>
-                                    <td class="fw-semibold">@zona.NombreZona</td>
-                                    <td>@zona.Distrito</td>
-                                    <td>@zona.Descripcion</td>
-                                    <td>
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <a asp-action="Editar" asp-route-id="@zona.Id"
-                                               class="btn btn-sm btn-outline-warning">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                            <form asp-action="Eliminar" asp-route-id="@zona.Id" method="post"
-                                                  onsubmit="return confirm('¿Estás seguro de eliminar esta zona?');">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
+                        @foreach (var zona in Model)
                         {
                             <tr>
-                                <td colspan="4" class="text-muted py-4">
-                                    <i class="bi bi-exclamation-circle me-2"></i>No hay zonas registradas.
+                                <td>@zona.NombreZona</td>
+                                <td>@zona.Distrito</td>
+                                <td>@zona.Descripcion</td>
+                                <td class="actions-cell">
+                                    <div>
+                                        <a class="action-btn btn-edit" asp-action="Editar" asp-route-id="@zona.Id" title="Editar Zona">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a class="action-btn btn-danger" data-bs-toggle="modal" data-bs-target="#EliminarZonaModal" data-id="@zona.Id" data-nombre="@System.Net.WebUtility.HtmlEncode(zona.NombreZona)">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
+
+            <!-- INFO + PAGINACIÓN -->
+            <div class="table-footer d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                <div class="text-muted" id="tableInfo">
+                    Mostrando registros del 1 al 10 de un total de @Model.Count()
+                </div>
+
+                <nav>
+                    <ul class="pagination pagination-sm mb-0" id="pagination">
+                        <li class="page-item">
+                            <button id="prevPage" class="page-link">Anterior</button>
+                        </li>
+                        <li class="page-item">
+                            <button id="nextPage" class="page-link">Siguiente</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
         </div>
     </div>
 </div>
 
+<!-- Modal para eliminar zona -->
+<div class="modal fade" id="EliminarZonaModal" tabindex="-1" aria-labelledby="eliminarZonaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #d62828, #e63946); color:white; border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+                <h5 class="modal-title fw-semibold" id="eliminarZonaLabel">
+                    <i class="fas fa-trash me-2"></i> Confirmar Eliminación
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <p class="fs-5 mb-3 text-dark">
+                    ¿Estás seguro que deseas eliminar la zona
+                    <strong id="zonaNombre"></strong>?
+                </p>
+                <p class="small text-secondary mb-0">Esta acción no se podrá revertir.</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                <button type="button" class="btn fw-semibold px-4 py-2 btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                <form id="eliminarZonaForm" method="post" asp-action="Eliminar" asp-controller="ZonaCobertura">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="zonaId" />
+                    <button type="submit" class="btn fw-semibold px-4 py-2 btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- FILTROS DE ZONAS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const filtroZona = document.getElementById("filtroZona");
+            const filtroDistrito = document.getElementById("filtroDistrito");
+            const filtroDescripcion = document.getElementById("filtroDescripcion");
+            const btnConsultar = document.getElementById("btnConsultar");
+            const btnLimpiar = document.getElementById("btnLimpiar");
+            const filas = document.querySelectorAll("table tbody tr");
+            const norm = s => (s||"").toString().trim().toLowerCase();
+
+            btnConsultar.addEventListener("click", function () {
+                const zonaValor = norm(filtroZona.value);
+                const distritoValor = norm(filtroDistrito.value);
+                const descripcionValor = norm(filtroDescripcion.value);
+
+                filas.forEach(fila => {
+                    const celdas = fila.querySelectorAll("td");
+                    const nombre = norm(celdas[0]?.textContent);
+                    const distrito = norm(celdas[1]?.textContent);
+                    const descripcion = norm(celdas[2]?.textContent);
+                    let visible = true;
+
+                    if (zonaValor && !nombre.includes(zonaValor)) visible = false;
+                    if (distritoValor && !distrito.includes(distritoValor)) visible = false;
+                    if (descripcionValor && !descripcion.includes(descripcionValor)) visible = false;
+
+                    fila.style.display = visible ? "" : "none";
+                });
+            });
+
+            btnLimpiar.addEventListener("click", function () {
+                filtroZona.value = "";
+                filtroDistrito.value = "";
+                filtroDescripcion.value = "";
+                filas.forEach(f => f.style.display = "");
+            });
+        });
+    </script>
+
+    <!-- PAGINACIÓN -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabla = document.getElementById("tablaZonas");
+            const filas = Array.from(tabla.querySelectorAll("tbody tr"));
+            const info = document.getElementById("tableInfo");
+            const prevBtn = document.getElementById("prevPage");
+            const nextBtn = document.getElementById("nextPage");
+            const pagination = document.getElementById("pagination");
+            const selectFilas = document.getElementById("rowsPerPage");
+
+            let paginaActual = 1;
+            let filasPorPagina = parseInt(selectFilas.value);
+            let totalFilas = filas.length;
+            let totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+
+            function mostrarPagina() {
+                const inicio = (paginaActual-1)*filasPorPagina;
+                const fin = inicio+filasPorPagina;
+                filas.forEach((f,i)=>f.style.display=(i>=inicio && i<fin)?"":"none");
+                const visibleInicio = totalFilas>0?inicio+1:0;
+                const visibleFin = Math.min(fin,totalFilas);
+                info.textContent = `Mostrando registros del ${visibleInicio} al ${visibleFin} de un total de ${totalFilas}`;
+                renderPaginacion();
+            }
+
+            function renderPaginacion() {
+                pagination.querySelectorAll(".page-number, .dots").forEach(el=>el.remove());
+                totalPaginas = Math.ceil(totalFilas/filasPorPagina);
+                const next = document.getElementById("nextPage").parentElement;
+                const maxVisible = 5;
+                let paginas=[];
+                if(totalPaginas <= maxVisible+2){
+                    for(let i=1;i<=totalPaginas;i++) paginas.push(i);
+                } else {
+                    let start = Math.max(2,paginaActual-2);
+                    let end = Math.min(totalPaginas-1,paginaActual+2);
+                    if(paginaActual<=3){start=2; end=5;}
+                    else if(paginaActual>=totalPaginas-2){start=totalPaginas-4; end=totalPaginas-1;}
+                    paginas=[1,...Array.from({length:end-start+1},(_,i)=>start+i),totalPaginas];
+                }
+                for(let i=0;i<paginas.length;i++){
+                    if(i>0 && paginas[i]-paginas[i-1]>1){
+                        const dots=document.createElement("li");
+                        dots.className="page-item disabled dots";
+                        dots.innerHTML=`<span class="page-link">...</span>`;
+                        pagination.insertBefore(dots,next);
+                    }
+                    const li=document.createElement("li");
+                    li.className=`page-item page-number ${paginas[i]===paginaActual?"active":""}`;
+                    const btn=document.createElement("button");
+                    btn.className="page-link"; btn.textContent=paginas[i];
+                    btn.addEventListener("click",()=>{paginaActual=paginas[i]; mostrarPagina();});
+                    li.appendChild(btn);
+                    pagination.insertBefore(li,next);
+                }
+                prevBtn.parentElement.classList.toggle("disabled",paginaActual===1);
+                nextBtn.parentElement.classList.toggle("disabled",paginaActual===totalPaginas);
+            }
+
+            prevBtn.addEventListener("click",()=>{if(paginaActual>1){paginaActual--; mostrarPagina();}});
+            nextBtn.addEventListener("click",()=>{if(paginaActual<totalPaginas){paginaActual++; mostrarPagina();}});
+            selectFilas.addEventListener("change",()=>{filasPorPagina=parseInt(selectFilas.value); paginaActual=1; mostrarPagina();});
+
+            mostrarPagina();
+        });
+    </script>
+
+    <!-- PASAR DATOS AL MODAL -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var eliminarModal = document.getElementById("EliminarZonaModal");
+            eliminarModal.addEventListener("show.bs.modal", function (event) {
+                var button = event.relatedTarget;
+                var zonaId = button.getAttribute("data-id");
+                var zonaNombre = button.getAttribute("data-nombre");
+
+                var modalTitle = eliminarModal.querySelector("#zonaNombre");
+                var modalInput = eliminarModal.querySelector("#zonaId");
+
+                modalTitle.textContent = zonaNombre;
+                modalInput.value = zonaId;
+            });
+        });
+    </script>
+
+}
+
 @section Styles {
     <style>
-        /* Animación de entrada */
+
+        /* ===== BOTONES ===== */
+        .btn-add, .btn-primary, .btn-secondary, .btn-danger, .btn-info, .btn-filter {
+            font-size: 0.95rem;
+            padding: 8px 18px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        /* ===== MODO OSCURO: Botón Limpiar en rojo oscuro ===== */
+        html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+        [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+        .dark-mode #btnLimpiar.btn-danger.btn-filter {
+            background-color: #8B0000; /* rojo oscuro */
+            border-color: #8B0000;
+            color: #f5f7fa;
+        }
+
+            html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+            [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+            .dark-mode #btnLimpiar.btn-danger.btn-filter:hover {
+                background-color: #a40000;
+                border-color: #a40000;
+            }
+
+        html[data-theme="dark"] .btn-add,
+        [data-bs-theme="dark"] .btn-add,
+        .dark-mode .btn-add {
+            background-color: #0b3d2e;
+            border-color: #0b3d2e;
+            color: #f5f7fa;
+        }
+
+            html[data-theme="dark"] .btn-add:hover,
+            [data-bs-theme="dark"] .btn-add:hover,
+            .dark-mode .btn-add:hover {
+                background-color: #06261a;
+                border-color: #06261a;
+            }
+
+        .btn-add {
+            background-color: #3A7CA5;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-add:hover {
+                background-color: #2c5d7d;
+                transform: translateY(-1px);
+            }
+
+        .btn-info {
+            background-color: #f39c12;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-info:hover {
+                background-color: #d68910;
+                transform: translateY(-1px);
+            }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-danger:hover {
+                background-color: #c0392b;
+                transform: translateY(-1px);
+            }
+        .main-container {
+            width: 100%;
+            max-width: 1600px;
+            margin: 30px auto;
+            padding: 0 10px;
+            font-family: 'Poppins',sans-serif;
+        }
+
+        .actions-cell > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+        }
+
+            .btn-danger:hover {
+                background-color: #c0392b;
+                transform: translateY(-1px);
+            }
+
+        .container-card {
+            background: linear-gradient(145deg,#ffffff,#f9fbff);
+            border-radius: 1.2rem;
+            box-shadow: 0 10px 35px rgba(15,32,39,0.12);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            animation: fadeUp 0.7s ease forwards;
+        }
+
+            .container-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 6px;
+                width: 100%;
+                background: linear-gradient(90deg,#009ffd,#6a4c93);
+                border-radius: 1.2rem 1.2rem 0 0;
+            }
+
+        .container-card-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #203A43;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #009ffd;
+            padding-bottom: 8px;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 6px 25px rgba(15,32,39,0.1);
+            padding: 1.8rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .content-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 35px rgba(15,32,39,0.15);
+            }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .page-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: .8rem;
+            padding: .8rem 0;
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .input-group {
+            display: flex;
+            width: 100%;
+            margin-bottom: .6rem;
+        }
+
+        .input-group-prepend {
+            display: flex;
+        }
+
+        .input-group-text {
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            padding: .4rem .6rem;
+            font-weight: 500;
+            color: #203A43;
+            border-radius: .5rem 0 0 .5rem;
+            font-size: .85rem;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 .5rem .5rem 0;
+            border: 1px solid #ccc;
+            padding: .45rem .65rem;
+            font-size: .85rem;
+        }
+
+            .input-group .form-control:focus {
+                border-color: #009ffd;
+                box-shadow: 0 0 0 0.2rem rgba(0,159,253,0.25);
+            }
+
+        .table-container {
+            border-radius: 1rem;
+            overflow-x: auto;
+            overflow-y: hidden;
+            background: #fff;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        table.custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            table-layout: auto;
+        }
+
+            table.custom-table thead {
+                background: linear-gradient(90deg,#009ffd,#6a4c93);
+                color: white;
+                font-weight: 600;
+            }
+
+                table.custom-table thead th {
+                    text-align: center;
+                    padding: 10px 14px;
+                    vertical-align: middle;
+                }
+
+            table.custom-table th, table.custom-table td {
+                padding: 10px 14px;
+                text-align: left;
+                vertical-align: middle;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                width: 1%;
+            }
+
+                table.custom-table th.actions, table.custom-table td.actions {
+                    position: sticky;
+                    right: 0;
+                    background: #fff;
+                    z-index: 3;
+                }
+
+            table.custom-table tbody tr {
+                border-bottom: 1px solid #f0f0f0;
+                transition: background-color 0.25s ease, transform 0.2s ease;
+            }
+
+                table.custom-table tbody tr:hover {
+                    background: #f8faff;
+                    transform: scaleY(1.01);
+                }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: .6rem;
+            font-weight: 500;
+            font-size: .85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid;
+            text-decoration: none;
+            transition: all .2s ease;
+        }
+
+        .btn-edit {
+            color: #3A7CA5;
+            border-color: #3A7CA5;
+            background: transparent;
+        }
+
+            .btn-edit:hover {
+                background-color: #3A7CA5;
+                color: #fff;
+            }
+
+        .btn-add {
+            background-color: #3A7CA5;
+            color: #fff;
+            border: none;
+            font-size: .95rem;
+            padding: 8px 18px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .2s ease;
+        }
+
+            .btn-add:hover {
+                background-color: #2c5d7d;
+                transform: translateY(-1px);
+            }
+
+        .table-footer {
+            padding: .85rem 1.25rem;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            border-radius: 0 0 1rem 1rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .pagination {
+            display: flex;
+            gap: .3rem;
+            margin-bottom: 0;
+        }
+
+            .pagination .page-item .page-link {
+                color: #2563eb;
+                border: 1px solid #d1d5db;
+                background: #fff;
+                border-radius: .5rem;
+                font-size: .875rem;
+                font-weight: 500;
+                padding: .35rem .75rem;
+                transition: all .25s ease;
+            }
+
+                .pagination .page-item .page-link:hover {
+                    background-color: #eff6ff;
+                    border-color: #93c5fd;
+                    color: #1d4ed8;
+                    transform: translateY(-1px);
+                }
+
+            .pagination .page-item.active .page-link {
+                background: linear-gradient(135deg,#2563eb,#3b82f6);
+                color: #fff;
+                border-color: #2563eb;
+                box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+                transform: scale(1.05);
+            }
+
         @@keyframes fadeUp {
             0%
 
         {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(15px);
         }
 
         100% {
@@ -84,38 +656,6 @@
             transform: translateY(0);
         }
 
-        }
-
-        .animate-fade {
-            animation: fadeUp 0.6s ease forwards;
-        }
-
-        .card {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-        }
-
-        td {
-            vertical-align: middle;
-        }
-
-        .btn {
-            border-radius: 0.6rem;
-            transition: transform 0.2s ease;
-        }
-
-            .btn:hover {
-                transform: scale(1.05);
-            }
-
-        .table-hover tbody tr:hover {
-            background-color: #f1f9ff;
         }
     </style>
 }

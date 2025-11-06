@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -33,7 +33,13 @@ namespace ProyectoFinalCalidad.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
+        [Column("fecha_modificacion")]
+        [Display(Name = "Última Modificación")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime FechaModificacion { get; set; } = DateTime.Now;
+
         public ICollection<ContratoEquipo> ContratoEquipos { get; set; }
             = new List<ContratoEquipo>();
+
     }
 }

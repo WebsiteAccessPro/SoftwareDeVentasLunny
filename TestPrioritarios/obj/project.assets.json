@@ -9769,9 +9769,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\TestPrioritarios\\TestPrioritarios.csproj",
-      "projectName": "TestPrioritarios",
-      "projectPath": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\TestPrioritarios\\TestPrioritarios.csproj",
+      "projectUniqueName": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\TestPrioritarios\\TestPruebasUnitarias.csproj",
+      "projectName": "TestPruebasUnitarias",
+      "projectPath": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\TestPrioritarios\\TestPruebasUnitarias.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\User\\Downloads\\ProyectoFinalCalidad\\TestPrioritarios\\obj\\",
       "projectStyle": "PackageReference",
@@ -9810,7 +9810,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -9853,7 +9854,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

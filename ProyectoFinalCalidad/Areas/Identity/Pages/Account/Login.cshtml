@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model LoginModel
 @{
     ViewData["Title"] = "Iniciar sesión";
@@ -155,6 +155,73 @@
             opacity: 1;
             transform: translateY(0);
         }
+    }
+</style>
+
+<style>
+    /* ======= MODO OSCURO (solo superficies blancas) ======= */
+    html[data-theme="dark"] .login-card,
+    [data-bs-theme="dark"] .login-card,
+    .dark-mode .login-card {
+        background: #1e1e1e;
+        color: #e0e0e0;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    html[data-theme="dark"] .login-right,
+    [data-bs-theme="dark"] .login-right,
+    .dark-mode .login-right {
+        color: #e0e0e0;
+    }
+
+    /* Inputs y labels dentro de form-floating */
+    html[data-theme="dark"] .login-right .form-control,
+    [data-bs-theme="dark"] .login-right .form-control,
+    .dark-mode .login-right .form-control {
+        background-color: #232323;
+        color: #e0e0e0;
+        border-color: #3a3a3a;
+    }
+
+    html[data-theme="dark"] .login-right .form-control::placeholder,
+    [data-bs-theme="dark"] .login-right .form-control::placeholder,
+    .dark-mode .login-right .form-control::placeholder {
+        color: #9aa0a6;
+    }
+
+    html[data-theme="dark"] .login-right .form-floating > label,
+    [data-bs-theme="dark"] .login-right .form-floating > label,
+    .dark-mode .login-right .form-floating > label {
+        color: #cfd2d6;
+    }
+
+    html[data-theme="dark"] .login-right .form-floating > input:focus,
+    [data-bs-theme="dark"] .login-right .form-floating > input:focus,
+    .dark-mode .login-right .form-floating > input:focus {
+        border-color: #5ab9ea;
+        box-shadow: 0 0 8px rgba(90, 185, 234, 0.35);
+    }
+
+    /* Sección de enlaces sobre fondo oscuro (no alterar colores de marca) */
+    html[data-theme="dark"] .links-section,
+    [data-bs-theme="dark"] .links-section,
+    .dark-mode .links-section {
+        color: #cfd2d6;
+    }
+
+    /* Botones de login externo con fondo blanco -> fondo oscuro, mantener bordes/textos de marca */
+    html[data-theme="dark"] .external-login button,
+    [data-bs-theme="dark"] .external-login button,
+    .dark-mode .external-login button {
+        background-color: #1e1e1e;
+        color: #4fc3f7;
+        border-color: #5ab9ea;
+    }
+
+    html[data-theme="dark"] .external-login button:hover,
+    [data-bs-theme="dark"] .external-login button:hover,
+    .dark-mode .external-login button:hover {
+        color: #ffffff;
     }
 </style>
 

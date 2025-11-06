@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFinalCalidad.Data;
@@ -18,6 +19,9 @@ namespace ProyectoFinalCalidad.Controllers
             _context = context;
         }
 
+        // =========================================================
+        // 🔹 MOSTRAR EMPLEADOS (Vista empleado)
+        // =========================================================
         public async Task<IActionResult> MostrarEmpleados()
         {
             var empleados = await _context.Empleados
@@ -28,14 +32,31 @@ namespace ProyectoFinalCalidad.Controllers
             return View(empleados);
         }
 
+        // =========================================================
+        // 🔹 MOSTRAR EMPLEADOS (Vista del ADMIN)
+        // =========================================================
+        public async Task<IActionResult> MostrarEmpleadosAdmin()
+        {
+            var empleados = await _context.Empleados
+                .Include(e => e.Cargo)
+                .AsNoTracking()
+                .ToListAsync();
+
+            // Forzamos la vista dentro de la carpeta Admin
+            return View("Admin/MostrarEmpleadosAdmin", empleados);
+        }
+
+        // =========================================================
+        // 🔹 AGREGAR EMPLEADO
+        // =========================================================
         [HttpGet]
         public IActionResult Agregar()
         {
             CargarCargosViewBag();
             var model = new Empleado
             {
-                estado = "activo", 
-                fecha_inicio = DateTime.Today 
+                estado = "activo",
+                fecha_inicio = DateTime.Today
             };
             return View(model);
         }
@@ -56,10 +77,23 @@ namespace ProyectoFinalCalidad.Controllers
                 empleado.estado = "activo";
                 empleado.fecha_fin = empleado.fecha_inicio?.AddMonths(mesesDuracion);
 
+                var passwordHasher = new PasswordHasher<Empleado>();
+                empleado.password = passwordHasher.HashPassword(empleado, empleado.password);
+
                 _context.Empleados.Add(empleado);
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Empleado agregado correctamente";
+                // Detectar el rol del usuario logueado
+                var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+
+                // Si es administrador → redirige a MostrarEmpleadosAdmin
+                if (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                {
+                    return RedirectToAction(nameof(MostrarEmpleadosAdmin));
+                }
+
+                // Si no, redirige a la vista normal
                 return RedirectToAction(nameof(MostrarEmpleados));
             }
             catch (Exception ex)
@@ -70,19 +104,18 @@ namespace ProyectoFinalCalidad.Controllers
             }
         }
 
+        // =========================================================
+        // 🔹 EDITAR EMPLEADO
+        // =========================================================
         [HttpGet]
         public async Task<IActionResult> Editar(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var empleado = await _context.Empleados.FindAsync(id);
             if (empleado == null)
-            {
                 return NotFound();
-            }
 
             CargarCargosViewBag();
             return View(empleado);
@@ -111,14 +144,24 @@ namespace ProyectoFinalCalidad.Controllers
                 empleadoExistente.fecha_fin = empleado.fecha_fin;
 
                 if (!string.IsNullOrWhiteSpace(NewPassword))
-                {
                     empleadoExistente.password = NewPassword;
-                }
 
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Empleado actualizado correctamente.";
+
+                // Detectar el rol del usuario logueado
+                var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+
+                // Si es administrador → redirige a MostrarEmpleadosAdmin
+                if (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                {
+                    return RedirectToAction(nameof(MostrarEmpleadosAdmin));
+                }
+
+                // Si no, redirige a la vista normal
                 return RedirectToAction(nameof(MostrarEmpleados));
+
             }
             catch (Exception ex)
             {
@@ -128,53 +171,68 @@ namespace ProyectoFinalCalidad.Controllers
             }
         }
 
+        // =========================================================
+        // 🔹 INHABILITAR EMPLEADO (funciona en vista normal y admin)
+        // =========================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AgregarEditar(Equipo equipo)
-        {
-            if (!ModelState.IsValid)
-                return View(equipo);
-
-            if (equipo.EquipoId == 0)
-            {
-                // 🔹 Asigna la fecha actual automáticamente (hora Perú UTC-5)
-                equipo.FechaRegistro = DateTime.UtcNow.AddHours(-5);
-                _context.Equipos.Add(equipo);
-            }
-            else
-            {
-                // 🔹 Edición: mantenemos la fecha original
-                var equipoExistente = await _context.Equipos.FindAsync(equipo.EquipoId);
-                if (equipoExistente != null)
-                {
-                    equipoExistente.NombreEquipo = equipo.NombreEquipo;
-                    equipoExistente.Descripcion = equipo.Descripcion;
-                    equipoExistente.CantidadStock = equipo.CantidadStock;
-                    equipoExistente.Estado = equipo.Estado;
-                }
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Administrar");
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> InhabilitarEmpleado(int id)
+        public async Task<IActionResult> InhabilitarEmpleado(int id, string? origen)
         {
             var empleado = await _context.Empleados.FindAsync(id);
             if (empleado == null)
-            {
                 return NotFound();
-            }
 
             empleado.estado = "inhabilitado";
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Empleado inhabilitado correctamente";
+
+            // 🔹 1️⃣ Si se indica manualmente el origen (por formulario)
+            if (!string.IsNullOrEmpty(origen) && origen.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                return RedirectToAction(nameof(MostrarEmpleadosAdmin));
+
+            // 🔹 2️⃣ Si no se pasa el parámetro, detectar por rol del usuario logueado
+            var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                return RedirectToAction(nameof(MostrarEmpleadosAdmin));
+
+            // 🔹 3️⃣ Redirección por defecto (vista de empleados normal)
             return RedirectToAction(nameof(MostrarEmpleados));
         }
 
+
+        // =========================================================
+        // 🔹 ELIMINAR EMPLEADO -- SOLO ADMIN
+        // =========================================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarEmpleado(int id)
+        {
+            try
+            {
+                var empleado = await _context.Empleados.FindAsync(id);
+                if (empleado == null)
+                    return NotFound();
+
+                _context.Empleados.Remove(empleado);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (DbUpdateException ex) when (ex.InnerException != null &&
+                                               ex.InnerException.Message.Contains("REFERENCE"))
+            {
+                return BadRequest(new { mensaje = "No se pudo eliminar el empleado porque tiene un contrato asociado." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = $"Error al eliminar: {ex.Message}" });
+            }
+        }
+
+        // =========================================================
+        // 🔹 MÉTODOS AUXILIARES
+        // =========================================================
         private bool EmpleadoExists(int id)
         {
             return _context.Empleados.Any(e => e.empleado_id == id);

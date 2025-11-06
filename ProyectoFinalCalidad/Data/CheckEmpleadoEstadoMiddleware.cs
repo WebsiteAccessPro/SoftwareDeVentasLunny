@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFinalCalidad.Data;
@@ -49,10 +49,14 @@ public class CheckEstadoUsuarioMiddleware
             // === CLIENTE ===
             if (!string.IsNullOrEmpty(dni) || !string.IsNullOrEmpty(email))
             {
-                var cliente = await db.Clientes
-                    .FirstOrDefaultAsync(c => c.Dni == dni || c.Correo.ToLower() == email);
+                // Lectura segura del estado del cliente evitando nulos
+                var estadoCliente = await db.Clientes
+                    .Where(c => c.Dni == dni || (c.Correo != null && c.Correo.ToLower() == email))
+                    .Select(c => c.Estado ?? "")
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync();
 
-                if (cliente != null && cliente.Estado?.ToLower() == "inactivo")
+                if (!string.IsNullOrEmpty(estadoCliente) && estadoCliente.ToLower() == "inactivo")
                 {
                     redirectTipo = "cliente";
                 }

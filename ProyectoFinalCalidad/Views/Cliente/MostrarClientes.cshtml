@@ -1,201 +1,899 @@
 @model IEnumerable<ProyectoFinalCalidad.Models.Cliente>
 
 @{
-    ViewData["Title"] = "Lista de Clientes";
+    ViewData["Title"] = "Administrar Clientes";
 }
 
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary fw-bold">@ViewData["Title"]</h2>
-        <a asp-action="AgregarCliente" class="btn btn-success shadow-sm">
-            <i class="bi bi-person-plus-fill"></i> Agregar Cliente
-        </a>
-    </div>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <div class="custom-card">
-        <h2>Clientes Registrados</h2>
+<style>
+    /* ===== CONTENEDOR PRINCIPAL ===== */
+    .main-container {
+        width: 100%;
+        max-width: 1600px;
+        margin: 30px auto;
+        padding: 0 10px;
+    }
 
-        <div class="table-container mt-3">
-            <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>DNI</th>
-                        <th>Dirección</th>
-                        <th>Correo</th>
-                        <th>Teléfono</th>
-                        <th>Estado</th>
-                        <th>Fecha Registro</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var cliente in Model)
-                    {
+    /* ===== MODO OSCURO: Botón Limpiar en rojo oscuro ===== */
+    html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+    [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+    .dark-mode #btnLimpiar.btn-danger.btn-filter {
+        background-color: #8B0000; /* rojo oscuro */
+        border-color: #8B0000;
+        color: #f5f7fa;
+    }
+
+        html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+        [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+        .dark-mode #btnLimpiar.btn-danger.btn-filter:hover {
+            background-color: #a40000;
+            border-color: #a40000;
+        }
+
+    html[data-theme="dark"] .btn-add,
+    [data-bs-theme="dark"] .btn-add,
+    .dark-mode .btn-add {
+        background-color: #1e3a5f;
+        border-color: #1e3a5f;
+        color: #f5f7fa;
+    }
+
+        html[data-theme="dark"] .btn-add:hover,
+        [data-bs-theme="dark"] .btn-add:hover,
+        .dark-mode .btn-add:hover {
+            background-color: #375a7f;
+            border-color: #375a7f;
+        }
+
+
+    /* ===== CARD PRINCIPAL ===== */
+    .container-card {
+        background: linear-gradient(145deg, #ffffff, #f9fbff);
+        border-radius: 1.2rem;
+        box-shadow: 0 10px 35px rgba(15, 32, 39, 0.12);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        position: relative;
+        animation: fadeUp 0.7s ease forwards;
+    }
+
+        .container-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            width: 100%;
+            background: linear-gradient(90deg, #009ffd, #6a4c93);
+            border-radius: 1.2rem 1.2rem 0 0;
+        }
+
+    .container-card-title {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #203A43;
+        margin-bottom: 1rem;
+        border-bottom: 3px solid #009ffd;
+        padding-bottom: 8px;
+    }
+
+    .actions-cell > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+    }
+
+    /* ===== CONTENT CARD ===== */
+    .content-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 6px 25px rgba(15, 32, 39, 0.1);
+        padding: 1.8rem;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(15, 32, 39, 0.15);
+        }
+
+    /* ===== HEADER DE SECCIÓN ===== */
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+
+    /* ===== TITULOS ===== */
+    .page-title {
+        font-size: 1.35rem;
+        font-weight: 600;
+    }
+
+    /* ===== FILTROS ===== */
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.8rem;
+        padding: 0.8rem 0;
+    }
+
+    .filter-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    /* ===== INPUTS ===== */
+    .input-group {
+        display: flex;
+        width: 100%;
+        margin-bottom: 0.6rem;
+    }
+
+    .input-group-prepend {
+        display: flex;
+    }
+
+    .input-group-text {
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        padding: 0.4rem 0.6rem;
+        font-weight: 500;
+        color: #203A43;
+        border-radius: 0.5rem 0 0 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 0.5rem 0.5rem 0;
+        border: 1px solid #ccc;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.85rem;
+    }
+
+        .input-group .form-control:focus {
+            border-color: #009ffd;
+            box-shadow: 0 0 0 0.2rem rgba(0, 159, 253, 0.25);
+        }
+
+    /* ===== TABLA ===== */
+    .table-container {
+        border-radius: 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        background: #fff;
+        box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+        box-sizing: border-box;
+    }
+
+    table.custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+        table-layout: auto;
+    }
+
+        table.custom-table thead {
+            background: linear-gradient(90deg,#009ffd,#6a4c93);
+            color: white;
+            font-weight: 600;
+        }
+
+            table.custom-table thead th {
+                text-align: center;
+                padding: 10px 14px;
+                vertical-align: middle;
+            }
+
+        table.custom-table th,
+        table.custom-table td {
+            padding: 10px 14px;
+            text-align: left;
+            vertical-align: middle;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 1%;
+        }
+
+            table.custom-table th.actions,
+            table.custom-table td.actions {
+                position: sticky;
+                right: 0;
+                background: #fff;
+                z-index: 3;
+            }
+
+        table.custom-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.25s ease, transform 0.2s ease;
+        }
+
+            table.custom-table tbody tr:hover {
+                background: #f8faff;
+                transform: scaleY(1.01);
+            }
+
+    /* ===== BADGES ===== */
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.6em;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+    .rol-empleado {
+        background-color: rgba(46, 204, 113, 0.18);
+        color: #27ae60;
+        border: 1px solid rgba(46, 204, 113, 0.35);
+    }
+
+    .rol-usuario {
+        background-color: rgba(149, 165, 166, 0.18);
+        color: #7f8c8d;
+        border: 1px solid rgba(149, 165, 166, 0.35);
+    }
+
+    /* ===== BOTONES DE ACCIÓN EN TABLA ===== */
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        border: 1px solid;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        color: #3A7CA5;
+        border-color: #3A7CA5;
+        background: transparent;
+    }
+
+        .btn-edit:hover {
+            background-color: #3A7CA5;
+            color: #fff;
+        }
+
+    .btn-disable {
+        color: #e74c3c;
+        border-color: #e74c3c;
+        background: transparent;
+    }
+
+        .btn-disable:hover {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+    .btn-disabled {
+        color: #95a5a6;
+        border-color: #95a5a6;
+        background: transparent;
+        cursor: not-allowed;
+    }
+
+    /* ===== BOTONES ===== */
+    .btn-add, .btn-primary, .btn-secondary, .btn-danger, .btn-info, .btn-filter {
+        font-size: 0.95rem;
+        padding: 8px 18px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-add {
+        background-color: #3A7CA5;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-add:hover {
+            background-color: #2c5d7d;
+            transform: translateY(-1px);
+        }
+
+    .btn-info {
+        background-color: #f39c12;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-info:hover {
+            background-color: #d68910;
+            transform: translateY(-1px);
+        }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-1px);
+        }
+
+    /* ===== FOOTER DE TABLA ===== */
+    .table-footer {
+        padding: 0.85rem 1.25rem;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        border-radius: 0 0 1rem 1rem;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    #tableInfo {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+
+    /* ===== PAGINACIÓN ===== */
+    .pagination {
+        display: flex;
+        gap: 0.3rem;
+        margin-bottom: 0;
+    }
+
+        .pagination .page-item .page-link {
+            color: #2563eb;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.35rem 0.75rem;
+            transition: all 0.25s ease;
+        }
+
+            .pagination .page-item .page-link:hover {
+                background-color: #eff6ff;
+                border-color: #93c5fd;
+                color: #1d4ed8;
+                transform: translateY(-1px);
+            }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #fff;
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+            transform: scale(1.05);
+        }
+
+    /* ===== ANIMACIONES ===== */
+    @@keyframes fadeUp {
+        0%
+
+    {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 1200px) {
+        .filter-grid
+
+    {
+        grid-template-columns: repeat(3,1fr);
+    }
+
+    }
+
+    @@media (max-width: 992px) {
+        .filter-grid
+
+    {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .main-container
+
+    {
+        padding: 0 15px;
+    }
+
+    .content-card {
+        padding: 15px;
+    }
+
+    .header-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .filter-actions {
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .filter-grid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .table-footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .pagination {
+        justify-content: center;
+    }
+
+    }
+</style>
+
+<div class="main-container">
+    <div class="container-card">
+
+        <div class="container-card-title">Administración de Clientes</div>
+
+        <!-- FILTROS -->
+        <div class="content-card filter-card">
+            <div class="header-section">
+                <h2 class="page-title">Filtros de Empleados</h2>
+            </div>
+
+            <div class="filter-grid">
+                <!-- Cliente/DNI -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">CLIENTE</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroCliente" placeholder="Nombre o DNI del cliente">
+                </div>
+
+                <!-- ESTADO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">ESTADO</span>
+                    </div>
+                    <select class="form-control" id="filtroEstado">
+                        <option value="">Seleccionar Estado</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </div>
+
+                <!-- FECHA Registro -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">FECHA REGISTRO</span>
+                    </div>
+                    <input type="date" class="form-control" id="filtroFechaInicio">
+                </div>
+
+                <!-- TELÉFONO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">TELÉFONO</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroTelefono" placeholder="Número de teléfono">
+                </div>
+
+                <!-- CORREO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">CORREO</span>
+                    </div>
+                    <input type="email" class="form-control" id="filtroCorreo" placeholder="Correo electrónico">
+                </div>
+
+                <!-- Direccion -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">DIRECCIÓN</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroDireccion" placeholder="Ejm. Av. España">
+                </div>
+
+            </div>
+
+            <div class="filter-actions">
+                <button id="btnConsultar" type="button" class="btn btn-info btn-filter">
+                    <i class="bi bi-search"></i> Consultar
+                </button>
+                <button id="btnLimpiar" type="button" class="btn btn-danger btn-filter">
+                    <i class="bi bi-x-circle"></i> Limpiar Filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- TABLA CLIENTES -->
+        <div class="content-card">
+
+            <div class="header-section d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="rowsPerPage" class="form-label mb-0 fw-semibold">Mostrar:</label>
+                    <select id="rowsPerPage" class="form-select form-select-sm w-auto">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a asp-action="AgregarCliente" class="btn btn-add">
+                        <i class="fas fa-plus-circle"></i> Agregar Nuevo
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-container mt-3">
+
+                <table id="tablaClientes" class="custom-table">
+                    <thead>
                         <tr>
-                            <td>@cliente.Nombres</td>
-                            <td>@cliente.Dni</td>
-                            <td>@cliente.Direccion</td>
-                            <td>@cliente.Correo</td>
-                            <td>@cliente.Telefono</td>
-                            <td>
-                                <span class="badge @(cliente.Estado == "activo" ? "rol-empleado" : "rol-usuario")">
-                                    @cliente.Estado
-                                </span>
-                            </td>
-                            <td>@cliente.FechaRegistro.ToString("dd/MM/yyyy")</td>
-                            <td>
-                                <a asp-action="EditarCliente" asp-route-id="@cliente.ClienteId"
-                                   class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-pencil-square"></i> Editar / Inhabilitar
-                                </a>
-                            </td>
+                            <th>Nombre</th>
+                            <th>DNI</th>
+                            <th>Dirección</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Estado</th>
+                            <th>Fecha Registro</th>
+                            <th class="actions-cell">Acciones</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var cliente in Model)
+                        {
+                            <tr>
+                                <td>@cliente.Nombres</td>
+                                <td>@cliente.Dni</td>
+                                <td>@cliente.Direccion</td>
+                                <td>@cliente.Correo</td>
+                                <td>@cliente.Telefono</td>
+                                <td>
+                                    <span class="badge @(cliente.Estado == "activo" ? "rol-empleado" : "rol-usuario")">
+                                        @cliente.Estado
+                                    </span>
+                                </td>
+                                <td>@cliente.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                                <td class="actions-cell">
+                                    <div>
+                                        <!-- Botón Editar -->
+                                        <a class="action-btn btn-edit" href="/Cliente/EditarCliente/@cliente.ClienteId" title="Editar Cliente">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <!-- Botón Inhabilitar -->
+                                        @if (cliente.Estado == "activo")
+                                        {
+                                            <a href="#"
+                                               class="action-btn btn-disable"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#InhabilitarClienteModal"
+                                               data-id="@cliente.ClienteId"
+                                               data-nombre="@System.Net.WebUtility.HtmlEncode(cliente.Nombres)">
+                                                <i class="fas fa-user-times"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <button class="action-btn btn-disabled" disabled>
+                                                <i class="fas fa-user-times"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- INFO + PAGINACIÓN -->
+            <div class="table-footer d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                <div class="text-muted" id="tableInfo">
+                    Mostrando registros del 1 al 20 de un total de @Model.Count()
+                </div>
+
+                <nav>
+                    <ul class="pagination pagination-sm mb-0" id="pagination">
+                        <li class="page-item">
+                            <button id="prevPage" class="page-link">Anterior</button>
+                        </li>
+                        <li class="page-item">
+                            <button id="nextPage" class="page-link">Siguiente</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
         </div>
     </div>
 </div>
 
-@section Styles {
-    <style>
+<!-- Modal para Inhabilitar un Cliente -->
+<div class="modal fade" id="InhabilitarClienteModal" tabindex="-1" aria-labelledby="inhabilitarClienteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4"
+             style="background: #1e1e2f; color: #f1f1f1;">
 
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 1;
-            padding: 2rem 1rem;
-        }
+            <!-- Header -->
+            <div class="modal-header border-0"
+                 style="background: linear-gradient(135deg, #d62828, #e63946); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+                <h5 class="modal-title fw-semibold text-white d-flex align-items-center" id="inhabilitarClienteLabel">
+                    <i class="fas fa-user-slash me-2"></i> Confirmar Inhabilitación
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
 
-        /* ======== ANIMACIÓN ======== */
-        @@keyframes fadeUp {
-            0%
+            <!-- Body -->
+            <div class="modal-body text-center py-4">
+                <p class="fs-5 mb-3 text-light">
+                    ¿Estás seguro que deseas inhabilitar al cliente
+                    <strong class="text-warning" id="clienteNombre"></strong>?
+                </p>
+                <p class="small text-secondary mb-0">
+                    Esta acción podrá revertirse más adelante.
+                </p>
+            </div>
 
-        {
-            opacity: 0;
-            transform: translateY(20px);
-        }
+            <!-- Footer -->
+            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                <button type="button" class="btn fw-semibold px-4 py-2"
+                        style="background-color: #6c757d; color: white; border-radius: .6rem;"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
 
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
+                <form id="inhabilitarClienteForm" method="post" asp-action="InhabilitarCliente" asp-controller="Cliente">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="clienteId" />
+                    <input type="hidden" name="origen" value="admin" />
+                    <button type="submit"
+                            class="btn fw-semibold px-4 py-2 text-white"
+                            style="background-color: #e63946; border-radius: .6rem;">
+                        Inhabilitar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-        }
+@section Scripts {
 
-        /* ======== TARJETA PRINCIPAL ======== */
-        .custom-card {
-            background: linear-gradient(145deg, #ffffff, #f9fbff);
-            border-radius: 1.2rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            padding: 2.5rem;
-            animation: fadeUp 0.8s ease forwards;
-            position: relative;
-        }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-            .custom-card::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 6px;
-                width: 100%;
-                background: linear-gradient(90deg, #009ffd, #6a4c93);
-                border-radius: 1rem 1rem 0 0;
-            }
+    <!-- ==================== FILTROS DE CLIENTES ==================== -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const filtroCliente = document.getElementById("filtroCliente");
+            const filtroEstado = document.getElementById("filtroEstado");
+            const filtroFechaInicio = document.getElementById("filtroFechaInicio");
+            const filtroTelefono = document.getElementById("filtroTelefono");
+            const filtroCorreo = document.getElementById("filtroCorreo");
+            const filtroDireccion = document.getElementById("filtroDireccion");
+            const btnConsultar = document.getElementById("btnConsultar");
+            const btnLimpiar = document.getElementById("btnLimpiar");
 
-            .custom-card:hover {
-                box-shadow: 0 16px 45px rgba(106,76,147,0.25);
-                transform: translateY(-4px);
-            }
+            const filas = document.querySelectorAll("table tbody tr");
+            const norm = (s) => (s || "").toString().trim().toLowerCase();
 
-            .custom-card h2 {
-                color: #009ffd;
-                font-weight: 700;
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-            }
+            // ================== FUNCIÓN CONSULTAR ==================
+            btnConsultar.addEventListener("click", function () {
+                const clienteValor = norm(filtroCliente.value);
+                const estadoValor = norm(filtroEstado.value);
+                const fechaValor = filtroFechaInicio.value;
+                const telefonoValor = norm(filtroTelefono.value);
+                const correoValor = norm(filtroCorreo.value);
+                const direccionValor = norm(filtroDireccion.value);
 
-        /* ======== TABLA ======== */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 1rem;
-            background: #fff;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.05);
-            padding: 1.2rem;
-        }
+                const fechaFiltro = fechaValor ? new Date(fechaValor) : null;
 
-        table.custom-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+                filas.forEach(fila => {
+                    const celdas = fila.querySelectorAll("td");
+                    const nombre = norm(celdas[0]?.textContent);
+                    const dni = norm(celdas[1]?.textContent);
+                    const direccion = norm(celdas[2]?.textContent);
+                    const correo = norm(celdas[3]?.textContent);
+                    const telefono = norm(celdas[4]?.textContent);
+                    const estado = norm(celdas[5]?.textContent);
+                    const fechaTexto = (celdas[6]?.textContent || "").trim();
 
-            table.custom-table thead {
-                background: linear-gradient(90deg,#009ffd,#6a4c93);
-                color: white;
-            }
+                    const parseFecha = (txt) => {
+                        if (!txt) return null;
+                        const p = txt.split(/[\/\-]/);
+                        if (p.length !== 3) return null;
+                        return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
+                    };
+                    const fechaRegistro = parseFecha(fechaTexto);
 
-            table.custom-table th, table.custom-table td {
-                text-align: left;
-                padding: 12px 16px;
-                font-size: 0.95rem;
-            }
+                    let visible = true;
 
-            table.custom-table tbody tr {
-                border-bottom: 1px solid #f0f0f0;
-                transition: background-color 0.25s ease, transform 0.2s ease;
-            }
+                    if (clienteValor && !(nombre.includes(clienteValor) || dni.includes(clienteValor))) visible = false;
+                    if (estadoValor && estado !== estadoValor) visible = false; //....
+                    if (telefonoValor && !telefono.includes(telefonoValor)) visible = false;
+                    if (correoValor && !correo.includes(correoValor)) visible = false;
+                    if (direccionValor && !direccion.includes(direccionValor)) visible = false;
+                    if (fechaFiltro && fechaRegistro && fechaRegistro < fechaFiltro) visible = false;
 
-                table.custom-table tbody tr:hover {
-                    background: #f8faff;
-                    transform: scale(1.01);
+                    fila.style.display = visible ? "" : "none";
+                });
+            });
+
+            // ================== FUNCIÓN LIMPIAR ==================
+            btnLimpiar.addEventListener("click", function () {
+                filtroCliente.value = "";
+                filtroEstado.value = "";
+                filtroFechaInicio.value = "";
+                filtroTelefono.value = "";
+                filtroCorreo.value = "";
+                filtroDireccion.value = "";
+                filas.forEach(f => f.style.display = "");
+            });
+        });
+    </script>
+
+    <!-- SCRIPT DE PAGINACIÓN DE CLIENTES -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabla = document.getElementById("tablaClientes");
+            const filas = Array.from(tabla.querySelectorAll("tbody tr"));
+            const info = document.getElementById("tableInfo");
+            const prevBtn = document.getElementById("prevPage");
+            const nextBtn = document.getElementById("nextPage");
+            const pagination = document.getElementById("pagination");
+            const selectFilas = document.getElementById("rowsPerPage");
+
+            let paginaActual = 1;
+            let filasPorPagina = parseInt(selectFilas.value);
+            const totalFilas = filas.length;
+            let totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+
+            function renderPaginacion() {
+                // limpiar numeración anterior
+                pagination.querySelectorAll(".page-number, .dots").forEach(el => el.remove());
+                totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+
+                const next = document.getElementById("nextPage").parentElement;
+                const maxPaginasVisibles = 5;
+                let paginas = [];
+
+                // generar lista de páginas visible
+                if (totalPaginas <= maxPaginasVisibles + 2) {
+                    for (let i = 1; i <= totalPaginas; i++) paginas.push(i);
+                } else {
+                    let start = Math.max(2, paginaActual - 2);
+                    let end = Math.min(totalPaginas - 1, paginaActual + 2);
+
+                    if (paginaActual <= 3) {
+                        start = 2;
+                        end = 5;
+                    } else if (paginaActual >= totalPaginas - 2) {
+                        start = totalPaginas - 4;
+                        end = totalPaginas - 1;
+                    }
+
+                    paginas = [1, ...Array.from({ length: end - start + 1 }, (_, i) => start + i), totalPaginas];
                 }
 
-        /* ======== BADGES ESTADO ======== */
-        .rol-empleado {
-            background: #e6ffe6;
-            color: #2e7d32;
-            font-weight: 600;
-            padding: 0.35em 0.7em;
-            border-radius: 0.35rem;
-        }
+                // crear botones numerados
+                for (let i = 0; i < paginas.length; i++) {
+                    if (i > 0 && paginas[i] - paginas[i - 1] > 1) {
+                        const dots = document.createElement("li");
+                        dots.className = "page-item disabled dots";
+                        dots.innerHTML = `<span class="page-link">...</span>`;
+                        pagination.insertBefore(dots, next);
+                    }
 
-        .rol-usuario {
-            background: #f2f6ff;
-            color: #1a3d7c;
-            font-weight: 600;
-            padding: 0.35em 0.7em;
-            border-radius: 0.35rem;
-        }
+                    const li = document.createElement("li");
+                    li.className = `page-item page-number ${paginas[i] === paginaActual ? "active" : ""}`;
+                    const btn = document.createElement("button");
+                    btn.className = "page-link";
+                    btn.textContent = paginas[i];
+                    btn.addEventListener("click", () => {
+                        paginaActual = paginas[i];
+                        mostrarPagina();
+                    });
+                    li.appendChild(btn);
+                    pagination.insertBefore(li, next);
+                }
 
-        /* ======== BOTONES ======== */
-        .btn-outline-primary {
-            transition: all 0.2s ease;
-        }
-
-            .btn-outline-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                prevBtn.parentElement.classList.toggle("disabled", paginaActual === 1);
+                nextBtn.parentElement.classList.toggle("disabled", paginaActual === totalPaginas);
             }
 
-        /* ======== RESPONSIVE ======== */
-        @@media(max - width:768px) {
-            .custom-card
+            function mostrarPagina() {
+                const inicio = (paginaActual - 1) * filasPorPagina;
+                const fin = inicio + filasPorPagina;
 
-        {
-            padding: 2rem 1.5rem;
-        }
+                filas.forEach((fila, index) => {
+                    fila.style.display = (index >= inicio && index < fin) ? "" : "none";
+                });
 
-        .custom-card h2 {
-            font-size: 1.3rem;
-        }
+                const totalVisibles = filas.filter(f => f.style.display !== "none").length;
+                const visibleInicio = totalVisibles > 0 ? inicio + 1 : 0;
+                const visibleFin = Math.min(fin, totalFilas);
 
-        table.custom-table th, table.custom-table td {
-            padding: 10px 12px;
-        }
+                info.textContent = `Mostrando registros del ${visibleInicio} al ${visibleFin} de un total de ${totalFilas}`;
+                renderPaginacion();
+            }
 
-        }
-    </style>
+            // Botones Anterior / Siguiente
+            prevBtn.addEventListener("click", () => {
+                if (paginaActual > 1) {
+                    paginaActual--;
+                    mostrarPagina();
+                }
+            });
+
+            nextBtn.addEventListener("click", () => {
+                if (paginaActual < totalPaginas) {
+                    paginaActual++;
+                    mostrarPagina();
+                }
+            });
+
+            // Cambiar cantidad de filas
+            selectFilas.addEventListener("change", () => {
+                filasPorPagina = parseInt(selectFilas.value);
+                paginaActual = 1;
+                mostrarPagina();
+            });
+
+            // Inicializar
+            mostrarPagina();
+        });
+    </script>
+
+    <!-- Script para pasar datos al modal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('InhabilitarClienteModal');
+            modal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id');
+                const nombre = button.getAttribute('data-nombre');
+
+                document.getElementById('clienteId').value = id;
+                document.getElementById('clienteNombre').innerHTML = nombre;
+            });
+        });
+    </script>
 }

@@ -23,6 +23,13 @@ namespace ProyectoFinalCalidad.Controllers
         {
             ViewBag.EstadoFiltro = estadoFiltro ?? "Todos";
 
+            // Si el usuario es Administrador, redirigir a la vista de Admin
+            var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(MostrarPedidoInstalacionAdmin), new { estadoFiltro });
+            }
+
             var query = _context.PedidosInstalacion
                 .Include(p => p.Contrato)
                     .ThenInclude(c => c.Cliente)
@@ -37,6 +44,43 @@ namespace ProyectoFinalCalidad.Controllers
             var pedidos = await query.ToListAsync();
 
             return View(pedidos);
+        }
+
+        // GET: /PedidoInstalacion/MostrarPedidoInstalacionAdmin
+        public async Task<IActionResult> MostrarPedidoInstalacionAdmin(string estadoFiltro)
+        {
+            ViewBag.EstadoFiltro = estadoFiltro ?? "Todos";
+
+            var query = _context.PedidosInstalacion
+                .Include(p => p.Contrato)
+                    .ThenInclude(c => c.Cliente)
+                .Include(p => p.Empleado)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(estadoFiltro) && estadoFiltro.ToLower() != "todos")
+            {
+                query = query.Where(p => p.EstadoInstalacion.ToLower() == estadoFiltro.ToLower());
+            }
+
+            var pedidos = await query.ToListAsync();
+
+            // Forzar la vista dentro de la carpeta Admin
+            return View("Admin/MostrarPedidoInstalacionAdmin", pedidos);
+        }
+
+        // GET: /PedidoInstalacion/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var pedido = await _context.PedidosInstalacion
+                .Include(p => p.Contrato)
+                    .ThenInclude(c => c.Cliente)
+                .Include(p => p.Empleado)
+                .FirstOrDefaultAsync(p => p.PedidoId == id);
+
+            if (pedido == null)
+                return NotFound();
+
+            return View(pedido);
         }
 
         // GET: /PedidoInstalacion/Create
@@ -95,6 +139,12 @@ namespace ProyectoFinalCalidad.Controllers
                     _context.Add(model);
                     await _context.SaveChangesAsync();
 
+                    // Redirigir según rol
+                    var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+                    if (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return RedirectToAction(nameof(MostrarPedidoInstalacionAdmin));
+                    }
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -131,8 +181,30 @@ namespace ProyectoFinalCalidad.Controllers
             var pedido = await _context.PedidosInstalacion.FindAsync(id);
             if (pedido == null) return NotFound();
 
+            // Determinar y mostrar el Jefe a Cargo según el rol actual
+            string jefeACargo = "Sin cargo";
+            if (User.IsInRole("Administrador"))
+            {
+                jefeACargo = "Administrador general";
+            }
+            else
+            {
+                var emailUsuario = User.Identity?.Name;
+                if (!string.IsNullOrEmpty(emailUsuario))
+                {
+                    var empleadoActual = await _context.Empleados
+                        .Include(e => e.Cargo)
+                        .FirstOrDefaultAsync(e => e.correo.ToLower() == emailUsuario.ToLower());
+
+                    jefeACargo = empleadoActual?.Cargo?.titulo_cargo ?? pedido.JefeACargo ?? "Sin cargo";
+                }
+            }
+
+            // Asegurar que el modelo tenga el valor para mostrar en la vista
+            pedido.JefeACargo = jefeACargo;
+
             CargarCombos(pedido.ContratoId, pedido.EmpleadoId);
-            return View(pedido);
+            return View("Editar", pedido);
         }
 
         // POST: /PedidoInstalacion/Edit/5
@@ -143,7 +215,7 @@ namespace ProyectoFinalCalidad.Controllers
             if (!ModelState.IsValid)
             {
                 CargarCombos(model.ContratoId, model.EmpleadoId);
-                return View(model);
+                return View("Editar", model);
             }
 
             var pedido = await _context.PedidosInstalacion.FindAsync(model.PedidoId);
@@ -155,7 +227,34 @@ namespace ProyectoFinalCalidad.Controllers
             pedido.EstadoInstalacion = model.EstadoInstalacion;
             pedido.Observaciones = model.Observaciones;
 
+            // Persistir el Jefe a Cargo de acuerdo al rol del usuario que edita
+            string jefeACargo = "Sin cargo";
+            if (User.IsInRole("Administrador"))
+            {
+                jefeACargo = "Administrador general";
+            }
+            else
+            {
+                var emailUsuario = User.Identity?.Name;
+                if (!string.IsNullOrEmpty(emailUsuario))
+                {
+                    var empleadoActual = await _context.Empleados
+                        .Include(e => e.Cargo)
+                        .FirstOrDefaultAsync(e => e.correo.ToLower() == emailUsuario.ToLower());
+
+                    jefeACargo = empleadoActual?.Cargo?.titulo_cargo ?? pedido.JefeACargo ?? "Sin cargo";
+                }
+            }
+            pedido.JefeACargo = jefeACargo;
+
             await _context.SaveChangesAsync();
+
+            // Redirigir según rol
+            var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(MostrarPedidoInstalacionAdmin));
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -171,23 +270,13 @@ namespace ProyectoFinalCalidad.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Mensaje"] = "El pedido fue cancelado correctamente.";
+            // Redirigir según rol
+            var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(MostrarPedidoInstalacionAdmin));
+            }
             return RedirectToAction(nameof(Index));
-        }
-
-        // GET: /PedidoInstalacion/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            var pedido = await _context.PedidosInstalacion
-                .Include(p => p.Contrato)
-                    .ThenInclude(c => c.Cliente)
-                .Include(p => p.Empleado)
-                    .ThenInclude(e => e.Cargo)
-                .FirstOrDefaultAsync(p => p.PedidoId == id);
-
-            if (pedido == null)
-                return NotFound();
-
-            return View(pedido);
         }
 
         // Método privado para combos (solo contratos y técnicos)

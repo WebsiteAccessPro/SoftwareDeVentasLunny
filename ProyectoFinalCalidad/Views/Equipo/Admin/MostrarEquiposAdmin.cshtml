@@ -1,0 +1,1404 @@
+@model IEnumerable<ProyectoFinalCalidad.Models.Equipo>
+
+@{
+    ViewData["Title"] = "Administración de Equipos";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    /* ===== CONTENEDOR PRINCIPAL ===== */
+    .main-container {
+        width: 100%;
+        max-width: 1600px;
+        margin: 30px auto;
+        padding: 0 10px;
+    }
+
+    /* ===== MODO OSCURO: Botón Limpiar en rojo oscuro ===== */
+    html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+    [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter,
+    .dark-mode #btnLimpiar.btn-danger.btn-filter {
+        background-color: #8B0000; /* rojo oscuro */
+        border-color: #8B0000;
+        color: #f5f7fa;
+    }
+
+        html[data-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+        [data-bs-theme="dark"] #btnLimpiar.btn-danger.btn-filter:hover,
+        .dark-mode #btnLimpiar.btn-danger.btn-filter:hover {
+            background-color: #a40000;
+            border-color: #a40000;
+        }
+
+    /* ===== MODO OSCURO PARA MODAL ===== */
+    html[data-theme="dark"] .modal-content,
+    [data-bs-theme="dark"] .modal-content,
+    .dark-mode .modal-content {
+        background-color: #1c1c1c !important;
+        color: #f1f1f1;
+        border: none;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.8);
+    }
+
+    /* Encabezado del modal */
+    html[data-theme="dark"] .modal-header,
+    [data-bs-theme="dark"] .modal-header,
+    .dark-mode .modal-header {
+        background: linear-gradient(90deg, #009ffd, #6a4c93);
+        color: #fff !important;
+    }
+
+        /* Botón cerrar */
+        html[data-theme="dark"] .modal-header .btn-close,
+        [data-bs-theme="dark"] .modal-header .btn-close,
+        .dark-mode .modal-header .btn-close {
+            filter: invert(1);
+        }
+
+    /* Cuerpo del modal */
+    html[data-theme="dark"] .modal-body,
+    [data-bs-theme="dark"] .modal-body,
+    .dark-mode .modal-body {
+        background-color: #2a2a2a !important;
+        color: #e0e0e0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+        /* Listas y badges */
+        html[data-theme="dark"] .modal-body .list-group-item,
+        [data-bs-theme="dark"] .modal-body .list-group-item,
+        .dark-mode .modal-body .list-group-item {
+            background-color: #333 !important;
+            color: #f1f1f1;
+            border: 1px solid #444;
+        }
+
+        html[data-theme="dark"] .modal-body .badge.bg-primary {
+            background-color: #0d6efd !important;
+            color: #fff;
+        }
+
+        html[data-theme="dark"] .modal-body .badge.bg-success {
+            background-color: #28a745 !important;
+            color: #fff;
+        }
+
+        html[data-theme="dark"] .modal-body .badge.bg-info {
+            background-color: #17a2b8 !important;
+            color: #fff;
+        }
+
+        html[data-theme="dark"] .modal-body .badge.bg-secondary {
+            background-color: #6c757d !important;
+            color: #fff;
+        }
+
+    /* Pie del modal */
+    html[data-theme="dark"] .modal-footer,
+    [data-bs-theme="dark"] .modal-footer,
+    .dark-mode .modal-footer {
+        background-color: #3a3a3a !important;
+        border-top: none;
+    }
+
+        /* Botones dentro del modal */
+        html[data-theme="dark"] .modal-footer .btn,
+        [data-bs-theme="dark"] .modal-footer .btn,
+        .dark-mode .modal-footer .btn {
+            background-color: #6a4c93;
+            color: #fff;
+            border: none;
+        }
+
+            html[data-theme="dark"] .modal-footer .btn:hover,
+            [data-bs-theme="dark"] .modal-footer .btn:hover,
+            .dark-mode .modal-footer .btn:hover {
+                background-color: #3a2c5c;
+                color: #fff;
+                transform: translateY(-2px);
+            }
+
+    /* Centrar contenido de columnas específicas */
+    table.custom-table th:nth-child(3),
+    table.custom-table th:nth-child(4),
+    table.custom-table th:nth-child(5),
+    table.custom-table th:nth-child(6),
+    table.custom-table td:nth-child(3),
+    table.custom-table td:nth-child(4),
+    table.custom-table td:nth-child(5),
+    table.custom-table td:nth-child(6) {
+        text-align: center;
+    }
+
+    /* ===== CARD PRINCIPAL ===== */
+    .container-card {
+        background: linear-gradient(145deg, #ffffff, #f9fbff);
+        border-radius: 1.2rem;
+        box-shadow: 0 10px 35px rgba(15, 32, 39, 0.12);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        position: relative;
+        animation: fadeUp 0.7s ease forwards;
+    }
+
+        .container-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            width: 100%;
+            background: linear-gradient(90deg, #009ffd, #6a4c93);
+            border-radius: 1.2rem 1.2rem 0 0;
+        }
+
+    .container-card-title {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #203A43;
+        margin-bottom: 1rem;
+        border-bottom: 3px solid #009ffd;
+        padding-bottom: 8px;
+    }
+
+    /* ===== CONTENT CARD ===== */
+    .content-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 6px 25px rgba(15, 32, 39, 0.1);
+        padding: 1.8rem;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(15, 32, 39, 0.15);
+        }
+
+    /* ===== HEADER DE SECCIÓN ===== */
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
+
+    /* ===== TITULOS ===== */
+    .page-title {
+        font-size: 1.35rem;
+        font-weight: 600;
+    }
+
+    /* ===== FILTROS ===== */
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.8rem;
+        padding: 0.8rem 0;
+    }
+
+    .btn-delete {
+        background-color: #dc2626;
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-delete:hover {
+            background-color: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+
+    .filter-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .modal-backdrop {
+        z-index: 1050 !important;
+    }
+
+    .modal {
+        z-index: 1060 !important;
+    }
+
+
+    /* ===== INPUTS ===== */
+    .input-group {
+        display: flex;
+        width: 100%;
+        margin-bottom: 0.6rem;
+    }
+
+    .input-group-prepend {
+        display: flex;
+    }
+
+    /* ===== BADGES ===== */
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.6em;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+
+    /* ===== STOCK BAJO ===== */
+    .stock-low {
+        color: #e74c3c;
+        font-weight: 700;
+    }
+
+    /* ===== TOAST ALERT ===== */
+    .toast-container {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1055;
+    }
+
+    .toast {
+        min-width: 250px;
+    }
+
+    .input-group-text {
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        padding: 0.4rem 0.6rem;
+        font-weight: 500;
+        color: #203A43;
+        border-radius: 0.5rem 0 0 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .input-group .form-control {
+        border-radius: 0 0.5rem 0.5rem 0;
+        border: 1px solid #ccc;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.85rem;
+    }
+
+        .input-group .form-control:focus {
+            border-color: #009ffd;
+            box-shadow: 0 0 0 0.2rem rgba(0, 159, 253, 0.25);
+        }
+
+    /* ===== TABLA ===== */
+    .table-container {
+        border-radius: 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        background: #fff;
+        box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+        box-sizing: border-box;
+    }
+
+    table.custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+    }
+
+        table.custom-table thead {
+            background: linear-gradient(90deg,#009ffd,#6a4c93);
+            color: white;
+            font-weight: 600;
+        }
+
+            table.custom-table thead th {
+                text-align: center;
+                padding: 10px 14px;
+                vertical-align: middle;
+            }
+
+        table.custom-table th,
+        table.custom-table td {
+            padding: 10px 14px;
+            text-align: left;
+            vertical-align: middle;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+            table.custom-table th.actions,
+            table.custom-table td.actions {
+                position: sticky;
+                right: 0;
+                background: #fff;
+                z-index: 3;
+            }
+
+        table.custom-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.25s ease, transform 0.2s ease;
+        }
+
+            table.custom-table tbody tr:hover {
+                background: #f8faff;
+                transform: scaleY(1.01);
+            }
+
+    /* ===== BADGES ===== */
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.6em;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+
+    /* ===== BOTONES DE ACCIÓN EN TABLA ===== */
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        border: 1px solid;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    /* Corrige el z-index del modal de Bootstrap */
+    .modal {
+        z-index: 2000 !important;
+    }
+
+    .modal-backdrop {
+        z-index: 1999 !important;
+    }
+
+    .btn-edit {
+        color: #3A7CA5;
+        border-color: #3A7CA5;
+        background: transparent;
+    }
+
+        .btn-edit:hover {
+            background-color: #3A7CA5;
+            color: #fff;
+        }
+
+    .btn-disable {
+        color: #e74c3c;
+        border-color: #e74c3c;
+        background: transparent;
+    }
+
+        .btn-disable:hover {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+    .btn-disabled {
+        color: #95a5a6;
+        border-color: #95a5a6;
+        background: transparent;
+        cursor: not-allowed;
+    }
+
+    /* ===== BOTONES ===== */
+    .btn-add, .btn-info, .btn-danger, .btn-filter {
+        font-size: 0.95rem;
+        padding: 8px 18px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-add {
+        background-color: #3A7CA5;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-add:hover {
+            background-color: #2c5d7d;
+            transform: translateY(-1px);
+        }
+
+    .btn-info {
+        background-color: #f39c12;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-info:hover {
+            background-color: #d68910;
+            transform: translateY(-1px);
+        }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-1px);
+        }
+
+    /* ===== FOOTER DE TABLA ===== */
+    .table-footer {
+        padding: 0.85rem 1.25rem;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        border-radius: 0 0 1rem 1rem;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    #tableInfo {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+
+    /* ===== PAGINACIÓN ===== */
+    .pagination {
+        display: flex;
+        gap: 0.3rem;
+        margin-bottom: 0;
+    }
+
+        .pagination .page-item .page-link {
+            color: #2563eb;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.35rem 0.75rem;
+            transition: all 0.25s ease;
+        }
+
+            .pagination .page-item .page-link:hover {
+                background-color: #eff6ff;
+                border-color: #93c5fd;
+                color: #1d4ed8;
+                transform: translateY(-1px);
+            }
+
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #fff;
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+            transform: scale(1.05);
+        }
+
+    /* ===== ANIMACIONES ===== */
+    @@keyframes fadeUp {
+        0% {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 1200px) {
+        .filter-grid {
+            grid-template-columns: repeat(3,1fr);
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .filter-grid {
+            grid-template-columns: repeat(2,1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .main-container {
+            padding: 0 15px;
+        }
+
+        .content-card {
+            padding: 15px;
+        }
+
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .filter-actions {
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .filter-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .table-footer {
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+
+        .pagination {
+            justify-content: center;
+        }
+    }
+</style>
+
+
+<div class="main-container">
+    <div class="container-card">
+
+        <div class="container-card-title">Administración de Equipos</div>
+
+        <!-- FILTROS -->
+        <div class="content-card filter-card">
+            <div class="header-section">
+                <h2 class="page-title">Filtros de Equipos</h2>
+            </div>
+
+            <div class="filter-grid">
+                <!-- Nombre -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">EQUIPO</span>
+                    </div>
+                    <input type="text" class="form-control" id="filtroNombreEquipo" placeholder="Nombre del equipo">
+                </div>
+
+                <!-- ESTADO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">ESTADO</span>
+                    </div>
+                    <select class="form-control" id="filtroEstado">
+                        <option value="">Seleccionar Estado</option>
+                        <option value="disponible">Disponible</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="agotado">Agotado</option>
+                    </select>
+                </div>
+
+                <!-- FECHA REGISTRO -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">FECHA REGISTRO</span>
+                    </div>
+                    <input type="date" class="form-control" id="filtroFechaRegistro">
+                </div>
+
+                <!-- STOCK -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">STOCK</span>
+                    </div>
+                    <input type="number" class="form-control" id="filtroStockMinimo" placeholder="Stock mínimo">
+                </div>
+            </div>
+
+            <!-- Descricion -->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">EQUIPO</span>
+                </div>
+                <input type="text" class="form-control" id="filtroDescripcionEquipo" placeholder="Descrición del equipo">
+            </div>
+
+            <div class="filter-actions">
+                <button id="btnConsultar" type="button" class="btn btn-info btn-filter">
+                    <i class="bi bi-search"></i> Consultar
+                </button>
+                <button id="btnLimpiar" type="button" class="btn btn-danger btn-filter">
+                    <i class="bi bi-x-circle"></i> Limpiar Filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- TABLA DE EQUIPOS -->
+        <div class="content-card">
+
+            <div class="header-section d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="rowsPerPage" class="form-label mb-0 fw-semibold">Mostrar:</label>
+                    <select id="rowsPerPage" class="form-select form-select-sm w-auto">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a asp-action="Agregar" asp-controller="Equipo"
+                       class="btn btn-add"
+                       style="background-color:#1e40af; color:#fff; border:none; padding:8px 18px; border-radius:10px; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s ease;"
+                       onmouseover="this.style.backgroundColor='#1e3a8a'; this.style.transform='translateY(-1px)';"
+                       onmouseout="this.style.backgroundColor='#1e40af'; this.style.transform='translateY(0)';">
+                        <i class="fas fa-plus-circle"></i> Agregar Nuevo
+                    </a>
+
+                    <a asp-action="AumentarStock" asp-controller="Equipo"
+                       class="btn btn-add"
+                       style="background-color:#be123c; color:#fff; border:none; padding:8px 18px; border-radius:10px; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s ease;"
+                       onmouseover="this.style.backgroundColor='#9f1239'; this.style.transform='translateY(-1px)';"
+                       onmouseout="this.style.backgroundColor='#be123c'; this.style.transform='translateY(0)';">
+                        <i class="fas fa-boxes"></i> Aumentar Stock
+                    </a>
+
+                    <a asp-action="BajarStock" asp-controller="Equipo"
+                       class="btn btn-add"
+                       style="background-color:#6b21a8; color:#fff; border:none; padding:8px 18px; border-radius:10px; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s ease;"
+                       onmouseover="this.style.backgroundColor='#581c87'; this.style.transform='translateY(-1px)';"
+                       onmouseout="this.style.backgroundColor='#6b21a8'; this.style.transform='translateY(0)';">
+                        <i class="fas fa-arrow-down"></i> Bajar Stock
+                    </a>
+
+                    <button type="button" 
+                            class="btn btn-add" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#equiposStatsModal"
+                            style="background-color:#0d9488; color:#fff; border:none; padding:8px 18px; border-radius:10px; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s ease;"
+                            onmouseover="this.style.backgroundColor='#0f766e'; this.style.transform='translateY(-1px)';"
+                            onmouseout="this.style.backgroundColor='#0d9488'; this.style.transform='translateY(0)';">
+                        <i class="fas fa-chart-bar"></i> Ver Estadísticas
+                    </button>
+
+                </div>
+            </div>
+
+            <div class="table-container mt-3">
+                <table id="tablaEquipos" class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                            <th>Fecha Registro</th>
+                            <th>Última Modificación</th>
+                            <th class="actions-cell">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var equipo in Model)
+                        {
+                            <tr>
+                                <td>@equipo.NombreEquipo</td>
+                                <td>@equipo.Descripcion</td>
+                                <td>
+                                    <span class="fw-semibold @(equipo.CantidadStock <= 5 ? "text-danger" : "text-success")">
+                                        @equipo.CantidadStock
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge
+                                                    @(equipo.Estado?.ToLower() == "disponible" ? "bg-success" :
+                                                                                                                                                                        equipo.Estado?.ToLower() == "pendiente" ? "bg-warning text-dark" :
+                                                                                                                                                                        equipo.Estado?.ToLower() == "agotado" ? "bg-danger" :
+                                                                                                                                                                        "bg-secondary")">
+                                    @equipo.Estado
+                                </span>
+                            </td>
+                            <td>@equipo.FechaRegistro.ToString("dd/MM/yyyy")</td>
+
+                                <td class="text-center">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                        <span>
+                                            Último cambio:
+                                        @{
+                                                // Usa la fecha real guardada en BD, si existe
+                                                var fechaUltimoCambio = equipo.FechaModificacion != DateTime.MinValue
+                                                ? equipo.FechaModificacion
+                                                : equipo.FechaRegistro; // si nunca se modificó, usa la fecha de creación
+                                            }
+                                            @fechaUltimoCambio.ToString("dd/MM/yyyy HH:mm")<br />
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <!-- Acciones -->
+                                <td class="actions-cell">
+                                    <div style="display:flex; gap:6px; align-items:center; justify-content:center;">
+
+                                        <!-- Editar -->
+                                        <a class="action-btn btn-edit" href="/Equipo/Editar/@equipo.EquipoId" title="Editar Equipo">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <!-- Eliminar -->
+                                        <a href="#"
+                                           class="action-btn btn-delete"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#EliminarEquipoModal"
+                                           data-id="@equipo.EquipoId"
+                                           data-nombre="@System.Net.WebUtility.HtmlEncode(equipo.NombreEquipo)"
+                                           title="Eliminar Equipo">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+
+                                        <!-- Historial -->
+                                        <button class="action-btn btn-history"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#HistorialModal-@equipo.EquipoId"
+                                                title="Ver Historial">
+                                            <i class="fas fa-history"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- INFO + PAGINACIÓN -->
+            <div class="table-footer d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                <div class="text-muted" id="tableInfo">
+                    Mostrando registros del 1 al 20 de un total de @Model.Count()
+                </div>
+
+                <nav>
+                    <ul class="pagination pagination-sm mb-0" id="pagination">
+                        <li class="page-item">
+                            <button id="prevPage" class="page-link">Anterior</button>
+                        </li>
+                        <li class="page-item">
+                            <button id="nextPage" class="page-link">Siguiente</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="EliminarEquipoModal" tabindex="-1" aria-labelledby="EliminarEquipoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="EliminarEquipoModalLabel">Eliminar Equipo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro que desea eliminar el equipo <strong id="nombreEquipoEliminar"></strong>?
+            </div>
+            <div class="modal-footer">
+                <form method="post" asp-action="Eliminar" asp-controller="Equipo">
+                    <input type="hidden" id="equipoIdEliminar" name="equipoId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach (var equipo in Model)
+{
+    <div class="modal fade" id="HistorialModal-@equipo.EquipoId" tabindex="-1" aria-labelledby="HistorialModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow-lg border-0 rounded-3" style="overflow:hidden;">
+
+                <!-- Encabezado -->
+                <div class="modal-header" style="background: linear-gradient(90deg, #009ffd, #6a4c93); color:#fff;">
+                    <h5 class="modal-title fw-bold" id="HistorialModalLabel">Historial de @equipo.NombreEquipo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Cuerpo -->
+                <div class="modal-body" style="padding:2rem; background:#f4f6f8; font-family:'Poppins',sans-serif;">
+                    <p class="fw-semibold mb-3">Detalles del registro actual:</p>
+
+                    <ul class="list-group list-group-flush" style="--col1: 1fr; --col2: auto; --col3: auto;">
+
+                        <!-- Registro de creación -->
+                        <li class="list-group-item"
+                            style="display:grid; grid-template-columns: var(--col1) var(--col2) var(--col3); align-items:center; gap:1rem;">
+                            <span><b>Creado por:</b> Sistema de Lunnys</span>
+                            <span class="badge bg-primary rounded-pill text-center">@equipo.CantidadStock unidades</span>
+                            <small class="text-muted">@equipo.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</small>
+                        </li>
+
+                        <!-- Descripción -->
+                        @if (!string.IsNullOrEmpty(equipo.Descripcion))
+                        {
+                            <li class="list-group-item"
+                                style="display:grid; grid-template-columns: var(--col1) var(--col2) var(--col3); align-items:center; gap:1rem;">
+                                <span style="word-break:break-word;"><b>Descripción:</b> @equipo.Descripcion</span>
+                                <span class="badge bg-info text-dark rounded-pill text-center">Información</span>
+                                <small class="text-muted">@equipo.FechaRegistro.ToString("dd/MM/yyyy")</small>
+                            </li>
+                        }
+
+                        <!-- Estado actual -->
+                        <li class="list-group-item"
+                            style="display:grid; grid-template-columns: var(--col1) var(--col2) var(--col3); align-items:center; gap:1rem;">
+                            <span><b>Estado actual:</b> @equipo.Estado</span>
+                            <span class="badge @(equipo.Estado?.ToLower() == "disponible" ? "bg-success" : "bg-danger") rounded-pill text-center">
+                                @equipo.Estado
+                            </span>
+                            <small class="text-muted">@equipo.FechaModificacion.ToString("dd/MM/yyyy HH:mm")</small>
+                        </li>
+
+                        <!-- Última modificación -->
+                        <li class="list-group-item"
+                            style="display:grid; grid-template-columns: var(--col1) var(--col2) var(--col3); align-items:center; gap:1rem;">
+                            <span><b>Última modificación:</b></span>
+                            <span class="badge bg-secondary rounded-pill text-center">Actualizado</span>
+                            <small class="text-muted">@equipo.FechaModificacion.ToString("dd/MM/yyyy HH:mm")</small>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Pie -->
+                <div class="modal-footer" style="background:#e9ecef;">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!-- TOAST PARA ALERTAS -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        var eliminarModal = document.getElementById('EliminarEquipoModal')
+        eliminarModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var equipoId = button.getAttribute('data-id')
+            var equipoNombre = button.getAttribute('data-nombre')
+
+            var modalTitle = eliminarModal.querySelector('#nombreEquipoEliminar')
+            var modalInput = eliminarModal.querySelector('#equipoIdEliminar')
+
+            modalTitle.textContent = equipoNombre
+            modalInput.value = equipoId
+        })
+    </script>
+
+    <!-- ==================== FILTROS DE EQUIPOS ==================== -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // === Campos de filtro ===
+            const filtroNombreEquipo = document.getElementById("filtroNombreEquipo");
+            const filtroEstado = document.getElementById("filtroEstado");
+            const filtroFechaRegistro = document.getElementById("filtroFechaRegistro");
+            const filtroDescripcionEquipo = document.getElementById("filtroDescripcionEquipo");
+            const filtroStockMinimo = document.getElementById("filtroStockMinimo");
+            const btnConsultar = document.getElementById("btnConsultar");
+            const btnLimpiar = document.getElementById("btnLimpiar");
+
+            const filas = document.querySelectorAll("#tablaEquipos tbody tr");
+            const norm = (s) => (s || "").toString().trim().toLowerCase();
+
+            // === FUNCIÓN CONSULTAR ===
+            btnConsultar.addEventListener("click", function () {
+                const nombreValor = norm(filtroNombreEquipo.value);
+                const estadoValor = norm(filtroEstado.value);
+                const fechaValor = filtroFechaRegistro.value;
+                const descripcionValor = norm(filtroDescripcionEquipo.value);
+                const stockMin = parseInt(filtroStockMinimo.value) || null;
+
+                const fechaFiltro = fechaValor ? new Date(fechaValor) : null;
+
+                filas.forEach(fila => {
+                    const celdas = fila.querySelectorAll("td");
+                    const nombre = norm(celdas[0]?.textContent);
+                    const descripcion = norm(celdas[1]?.textContent);
+                    const stockTxt = celdas[2]?.textContent || "0";
+                    const estado = norm(celdas[3]?.textContent);
+                    const fechaTexto = (celdas[4]?.textContent || "").trim();
+
+                    const stock = parseInt(stockTxt.replace(/\D/g, "")) || 0;
+
+                    // Parsear la fecha en formato dd/MM/yyyy
+                    const parseFecha = (txt) => {
+                        if (!txt) return null;
+                        const p = txt.split(/[\/\-]/);
+                        if (p.length !== 3) return null;
+                        return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
+                    };
+                    const fechaRegistro = parseFecha(fechaTexto);
+
+                    let visible = true;
+
+                    if (nombreValor && !nombre.includes(nombreValor)) visible = false;
+                    if (estadoValor && estado !== estadoValor) visible = false;
+                    if (descripcionValor && !descripcion.includes(descripcionValor)) visible = false;
+                    if (stockMin !== null && stock < stockMin) visible = false;
+                    if (fechaFiltro && fechaRegistro && fechaRegistro < fechaFiltro) visible = false;
+
+                    fila.style.display = visible ? "" : "none";
+                });
+            });
+
+            // === FUNCIÓN LIMPIAR ===
+            btnLimpiar.addEventListener("click", function () {
+                filtroNombreEquipo.value = "";
+                filtroEstado.value = "";
+                filtroFechaRegistro.value = "";
+                filtroDescripcionEquipo.value = "";
+                filtroStockMinimo.value = "";
+                filas.forEach(f => f.style.display = "");
+            });
+        });
+    </script>
+
+
+    <!-- SCRIPT DE PAGINACIÓN DE EQUIPOS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabla = document.getElementById("tablaEquipos");
+            if (!tabla) return;
+
+            const filas = Array.from(tabla.querySelectorAll("tbody tr"));
+            const info = document.getElementById("tableInfo");
+            const prevBtn = document.getElementById("prevPage");
+            const nextBtn = document.getElementById("nextPage");
+            const pagination = document.getElementById("pagination");
+            const selectFilas = document.getElementById("rowsPerPage");
+
+            let paginaActual = 1;
+            let filasPorPagina = parseInt(selectFilas.value);
+            const totalFilas = filas.length;
+            let totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+
+            function renderPaginacion() {
+                // Limpiar numeración anterior (excepto botones prev/next)
+                pagination.querySelectorAll(".page-number, .dots").forEach(el => el.remove());
+                totalPaginas = Math.ceil(totalFilas / filasPorPagina);
+
+                const next = document.getElementById("nextPage").parentElement;
+                const maxPaginasVisibles = 5;
+                let paginas = [];
+
+                if (totalPaginas <= maxPaginasVisibles + 2) {
+                    for (let i = 1; i <= totalPaginas; i++) paginas.push(i);
+                } else {
+                    let start = Math.max(2, paginaActual - 2);
+                    let end = Math.min(totalPaginas - 1, paginaActual + 2);
+
+                    if (paginaActual <= 3) {
+                        start = 2;
+                        end = 5;
+                    } else if (paginaActual >= totalPaginas - 2) {
+                        start = totalPaginas - 4;
+                        end = totalPaginas - 1;
+                    }
+
+                    paginas = [1, ...Array.from({ length: end - start + 1 }, (_, i) => start + i), totalPaginas];
+                }
+
+                for (let i = 0; i < paginas.length; i++) {
+                    if (i > 0 && paginas[i] - paginas[i - 1] > 1) {
+                        const dots = document.createElement("li");
+                        dots.className = "page-item disabled dots";
+                        dots.innerHTML = `<span class="page-link">...</span>`;
+                        pagination.insertBefore(dots, next);
+                    }
+
+                    const li = document.createElement("li");
+                    li.className = `page-item page-number ${paginas[i] === paginaActual ? "active" : ""}`;
+                    const btn = document.createElement("button");
+                    btn.className = "page-link";
+                    btn.textContent = paginas[i];
+                    btn.addEventListener("click", () => {
+                        paginaActual = paginas[i];
+                        mostrarPagina();
+                    });
+                    li.appendChild(btn);
+                    pagination.insertBefore(li, next);
+                }
+
+                prevBtn.parentElement.classList.toggle("disabled", paginaActual === 1);
+                nextBtn.parentElement.classList.toggle("disabled", paginaActual === totalPaginas);
+            }
+
+            function mostrarPagina() {
+                const inicio = (paginaActual - 1) * filasPorPagina;
+                const fin = inicio + filasPorPagina;
+
+                filas.forEach((fila, index) => {
+                    fila.style.display = (index >= inicio && index < fin) ? "" : "none";
+                });
+
+                const totalVisibles = filas.filter(f => f.style.display !== "none").length;
+                const visibleInicio = totalVisibles > 0 ? inicio + 1 : 0;
+                const visibleFin = Math.min(fin, totalFilas);
+
+                info.textContent = `Mostrando registros del ${visibleInicio} al ${visibleFin} de un total de ${totalFilas}`;
+                renderPaginacion();
+            }
+
+            // Botón "Anterior"
+            prevBtn.addEventListener("click", () => {
+                if (paginaActual > 1) {
+                    paginaActual--;
+                    mostrarPagina();
+                }
+            });
+
+            // Botón "Siguiente"
+            nextBtn.addEventListener("click", () => {
+                if (paginaActual < totalPaginas) {
+                    paginaActual++;
+                    mostrarPagina();
+                }
+            });
+
+            // Cambiar cantidad de filas por página
+            selectFilas.addEventListener("change", () => {
+                filasPorPagina = parseInt(selectFilas.value);
+                paginaActual = 1;
+                mostrarPagina();
+            });
+
+            // Inicializar paginación
+            mostrarPagina();
+        });
+    </script>
+
+    <script>
+            // ===== ALERTAS POR STOCK BAJO =====
+            window.addEventListener('DOMContentLoaded', () => {
+                // Filtrar solo equipos con stock crítico y mayor a 0
+                const equiposBajos = @Html.Raw(
+                                                                                                            Newtonsoft.Json.JsonConvert.SerializeObject(
+                                                                                                                                            Model.Where(e => e.CantidadStock > 0 && e.CantidadStock <= 5)
+                                                                                                            )
+                                                                            );
+
+    equiposBajos.forEach(e => {
+        const toastEl = document.createElement('div');
+        toastEl.className = 'toast align-items-center text-bg-danger border-0';
+        toastEl.setAttribute('role', 'alert');
+        toastEl.setAttribute('aria-live', 'assertive');
+        toastEl.setAttribute('aria-atomic', 'true');
+        toastEl.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    Stock crítico en: <strong>${e.NombreEquipo}</strong> (${e.CantidadStock})
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        document.getElementById('toastContainer').appendChild(toastEl);
+        new bootstrap.Toast(toastEl, { delay: 5000 }).show();
+    });
+    });
+</script>
+
+<!-- MODAL ESTADÍSTICAS DE EQUIPOS -->
+<div class="modal fade" id="equiposStatsModal" tabindex="-1" aria-labelledby="equiposStatsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="equiposStatsLabel">
+                    <i class="fas fa-chart-bar me-2"></i>Estadísticas de Equipos
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Resumen de estadísticas -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-boxes fa-2x text-primary mb-2"></i>
+                                <h5 class="card-title">Total Equipos</h5>
+                                <h3 class="text-primary">@Model.Count()</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                <h5 class="card-title">Disponibles</h5>
+                                <h3 class="text-success">@Model.Count(e => e.Estado == "disponible")</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                                <h5 class="card-title">Pendientes</h5>
+                                <h3 class="text-warning">@Model.Count(e => e.Estado == "pendiente")</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-times-circle fa-2x text-danger mb-2"></i>
+                                <h5 class="card-title">Agotados</h5>
+                                <h3 class="text-danger">@Model.Count(e => e.Estado == "agotado")</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estadísticas de stock -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-secondary text-white">
+                                <h6 class="mb-0">Distribución por Estado</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="equiposEstadoChart" width="200" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-secondary text-white">
+                                <h6 class="mb-0">Stock Total por Estado</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="equiposStockChart" width="200" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de equipos con stock bajo -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <h6 class="mb-0">Equipos con Stock Crítico (≤ 5 unidades)</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Stock Actual</th>
+                                                <th>Estado</th>
+                                                <th>Última Modificación</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var equipo in Model.Where(e => e.CantidadStock <= 5 && e.CantidadStock > 0).OrderBy(e => e.CantidadStock))
+                                            {
+                                                <tr>
+                                                    <td>@equipo.NombreEquipo</td>
+                                                    <td>
+                                                        <span class="badge @(equipo.CantidadStock <= 2 ? "bg-danger" : "bg-warning text-dark")">
+                                                            @equipo.CantidadStock
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge
+                                                                    @(equipo.Estado?.ToLower() == "disponible" ? "bg-success" :
+                                                                    equipo.Estado?.ToLower() == "pendiente" ? "bg-warning text-dark" :
+                                                                    equipo.Estado?.ToLower() == "agotado" ? "bg-danger" :
+                                                                    "bg-secondary")">
+                                                            @equipo.Estado
+                                                        </span>
+                                                    </td>
+                                                    <td>@(equipo.FechaModificacion != DateTime.MinValue ? equipo.FechaModificacion.ToString("dd/MM/yyyy HH:mm") : equipo.FechaRegistro.ToString("dd/MM/yyyy HH:mm"))</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    @if (!Model.Any(e => e.CantidadStock <= 5 && e.CantidadStock > 0))
+                                    {
+                                        <div class="text-center text-muted py-3">
+                                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                            <p>No hay equipos con stock crítico</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="descargarExcelEquipos()">
+                    <i class="fas fa-file-excel me-2"></i>Descargar Excel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT ESTADÍSTICAS DE EQUIPOS -->
+<script>
+    // Configuración de gráficos cuando se abre el modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const equiposStatsModal = document.getElementById('equiposStatsModal');
+        
+        equiposStatsModal.addEventListener('shown.bs.modal', function() {
+            // Obtener datos de equipos
+            const totalEquipos = @Model.Count();
+            const equiposDisponibles = @Model.Count(e => e.Estado == "disponible");
+            const equiposPendientes = @Model.Count(e => e.Estado == "pendiente");
+            const equiposAgotados = @Model.Count(e => e.Estado == "agotado");
+            
+            const stockDisponible = @Model.Where(e => e.Estado == "disponible").Sum(e => e.CantidadStock);
+            const stockPendiente = @Model.Where(e => e.Estado == "pendiente").Sum(e => e.CantidadStock);
+            const stockAgotado = 0; // Los agotados tienen 0 stock
+            
+            // Gráfico de distribución por estado
+            const ctxEstado = document.getElementById('equiposEstadoChart').getContext('2d');
+            new Chart(ctxEstado, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Disponibles', 'Pendientes', 'Agotados'],
+                    datasets: [{
+                        data: [equiposDisponibles, equiposPendientes, equiposAgotados],
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de stock por estado
+            const ctxStock = document.getElementById('equiposStockChart').getContext('2d');
+            new Chart(ctxStock, {
+                type: 'bar',
+                data: {
+                    labels: ['Disponibles', 'Pendientes', 'Agotados'],
+                    datasets: [{
+                        label: 'Stock Total',
+                        data: [stockDisponible, stockPendiente, stockAgotado],
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    });
+    
+    // Función de descarga Excel mejorada
+    function descargarExcelEquipos() {
+        const tabla = document.getElementById('tablaEquipos');
+        const filas = Array.from(tabla.querySelectorAll('tbody tr'));
+        
+        // Preparar datos para el Excel
+        const datos = [];
+        const encabezados = ['Nombre', 'Descripción', 'Stock', 'Estado', 'Fecha Registro'];
+        datos.push(encabezados);
+        
+        filas.forEach(fila => {
+            const celdas = fila.querySelectorAll('td');
+            if (celdas.length > 0) {
+                const filaDatos = [
+                    celdas[0].textContent.trim(), // Nombre
+                    celdas[1].textContent.trim(), // Descripción
+                    celdas[2].textContent.trim(), // Stock
+                    celdas[3].textContent.trim(), // Estado
+                    celdas[4].textContent.trim()  // Fecha Registro
+                ];
+                datos.push(filaDatos);
+            }
+        });
+        
+        // Crear libro de trabajo
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(datos);
+        
+        // Estilos para el encabezado
+        const estiloEncabezado = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            fill: { fgColor: { rgb: "28A745" } },
+            alignment: { horizontal: "center", vertical: "center" }
+        };
+        
+        // Aplicar estilos al encabezado
+        for (let i = 0; i < encabezados.length; i++) {
+            const celda = XLSX.utils.encode_cell({ r: 0, c: i });
+            if (!ws[celda]) ws[celda] = {};
+            ws[celda].s = estiloEncabezado;
+        }
+        
+        // Ajustar ancho de columnas
+        ws['!cols'] = [
+            { wch: 25 }, // Nombre
+            { wch: 40 }, // Descripción
+            { wch: 10 }, // Stock
+            { wch: 15 }, // Estado
+            { wch: 18 }  // Fecha
+        ];
+        
+        // Agregar hoja al libro
+        XLSX.utils.book_append_sheet(wb, ws, 'Equipos');
+        
+        // Generar archivo Excel
+        const fecha = new Date().toISOString().slice(0, 10);
+        XLSX.writeFile(wb, `Equipos_${fecha}.xlsx`);
+    }
+</script>
+
+<!-- Librería para exportación Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+}

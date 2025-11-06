@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFinalCalidad.Data;
 using ProyectoFinalCalidad.Models;
@@ -28,9 +28,10 @@ public class ZonaCoberturaController : Controller
     {
         if (ModelState.IsValid)
         {
+            zona.Estado = "Activo";
             _context.ZonaCoberturas.Add(zona);
             _context.SaveChanges();
-            return RedirectToAction("Index"); // O el nombre de tu acción de listado
+            return RedirectToAction("Index");
         }
         return View(zona);
     }
@@ -79,37 +80,40 @@ public class ZonaCoberturaController : Controller
         {
             _context.Update(zonaExistente);
             _context.SaveChanges();
-            return RedirectToAction("Index"); // O la acción/listado que uses
+            return RedirectToAction("Index"); // O la acciÃ³n/listado que uses
         }
         catch (Exception ex)
         {
             // Opcional: registrar error
-            ModelState.AddModelError(string.Empty, "Ocurrió un error al guardar los cambios.");
+            ModelState.AddModelError(string.Empty, "OcurriÃ³ un error al guardar los cambios.");
             return View(zonaActualizada);
         }
     }
-
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Eliminar(int id)
     {
         var zona = _context.ZonaCoberturas.FirstOrDefault(z => z.Id == id);
+
         if (zona == null)
         {
             return NotFound();
         }
 
-        _context.ZonaCoberturas.Remove(zona);
+        zona.Estado = "Inactivo";
+        _context.ZonaCoberturas.Update(zona);
         _context.SaveChanges();
 
         return RedirectToAction("Index");
     }
 
-
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var zonas = await _context.ZonaCoberturas.ToListAsync();
+        var zonas = _context.ZonaCoberturas
+                .Where(z => z.Estado == null || z.Estado == "Activo")
+                .ToList();
+
         return View(zonas);
     }
 }

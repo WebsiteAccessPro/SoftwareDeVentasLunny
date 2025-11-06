@@ -25,6 +25,10 @@ namespace ProyectoFinalCalidad.Models
         [StringLength(255)]
         public string Descripcion { get; set; }
 
+        [Column("estado")]
+        [StringLength(20)]
+        public string? Estado { get; set; }
+
         public ICollection<PlanServicio> PlanesServicio { get; set; } = new List<PlanServicio>();
     }
 }

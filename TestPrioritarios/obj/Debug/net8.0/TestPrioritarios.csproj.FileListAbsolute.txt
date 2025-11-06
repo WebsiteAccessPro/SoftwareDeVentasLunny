@@ -779,3 +779,12 @@ C:\Users\User\Downloads\ProyectoFinalCalidad\TestPrioritarios\bin\Debug\net8.0\P
 C:\Users\User\Downloads\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrio.9EA014B2.Up2Date
 C:\Users\User\Downloads\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrioritarios.genruntimeconfig.cache
 C:\Users\User\Downloads\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\ref\TestPrioritarios.dll
+D:\ProyectoFinalCalidad\TestPrioritarios\bin\Debug\net8.0\CoverletSourceRootsMapping_TestPrioritarios
+D:\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrioritarios.csproj.AssemblyReference.cache
+D:\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrioritarios.GeneratedMSBuildEditorConfig.editorconfig
+D:\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrioritarios.AssemblyInfoInputs.cache
+D:\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrioritarios.AssemblyInfo.cs
+D:\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrioritarios.csproj.CoreCompileInputs.cache
+D:\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrioritarios.dll
+D:\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\refint\TestPrioritarios.dll
+D:\ProyectoFinalCalidad\TestPrioritarios\obj\Debug\net8.0\TestPrioritarios.pdb

@@ -4,169 +4,200 @@
 }
 
 <style>
-    body {
-        background-color: #f0f8ff;
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --danger: #e63946;
+    }
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
     }
 
     .form-container {
-        max-width: 800px;
-        margin: 0 auto;
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(15, 32, 39, 0.1);
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         width: 100%;
         max-width: 850px;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-in-out;
     }
 
-    .form-title {
-        color: #203A43;
+    /* ===== HEADER ===== */
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: 18px 28px;
+        font-size: 1.4rem;
         font-weight: 600;
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 1.8rem;
-    }
-
-    .form-columns {
         display: flex;
-        gap: 30px;
+        align-items: center;
+        gap: 12px;
+        letter-spacing: 0.3px;
     }
 
-    .form-column {
-        flex: 1;
+        .form-header i {
+            font-size: 1.5rem;
+        }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    /* ===== GRID ===== */
+    .form-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px 28px;
     }
 
     .form-group {
-        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
     }
 
     .form-label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 500;
-        color: #2c3e50;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+        font-size: 0.95rem;
     }
 
     .form-control {
         width: 100%;
-        padding: 10px 15px;
-        border: 1px solid #dfe6e9;
-        border-radius: 8px;
-        transition: all 0.3s;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        transition: all 0.25s ease;
+        font-size: 0.9rem;
     }
 
         .form-control:focus {
-            border-color: #3A7CA5;
-            box-shadow: 0 0 0 0.25rem rgba(58, 124, 165, 0.25);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 159, 253, 0.15);
             outline: none;
         }
 
-        .form-control::placeholder {
-            color: #95a5a6;
-            font-size: 0.9rem;
-        }
-
-    /* Password toggle styles */
+    /* ===== PASSWORD SECTION ===== */
     .password-input-group {
         display: flex;
+        align-items: center;
     }
 
     .password-input {
         flex: 1;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
         border-right: none;
+        border-radius: 10px 0 0 10px;
+        background: #fff;
+        font-size: 0.9rem;
+        transition: border-color 0.25s;
     }
 
+        .password-input:focus {
+            border-color: var(--primary);
+        }
+
     .password-toggle {
-        width: 42px;
+        width: 45px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: white;
-        border: 1px solid #dfe6e9;
+        background: var(--bg-light);
+        border: 1px solid var(--border);
         border-left: none;
-        border-radius: 0 8px 8px 0;
+        border-radius: 0 10px 10px 0;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: 0.3s;
     }
 
         .password-toggle:hover {
-            background-color: #f8f9fa;
+            background: #f1f5f9;
         }
 
         .password-toggle i {
-            color: #95a5a6;
-            transition: all 0.3s;
+            color: var(--text-light);
         }
 
         .password-toggle:hover i {
-            color: #3A7CA5;
+            color: var(--primary);
         }
 
-    /* Full-width row */
-    .full-width-row {
-        grid-column: 1 / -1;
-        width: 100%;
+    /* ===== ALERTS ===== */
+    .alert-danger {
+        background-color: rgba(230, 57, 70, 0.1);
+        border: 1px solid rgba(230, 57, 70, 0.25);
+        color: var(--danger);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
     }
 
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 3px;
+    }
+
+    /* ===== BUTTONS ===== */
     .btn-container {
         display: flex;
-        gap: 15px;
-        margin-top: 30px;
         justify-content: center;
+        gap: 15px;
+        margin-top: 35px;
     }
 
     .btn {
-        padding: 10px 25px;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.3s;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-weight: 600;
         cursor: pointer;
-        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
+        font-size: 0.95rem;
     }
 
     .btn-primary {
-        background-color: #3A7CA5;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
         color: white;
         border: none;
     }
 
         .btn-primary:hover {
-            background-color: #2c5d7d;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(58, 124, 165, 0.3);
+            box-shadow: 0 8px 18px rgba(0, 159, 253, 0.3);
         }
 
     .btn-secondary {
-        background-color: white;
-        color: #3A7CA5;
-        border: 1px solid #3A7CA5;
+        background: #fff;
+        border: 1px solid var(--accent);
+        color: var(--accent);
     }
 
-    .text-danger {
-        color: #e74c3c;
-        font-size: 0.85rem;
-        margin-top: 5px;
-        display: block;
-    }
-
-    @@media (max-width: 768px) {
-        .form-container {
-            padding: 20px;
+        .btn-secondary:hover {
+            background-color: var(--accent);
+            color: #fff;
+            transform: translateY(-2px);
         }
 
-        .form-columns {
-            flex-direction: column;
-            gap: 0;
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 768px) {
+        .form-body {
+            padding: 25px;
         }
 
         .btn-container {
@@ -177,128 +208,136 @@
             width: 100%;
         }
     }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 </style>
 
-<div class="form-container">
-    <h2 class="form-title">@ViewData["Title"]</h2>
-
-    <form asp-action="AgregarEmpleado" method="post" class="needs-validation" novalidate>
-        @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
-
-        <div class="form-columns">
-            <!-- Columna Izquierda -->
-            <div class="form-column">
-                <!-- Campo Cargo -->
-                <div class="form-group">
-                    <label asp-for="cargo_id" class="form-label">Cargo</label>
-                    <select asp-for="cargo_id" asp-items="ViewBag.Cargos" class="form-control" required>
-                        <option value="">-- Selecciona --</option>
-                    </select>
-                    <span asp-validation-for="cargo_id" class="text-danger"></span>
-                </div>
-
-                <!-- Campo Nombres -->
-                <div class="form-group">
-                    <label asp-for="nombres" class="form-label">Nombre</label>
-                    <input asp-for="nombres" class="form-control" required />
-                    <span asp-validation-for="nombres" class="text-danger"></span>
-                </div>
-
-                <!-- Campo DNI -->
-                <div class="form-group">
-                    <label asp-for="dni" class="form-label">DNI</label>
-                    <input asp-for="dni" class="form-control" required maxlength="8" placeholder="Ingrese 8 dígitos" />
-                    <span asp-validation-for="dni" class="text-danger"></span>
-                </div>
-
-                <!-- Campo Teléfono -->
-                <div class="form-group">
-                    <label asp-for="telefono" class="form-label">Teléfono</label>
-                    <input asp-for="telefono" class="form-control" maxlength="9" placeholder="Ingrese 9 dígitos" />
-                    <span asp-validation-for="telefono" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- Columna Derecha -->
-            <div class="form-column">
-                <!-- Campo Correo -->
-                <div class="form-group">
-                    <label asp-for="correo" class="form-label">Correo</label>
-                    <input asp-for="correo" type="email" class="form-control" placeholder="ejemplo@correo.com" />
-                    <span asp-validation-for="correo" class="text-danger"></span>
-                </div>
-
-                <!-- Campo Estado -->
-                <div class="form-group">
-                    <label asp-for="estado" class="form-label">Estado</label>
-                    <select asp-for="estado" class="form-control" required>
-                        <option value="">-- Selecciona estado --</option>
-                        <option value="activo">Activo</option>
-                        <option value="inhabilitado">Inhabilitado</option>
-                    </select>
-                    <span asp-validation-for="estado" class="text-danger"></span>
-                </div>
-
-                <!-- Campo Fecha Inicio -->
-                <div class="form-group">
-                    <label asp-for="fecha_inicio" class="form-label">Fecha Inicio</label>
-                    <input asp-for="fecha_inicio" type="date" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
-                    <span asp-validation-for="fecha_inicio" class="text-danger"></span>
-                </div>
-            </div>
+<main>
+    <div class="form-container">
+        <div class="form-header">
+            <i class="fas fa-user-plus"></i>
+            @ViewData["Title"]
         </div>
 
-        <!-- Full-width row for password and duration -->
-        <div class="form-group">
-            <label asp-for="password" class="form-label">Contraseña</label>
-            <div class="password-input-group">
-                <input asp-for="password" type="password" class="form-control password-input" required minlength="6" placeholder="Mínimo 6 caracteres" id="passwordField" />
-                <span class="password-toggle" onclick="togglePasswordVisibility('passwordField')">
-                    <i class="fas fa-eye"></i>
-                </span>
-            </div>
-            <span asp-validation-for="password" class="text-danger"></span>
-        </div>
+        <div class="form-body">
+            <form asp-action="AgregarEmpleado" method="post" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
-        <div class="form-group">
-            <label for="mesesDuracion" class="form-label">Duración en meses</label>
-            <input name="mesesDuracion" type="number" class="form-control" min="1" required placeholder="Ej: 12 (meses)" />
-        </div>
+                <div class="form-columns">
+                    <!-- Columna Izquierda -->
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label asp-for="cargo_id" class="form-label">Cargo</label>
+                            <select asp-for="cargo_id" asp-items="ViewBag.Cargos" class="form-control" required>
+                                <option value="">-- Selecciona --</option>
+                            </select>
+                            <span asp-validation-for="cargo_id" class="text-danger"></span>
+                        </div>
 
-        <!-- Botones -->
-        <div class="btn-container">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Guardar
-            </button>
-            <a asp-action="MostrarEmpleados" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
+                        <div class="form-group">
+                            <label asp-for="nombres" class="form-label">Nombre</label>
+                            <input asp-for="nombres" class="form-control" required placeholder="Ingrese nombre completo" />
+                            <span asp-validation-for="nombres" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="dni" class="form-label">DNI</label>
+                            <input asp-for="dni" class="form-control" maxlength="8" minlength="8" pattern="\d{8}" placeholder="Ingrese 8 dígitos" required />
+                            <span asp-validation-for="dni" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="telefono" class="form-label">Teléfono</label>
+                            <input asp-for="telefono" class="form-control" maxlength="9" minlength="9" pattern="\d{9}" placeholder="Ingrese 9 dígitos" required />
+                            <span asp-validation-for="telefono" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha -->
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label asp-for="correo" class="form-label">Correo</label>
+                            <input asp-for="correo" type="email" class="form-control" placeholder="ejemplo@correo.com" required />
+                            <span asp-validation-for="correo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="estado" class="form-label">Estado</label>
+                            <select asp-for="estado" class="form-control" required>
+                                <option value="">-- Selecciona estado --</option>
+                                <option value="activo">Activo</option>
+                                <option value="inhabilitado">Inhabilitado</option>
+                            </select>
+                            <span asp-validation-for="estado" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="fecha_inicio" class="form-label">Fecha Inicio</label>
+                            <input asp-for="fecha_inicio" type="date" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                            <span asp-validation-for="fecha_inicio" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label asp-for="password" class="form-label">Contraseña</label>
+                    <div class="password-input-group">
+                        <input asp-for="password" type="password" class="form-control password-input" required minlength="6" placeholder="Mínimo 6 caracteres" id="passwordField" />
+                        <span class="password-toggle" onclick="togglePasswordVisibility('passwordField')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    <span asp-validation-for="password" class="text-danger"></span>
+                </div>
+
+                <!-- Duración -->
+                <div class="form-group">
+                    <label for="mesesDuracion" class="form-label">Duración en meses</label>
+                    <input name="mesesDuracion" type="number" class="form-control" min="1" required placeholder="Ej: 12 (meses)" />
+                    <span class="text-danger field-validation-valid" data-valmsg-for="mesesDuracion" data-valmsg-replace="true"></span>
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+
+                    @{
+                        var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+                        var accionCancelar = (!string.IsNullOrEmpty(rolUsuario) && rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                        ? "MostrarEmpleadosAdmin"
+                        : "MostrarEmpleados";
+                    }
+                    <a asp-action="@accionCancelar" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </form>
         </div>
-    </form>
-</div>
+    </div>
+</main>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script>
-        document.querySelector('form').addEventListener('submit', function (e) {
-            const fechaInicio = document.getElementById('fecha_inicio').value;
-            if (!fechaInicio) {
-                e.preventDefault();
-                document.getElementById('fecha_inicio').classList.add('is-invalid');
-                document.querySelector('[data-valmsg-for="fecha_inicio"]').textContent = 'La fecha de inicio es requerida';
-            }
-        });
-
         function togglePasswordVisibility(fieldId) {
             const field = document.getElementById(fieldId);
-            const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
-            field.setAttribute('type', type);
+            const type = field.type === 'password' ? 'text' : 'password';
+            field.type = type;
 
-            // Cambiar ícono
             const icon = field.nextElementSibling.querySelector('i');
             icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
         }

@@ -4,66 +4,264 @@
     ViewData["Title"] = Model.EquipoId == 0 ? "Agregar Equipo" : "Editar Equipo";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h2 class="mb-0 fs-4">@ViewData["Title"]</h2>
-        </div>
-        <div class="card-body">
-            <form asp-action="AgregarEditar" method="post" class="needs-validation" novalidate>
-                <input type="hidden" asp-for="EquipoId" />
+<style>
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --danger: #e63946;
+    }
 
-                <!-- Nombre -->
-                <div class="mb-3">
-                    <label asp-for="NombreEquipo" class="form-label fw-semibold">
-                        Nombre del Equipo <span class="text-danger">*</span>
-                    </label>
-                    <input asp-for="NombreEquipo" class="form-control" placeholder="Ingrese el nombre del equipo" required aria-required="true" />
-                    <div class="invalid-feedback">Por favor ingrese el nombre del equipo.</div>
+    .form-container {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+        width: 100%;
+        max-width: 780px;
+        margin: 50px auto;
+        overflow: hidden;
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: 14px 22px;
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.2px;
+    }
+
+        .form-header i {
+            font-size: 1.4rem;
+        }
+
+    .form-subtitle {
+        text-align: center;
+        margin-top: 8px;
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .form-body {
+        padding: 30px;
+    }
+
+    .form-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px 22px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+    }
+
+    .form-control,
+    .form-select,
+    textarea {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #fff;
+        transition: all 0.25s ease;
+        font-size: 0.9rem;
+        resize: none;
+    }
+
+        .form-control:focus,
+        .form-select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 159, 253, 0.15);
+            outline: none;
+        }
+
+        .form-control:hover,
+        .form-select:hover {
+            border-color: var(--accent);
+        }
+
+    .divider {
+        border: 0;
+        height: 1px;
+        background: var(--border);
+        margin: 20px 0;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 2px;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .btn {
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 159, 253, 0.25);
+        }
+
+    .btn-secondary {
+        background: #fff;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--accent);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 768px) {
+        .form-body {
+            padding: 22px;
+        }
+
+        .btn-container {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <i class="fas fa-laptop"></i>
+        @ViewData["Title"]
+    </div>
+
+    <p class="form-subtitle">
+        Completa la información del equipo para mantener actualizado el inventario.
+    </p>
+
+    <div class="form-body">
+        <form asp-action="Editar" method="post" class="needs-validation" novalidate>
+            <input type="hidden" asp-for="EquipoId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-columns">
+                <div class="form-group">
+                    <label asp-for="NombreEquipo" class="form-label">Nombre del Equipo <span class="text-danger">*</span></label>
+                    <input asp-for="NombreEquipo" class="form-control" placeholder="Ingrese el nombre del equipo" required />
                     <span asp-validation-for="NombreEquipo" class="text-danger"></span>
                 </div>
 
-                <!-- Descripci�n -->
-                <div class="mb-3">
-                    <label asp-for="Descripcion" class="form-label fw-semibold">
-                        Descripci�n
-                    </label>
-                    <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Escriba una breve descripci�n del equipo"></textarea>
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Escriba una breve descripción"></textarea>
                     <span asp-validation-for="Descripcion" class="text-danger"></span>
                 </div>
 
-                <!-- Estado (solo al editar) -->
                 @if (Model.EquipoId != 0)
                 {
-                    <div class="mb-3">
-                        <label asp-for="Estado" class="form-label fw-semibold">Estado</label>
-                        <select asp-for="Estado" class="form-select" aria-label="Seleccione el estado del equipo">
+                    <div class="form-group">
+                        <label asp-for="Estado" class="form-label">Estado</label>
+                        <select asp-for="Estado" class="form-select" id="estadoSelect">
                             <option value="disponible">Disponible</option>
                             <option value="pendiente">Pendiente</option>
                             <option value="agotado">Agotado</option>
                         </select>
                         <span asp-validation-for="Estado" class="text-danger"></span>
+                        <small class="form-text text-muted" id="estadoAdvertencia" style="display: none;">
+                            <i class="fas fa-info-circle"></i> Al seleccionar "Agotado", el stock se establecerá automáticamente en 0.
+                        </small>
                     </div>
                 }
+            </div>
 
-                <div class="d-flex justify-content-start mt-4">
-                    <button type="submit" class="btn btn-success me-2">
-                        <i class="bi bi-save"></i> Guardar
-                    </button>
-                    <a asp-action="Administrar" asp-controller="Equipo" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Cancelar
-                    </a>
+            @if (Model.EquipoId != 0)
+            {
+                <hr class="divider" />
 
+                <div class="form-group">
+                    <label class="form-label">Fecha de Registro</label>
+                    <input type="text" class="form-control" value="@Model.FechaRegistro.ToString("dd/MM/yyyy")" readonly />
                 </div>
-            </form>
-        </div>
+            }
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="MostrarEquiposAdmin" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="MostrarEquipos" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </a>
+                }
+            </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Bootstrap 5 validation
         (() => {
             'use strict';
             const forms = document.querySelectorAll('.needs-validation');
@@ -76,33 +274,29 @@
                     form.classList.add('was-validated');
                 }, false);
             });
+
+            // Mostrar advertencia cuando se selecciona "Agotado"
+            const estadoSelect = document.getElementById('estadoSelect');
+            const advertencia = document.getElementById('estadoAdvertencia');
+            
+            if (estadoSelect && advertencia) {
+                // Verificar estado inicial
+                if (estadoSelect.value === 'agotado') {
+                    advertencia.style.display = 'block';
+                }
+                
+                // Escuchar cambios
+                estadoSelect.addEventListener('change', function() {
+                    if (this.value === 'agotado') {
+                        advertencia.style.display = 'block';
+                    } else {
+                        advertencia.style.display = 'none';
+                    }
+                });
+            }
         })();
     </script>
 }
 
-@section Styles {
-    <style>
-        .card {
-            max-width: 700px;
-            margin: auto;
-        }
-
-        .form-label {
-            color: #212529;
-        }
-
-        .btn-success, .btn-outline-secondary {
-            border-radius: 8px;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #198754;
-            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-        }
-
-        /* Contraste accesible */
-        .bg-primary {
-            background-color: #0d6efd !important;
-        }
-    </style>
-}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

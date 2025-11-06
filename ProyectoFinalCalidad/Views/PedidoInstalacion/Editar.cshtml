@@ -1,0 +1,205 @@
+@model ProyectoFinalCalidad.Models.PedidoInstalacion
+
+@{
+    ViewData["Title"] = "Editar Pedido de Instalación";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+
+<style>
+    :root {
+        --primary: #009ffd;
+        --accent: #6a4c93;
+        --text-dark: #1e2a35;
+        --text-light: #6b7280;
+        --border: #d0d7de;
+        --bg-light: #f9fafb;
+        --danger: #e63946;
+    }
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .form-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 850px;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    /* ===== HEADER ===== */
+    .form-header {
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        color: #fff;
+        padding: 18px 28px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        letter-spacing: 0.3px;
+    }
+
+        .form-header i { font-size: 1.5rem; }
+
+    .form-body { padding: 40px; }
+
+    /* ===== GRID ===== */
+    .form-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px 28px;
+    }
+
+    .form-group { display: flex; flex-direction: column; }
+    .form-label { font-weight: 600; color: var(--text-dark); margin-bottom: 6px; font-size: 0.95rem; }
+    .form-control, .form-select {
+        width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: #fff;
+        transition: all 0.25s ease; font-size: 0.9rem;
+    }
+    .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 159, 253, 0.15); outline: none; }
+
+    /* ===== ALERTS ===== */
+    .alert-danger { background-color: rgba(230, 57, 70, 0.1); border: 1px solid rgba(230, 57, 70, 0.25); color: var(--danger); border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; font-size: 0.9rem; }
+    .text-danger { color: var(--danger); font-size: 0.8rem; margin-top: 3px; }
+
+    /* ===== BUTTONS ===== */
+    .btn-container { display: flex; justify-content: center; gap: 15px; margin-top: 35px; }
+    .btn { padding: 12px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; }
+    .btn-primary { background: linear-gradient(90deg, var(--primary), var(--accent)); color: white; border: none; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0, 159, 253, 0.3); }
+    .btn-secondary { background: #fff; border: 1px solid var(--accent); color: var(--accent); }
+    .btn-secondary:hover { background-color: var(--accent); color: #fff; transform: translateY(-2px); }
+
+    /* ===== STATE BADGES ===== */
+    .state-badge { padding: 8px 14px; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .badge-pendiente { background-color: #fbc02d; color: #1e2a35; }
+    .badge-completado { background-color: #2ecc71; color: #fff; }
+    .badge-cancelado { background-color: var(--danger); color: #fff; }
+    .dropdown-menu .dropdown-item i { margin-right: 6px; color: var(--text-light); }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 768px) {
+        .form-body { padding: 25px; }
+        .btn-container { flex-direction: column; }
+        .btn { width: 100%; }
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<main>
+    <div class="form-container">
+        <div class="form-header">
+            <i class="bi bi-pencil-square"></i>
+            <span>@ViewData["Title"]</span>
+        </div>
+        <div class="form-body">
+            <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <input type="hidden" asp-for="PedidoId" />
+
+                <div class="form-columns">
+                    <div class="form-group">
+                        <label class="form-label" for="ContratoId">Número de Contrato</label>
+                        <select asp-for="ContratoId" asp-items="ViewBag.Contratos" class="form-select" required>
+                            <option value="">Seleccione un contrato</option>
+                        </select>
+                        <span asp-validation-for="ContratoId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="JefeACargo">Jefe a Cargo</label>
+                        <input asp-for="JefeACargo" type="text" class="form-control" readonly />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="EmpleadoId">Técnico Responsable</label>
+                        <select asp-for="EmpleadoId" asp-items="ViewBag.Tecnicos" class="form-select" required>
+                            <option value="">Seleccione un técnico</option>
+                        </select>
+                        <span asp-validation-for="EmpleadoId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="FechaInstalacion">Fecha Programada</label>
+                        <input asp-for="FechaInstalacion" type="date" class="form-control" required />
+                        <span asp-validation-for="FechaInstalacion" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="EstadoInstalacion">Estado del Pedido</label>
+                        <input type="hidden" asp-for="EstadoInstalacion" id="estadoHidden" />
+                        <div class="dropdown">
+                            <button class="btn state-badge dropdown-toggle" type="button" id="estadoDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-hourglass-split"></i> Pendiente
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="estadoDropdown">
+                                <li><button type="button" class="dropdown-item" onclick="seleccionarEstado('pendiente')"><i class="bi bi-hourglass-split"></i> Pendiente</button></li>
+                                <li><button type="button" class="dropdown-item" onclick="seleccionarEstado('completado')"><i class="bi bi-check-circle-fill"></i> Completado</button></li>
+                                <li><button type="button" class="dropdown-item" onclick="seleccionarEstado('cancelado')"><i class="bi bi-x-circle-fill"></i> Cancelado</button></li>
+                            </ul>
+                        </div>
+                        <span asp-validation-for="EstadoInstalacion" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label class="form-label" for="Observaciones">Observaciones</label>
+                        <textarea asp-for="Observaciones" class="form-control" rows="5" maxlength="500" id="observaciones"></textarea>
+                        <div class="counter"><span id="obsCount">0</span> / 500</div>
+                        <span asp-validation-for="Observaciones" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save2"></i> Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        function seleccionarEstado(valor) {
+            const hiddenInput = document.getElementById("estadoHidden");
+            const dropdown = document.getElementById("estadoDropdown");
+            hiddenInput.value = valor;
+
+            let texto = "";
+            let clase = "btn state-badge ";
+            let icon = "";
+
+            if (valor === "pendiente") { texto = "Pendiente"; clase += "badge-pendiente"; icon = "bi-hourglass-split"; }
+            else if (valor === "completado") { texto = "Completado"; clase += "badge-completado"; icon = "bi-check-circle-fill"; }
+            else if (valor === "cancelado") { texto = "Cancelado"; clase += "badge-cancelado"; icon = "bi-x-circle-fill"; }
+
+            dropdown.className = clase + " dropdown-toggle";
+            dropdown.innerHTML = `<i class="bi ${icon}"></i> ${texto}`;
+            if (window.bootstrap?.Dropdown) { window.bootstrap.Dropdown.getInstance(dropdown)?.hide(); }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const actual = (document.getElementById("estadoHidden").value || "pendiente").toLowerCase();
+            seleccionarEstado(actual);
+
+            const obs = document.getElementById('observaciones');
+            const obsCount = document.getElementById('obsCount');
+            const updateCount = () => { obsCount.textContent = (obs.value || '').length; };
+            obs.addEventListener('input', updateCount);
+            updateCount();
+        });
+    </script>
+}

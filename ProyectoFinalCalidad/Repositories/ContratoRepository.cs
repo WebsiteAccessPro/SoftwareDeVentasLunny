@@ -2,10 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoFinalCalidad.Data;
 using ProyectoFinalCalidad.Models;
 using ProyectoFinalCalidad.Repositories.Interfaces;
-using ProyectoFinalCalidad.Data;
 using ProyectoFinalCalidad.Services;
 
-namespace pruevas_diars_fabricio_0001.Repositories
+namespace ProyectoFinalCalidad.Repositories
 {
     public class ContratoRepository : IContratoService
     {

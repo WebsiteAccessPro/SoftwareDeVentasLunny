@@ -1,117 +1,275 @@
-@{
+﻿@{
     ViewData["Title"] = "Buscar Cliente por DNI";
 }
 
-<style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    body {
-        background-color: #f0f8ff;
-    }
+<div class="consulta-wrapper">
+    <div class="consulta-container animate-fade shadow-lg">
+        <div class="card-header text-white py-3 d-flex align-items-center consulta-header">
+            <h3 class="mb-0 w-100 text-center">
+                <i class="fas fa-search me-2"></i> Consulta de Pagos
+            </h3>
+        </div>
 
-    .consulta-container {
-        background: linear-gradient(135deg, #0F2027, #203A43);
-        border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        max-width: 650px;
-        padding: 35px;
-        color: white;
-        border: 1px solid rgba(100, 210, 255, 0.3);
-    }
+        <div class="card-body px-4 py-4">
+            <p class="consulta-intro text-center">
+                Ingrese su número de <strong>DNI</strong> para acceder a la información de sus pagos registrados.
+                Este servicio le permitirá verificar el estado de sus operaciones y confirmar sus transacciones más recientes.
+            </p>
 
-    .consulta-title {
-        text-align: center;
-        font-weight: bold;
-        color: #64D2FF;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-size: 28px;
-        margin-bottom: 30px;
-    }
+            <form asp-action="BuscarPorDni" method="post" class="needs-validation mt-4" novalidate>
+                @Html.AntiForgeryToken()
 
-    .form-control {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 2px solid #3A7CA5;
-        color: white;
-        border-radius: 8px;
-        transition: all 0.3s;
-        padding: 15px;
-        font-size: 16px;
-    }
+                <div class="mb-3">
+                    <label for="dni" class="form-label fw-semibold text-dark">
+                        <i class="fas fa-id-card text-primary me-2"></i>DNI del Cliente
+                    </label>
+                    <input type="text" name="dni" id="dni" class="form-control shadow-sm"
+                           placeholder="Ejemplo: 70943895" maxlength="15" required />
+                    <div class="invalid-feedback">Por favor, ingrese un DNI válido.</div>
+                </div>
 
-        .form-control:focus {
-            border-color: #64D2FF;
-            background-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 0 3px rgba(100, 210, 255, 0.2);
-        }
+                <button type="submit" class="btn btn-consulta mt-3 w-100">
+                    <i class="fas fa-paper-plane me-2"></i> Consultar
+                </button>
+            </form>
 
-    .btn-consulta {
-        background-color: #3A7CA5; /* Azul medio */
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: bold;
-        width: 100%;
-        transition: all 0.3s;
-        text-transform: uppercase;
-        padding: 16px;
-        font-size: 16px;
-        margin-top: 20px;
-    }
+            @if (ViewBag.Mensaje != null)
+            {
+                <div class="alert alert-warning mt-4">
+                    <i class="fas fa-exclamation-triangle"></i> @ViewBag.Mensaje
+                </div>
+            }
 
-        .btn-consulta:hover {
-            background-color: #64D2FF; /* Azul brillante */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(100, 210, 255, 0.3);
-        }
-
-    .alert-warning {
-        background-color: rgba(255, 193, 7, 0.15);
-        border-color: rgba(255, 193, 7, 0.3);
-        color: #FFC107;
-        border-radius: 8px;
-    }
-
-    label {
-        font-weight: 600;
-        margin-bottom: 8px;
-        display: block;
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-    }
-
-</style>
-<div class="position-absolute top-50 start-50 translate-middle w-100" style="max-width: 650px;">
-    <div class="consulta-container">
-        <h2 class="consulta-title">
-            <i class="fas fa-search"></i> Consulta de Pagos
-        </h2>
-
-        <form asp-action="BuscarPorDni" method="post">
-            @Html.AntiForgeryToken()
-
-            <div class="form-group">
-                <label for="dni">Ingrese su DNI:</label>
-                <input type="text" name="dni" class="form-control" required maxlength="15"
-                       placeholder="Ejemplo: 12345678" />
+            <!-- Políticas -->
+            <div class="policy-box mt-5 p-4 rounded-3 shadow-sm">
+                <h5 class="fw-semibold mb-3 text-dark">
+                    <i class="fas fa-shield-alt me-2 text-primary"></i>Políticas y Seguridad
+                </h5>
+                <ul class="text-muted small mb-3">
+                    <li>Sus datos personales son tratados conforme a la Ley de Protección de Datos Personales.</li>
+                    <li>No comparta su número de DNI con terceros no autorizados.</li>
+                    <li>La información mostrada corresponde únicamente al titular del documento ingresado.</li>
+                    <li>En caso de detectar inconsistencias, comuníquese con el área de atención al cliente.</li>
+                </ul>
+                <p class="text-muted small mb-0">
+                    Al realizar esta consulta, usted acepta nuestras
+                    <a href="#" class="text-decoration-none text-primary fw-semibold">políticas de privacidad</a>
+                    y el <a href="#" class="text-decoration-none text-primary fw-semibold">tratamiento de datos personales</a>.
+                </p>
             </div>
-
-            <button type="submit" class="btn btn-consulta">
-                <i class="fas fa-paper-plane"></i> Consultar
-            </button>
-        </form>
-
-        @if (ViewBag.Mensaje != null)
-        {
-            <div class="alert alert-warning mt-4">
-                <i class="fas fa-exclamation-triangle"></i> @ViewBag.Mensaje
-            </div>
-        }
+        </div>
     </div>
 </div>
 
-<!-- Agrega FontAwesome para los �conos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+@section Styles {
+    <style>
+
+        .consulta-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 15px;
+        }
+
+        .consulta-container {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 700px;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 10px 30px rgba(15, 32, 39, 0.1);
+        }
+
+        /* Encabezado */
+        .consulta-header {
+            background: linear-gradient(135deg, #203A43, #0F2027);
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: none;
+            text-transform: uppercase;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .consulta-intro {
+            font-size: 15.5px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Campos */
+        .form-control {
+            border-radius: 0.6rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid #d8deea;
+            background-color: #f9fbff;
+            transition: all 0.3s ease;
+            color: #0F2027;
+        }
+
+            .form-control:focus {
+                border-color: #3A7CA5;
+                box-shadow: 0 0 0 3px rgba(58, 124, 165, 0.25);
+                background-color: #ffffff;
+            }
+
+        /* Botón principal */
+        .btn-consulta {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            padding: 14px;
+            transition: all 0.3s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            box-shadow: 0 3px 10px rgba(46, 204, 113, 0.3);
+        }
+
+            .btn-consulta:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            }
+
+        /* Alerta */
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-color: rgba(255, 193, 7, 0.3);
+            color: #b27b00;
+            border-radius: 8px;
+        }
+
+        /* ===== MODO OSCURO ===== */
+        html[data-theme="dark"], [data-bs-theme="dark"], .dark-mode {
+            /* Contenedor principal */
+            .consulta-container
+
+        {
+            background-color: var(--card-bg-dark) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* Encabezado */
+        .consulta-header {
+            background: linear-gradient(135deg, #1c1c1c, #0f0f0f) !important;
+            color: var(--text-light) !important;
+        }
+
+        /* Texto introductorio */
+        .consulta-intro {
+            color: var(--text-light) !important;
+        }
+
+        /* Campos de formulario */
+        .form-control {
+            background-color: #2a2a2a !important;
+            border-color: #555 !important;
+            color: var(--text-light) !important;
+        }
+
+            .form-control:focus {
+                background-color: #3a3a3a !important;
+                border-color: #6a4c93 !important;
+                box-shadow: 0 0 0 3px rgba(106, 76, 147, 0.25) !important;
+                color: var(--text-light) !important;
+            }
+
+        /* Botón principal */
+        .btn-consulta {
+            background: linear-gradient(to right, #6a4c93, #50307a) !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 3px 10px rgba(80, 48, 122, 0.4) !important;
+        }
+
+            .btn-consulta:hover {
+                box-shadow: 0 5px 15px rgba(80, 48, 122, 0.6) !important;
+                transform: translateY(-2px) !important;
+            }
+
+        /* Alertas */
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.15) !important;
+            border-color: rgba(255, 193, 7, 0.35) !important;
+            color: #ffe066 !important;
+        }
+
+        /* Políticas */
+        .policy-box {
+            background-color: #2a2a2a !important;
+            border-left: 4px solid #6a4c93 !important;
+            color: var(--text-light) !important;
+        }
+
+            .policy-box h5 {
+                color: var(--text-light) !important;
+            }
+
+            .policy-box ul li {
+                color: #ccc !important;
+            }
+
+            .policy-box a {
+                color: #a78bfa !important;
+            }
+
+        }
+
+
+        /* Políticas */
+        .policy-box {
+            background-color: #f6f8fd;
+            border-left: 4px solid #3A7CA5;
+            line-height: 1.6;
+        }
+
+            .policy-box ul {
+                margin: 0;
+                padding-left: 18px;
+            }
+
+            .policy-box li {
+                margin-bottom: 6px;
+                color: #555;
+            }
+
+        /* Animación */
+        .animate-fade {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+}

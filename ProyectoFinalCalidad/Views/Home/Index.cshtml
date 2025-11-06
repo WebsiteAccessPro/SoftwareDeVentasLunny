@@ -74,7 +74,9 @@
             background: radial-gradient(circle, rgba(255,255,255,0.08) 20%, transparent 20%);
             background-size: 30px 30px;
             animation: moveBg 8s linear infinite;
+            pointer-events: none; /* <--- esto permite clicar el botón */
         }
+
 
     @@keyframes moveBg {
         from
@@ -117,6 +119,7 @@
         padding: 0.8rem 1.6rem;
         font-size: 1.05rem;
         transition: all 0.3s ease;
+        z-index: 1;
     }
 
         .hero .btn-primary:hover {
@@ -180,7 +183,10 @@
             Soluciones modernas en telecomunicaciones para tu hogar y empresa.
             Conectividad, estabilidad y soporte técnico de confianza.
         </p>
-        <a href="#servicios" class="btn btn-primary">Ver Servicios</a>
+        <a class="btn btn-primary" href="@Url.Action("BuscarPorDni", "Pagos")">
+            <i class="bi bi-credit-card me-1"></i> Ver Pagos
+        </a>
+
     </section>
 
     <!-- FEATURE CARDS -->
