@@ -265,6 +265,24 @@
         </div>
 
         <div class="detalle-card">
+            <h6>Equipo secundario actual</h6>
+            @{
+                var secNombre = ViewBag.EquipoSecundarioNombre as string;
+                var secCodigo = ViewBag.EquipoSecundarioCodigoUnidad as string;
+            }
+            @if (!string.IsNullOrWhiteSpace(secNombre) && !string.IsNullOrWhiteSpace(secCodigo))
+            {
+                <p>@secNombre</p>
+                <small class="text-muted">Unidad: @secCodigo</small>
+            }
+            else
+            {
+                <p>Sin asignación</p>
+                <small class="text-muted">No hay unidad secundaria vinculada</small>
+            }
+        </div>
+
+        <div class="detalle-card">
             <h6>Jefe a cargo</h6>
             @{
                 var cargoClaim = User.Claims.FirstOrDefault(c => c.Type == "Cargo")?.Value;

@@ -23,6 +23,12 @@ namespace ProyectoFinalCalidad.Models
         [ForeignKey(nameof(EquipoId))]
         public Equipo Equipo { get; set; }
 
+        // Nueva relación: unidad específica asignada
+        [Column("equipo_unidad_id")]
+        public int? EquipoUnidadId { get; set; }
+        [ForeignKey(nameof(EquipoUnidadId))]
+        public EquipoUnidad? EquipoUnidad { get; set; }
+
         [Column("fecha_asignacion")]
         public DateTime FechaAsignacion { get; set; } = DateTime.Now;
 

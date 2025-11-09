@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFinalCalidad.Data;
 using ProyectoFinalCalidad.Models;
+using ProyectoFinalCalidad.Helpers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,8 +62,39 @@ namespace ProyectoFinalCalidad.Controllers
             model.FechaRegistro = DateTime.Now;
             model.FechaModificacion = DateTime.Now;
 
+            // Primero guardamos para obtener el ID
             _context.Equipos.Add(model);
             await _context.SaveChangesAsync();
+
+            // Generar código único con el ID del equipo
+            model.CodigoEquipo = CodigoEquipoHelper.GenerarCodigoUnicoSeguro(
+                model.NombreEquipo, 
+                model.FechaRegistro, 
+                model.EquipoId
+            );
+
+            // Actualizar con el código generado
+            _context.Equipos.Update(model);
+            await _context.SaveChangesAsync();
+
+            // Generar unidades por stock
+            if (model.CantidadStock > 0)
+            {
+                var fecha = DateTime.Now;
+                for (int i = 1; i <= model.CantidadStock; i++)
+                {
+                    var codigoUnidad = CodigoEquipoHelper.GenerarCodigoUnidad(model.NombreEquipo, fecha, i);
+                    _context.EquiposUnidades.Add(new EquipoUnidad
+                    {
+                        EquipoId = model.EquipoId,
+                        CodigoUnidad = codigoUnidad,
+                        EstadoUnidad = "disponible",
+                        FechaRegistro = DateTime.Now,
+                        FechaModificacion = DateTime.Now
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
 
             TempData["SuccessMessage"] = "Equipo agregado correctamente.";
 
@@ -205,6 +237,22 @@ namespace ProyectoFinalCalidad.Controllers
 
                 equipo.FechaModificacion = DateTime.Now;
                 _context.Equipos.Update(equipo);
+                await _context.SaveChangesAsync();
+
+                // Generar nuevas unidades para el incremento
+                var fecha = DateTime.Now;
+                for (int i = 1; i <= cantidad; i++)
+                {
+                    var codigoUnidad = CodigoEquipoHelper.GenerarCodigoUnidad(equipo.NombreEquipo, fecha, i);
+                    _context.EquiposUnidades.Add(new EquipoUnidad
+                    {
+                        EquipoId = equipo.EquipoId,
+                        CodigoUnidad = codigoUnidad,
+                        EstadoUnidad = "disponible",
+                        FechaRegistro = DateTime.Now,
+                        FechaModificacion = DateTime.Now
+                    });
+                }
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Stock actualizado correctamente.";

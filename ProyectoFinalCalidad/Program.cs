@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -37,6 +37,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+// Repositorios y servicios para asignación de equipos
+builder.Services.AddScoped<ProyectoFinalCalidad.Repositories.Interfaces.IContratoEquipoRepository, ProyectoFinalCalidad.Repositories.ContratoEquipoRepository>();
+builder.Services.AddScoped<ProyectoFinalCalidad.Services.Interfaces.IContratoEquipoService, ProyectoFinalCalidad.Services.ContratoEquipoService>();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)

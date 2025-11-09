@@ -20,6 +20,7 @@ namespace ProyectoFinalCalidad.Repositories
         {
             return await _context.ContratoEquipos
                 .Include(ce => ce.Equipo)
+                .Include(ce => ce.EquipoUnidad)
                 .Include(ce => ce.Contrato)
                 .ToListAsync();
         }
@@ -28,6 +29,7 @@ namespace ProyectoFinalCalidad.Repositories
         {
             return await _context.ContratoEquipos
                 .Include(ce => ce.Equipo)
+                .Include(ce => ce.EquipoUnidad)
                 .Include(ce => ce.Contrato)
                 .FirstOrDefaultAsync(ce => ce.ContratoEquipoId == id);
         }
@@ -35,6 +37,12 @@ namespace ProyectoFinalCalidad.Repositories
         public async Task CrearAsync(ContratoEquipo contratoEquipo)
         {
             _context.ContratoEquipos.Add(contratoEquipo);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ActualizarAsync(ContratoEquipo contratoEquipo)
+        {
+            _context.ContratoEquipos.Update(contratoEquipo);
             await _context.SaveChangesAsync();
         }
 

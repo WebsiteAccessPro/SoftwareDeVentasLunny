@@ -365,6 +365,10 @@ namespace ProyectoFinalCalidad.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("equipo_id");
 
+                    b.Property<int?>("EquipoUnidadId")
+                        .HasColumnType("int")
+                        .HasColumnName("equipo_unidad_id");
+
                     b.Property<string>("Estado")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -380,6 +384,8 @@ namespace ProyectoFinalCalidad.Data.Migrations
                     b.HasIndex("ContratoId");
 
                     b.HasIndex("EquipoId");
+
+                    b.HasIndex("EquipoUnidadId");
 
                     b.ToTable("ContratoEquipo", (string)null);
                 });
@@ -449,6 +455,12 @@ namespace ProyectoFinalCalidad.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("cantidad_stock");
 
+                    b.Property<string>("CodigoEquipo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("codigo_equipo");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -460,6 +472,10 @@ namespace ProyectoFinalCalidad.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("estado");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("fecha_modificacion");
 
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2")
@@ -474,6 +490,46 @@ namespace ProyectoFinalCalidad.Data.Migrations
                     b.HasKey("EquipoId");
 
                     b.ToTable("Equipo", (string)null);
+                });
+
+            modelBuilder.Entity("ProyectoFinalCalidad.Models.EquipoUnidad", b =>
+                {
+                    b.Property<int>("EquipoUnidadId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("equipo_unidad_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EquipoUnidadId"));
+
+                    b.Property<string>("CodigoUnidad")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)")
+                        .HasColumnName("codigo_unidad");
+
+                    b.Property<int>("EquipoId")
+                        .HasColumnType("int")
+                        .HasColumnName("equipo_id");
+
+                    b.Property<string>("EstadoUnidad")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("estado_unidad");
+
+                    b.Property<DateTime>("FechaModificacion")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("fecha_modificacion");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("fecha_registro");
+
+                    b.HasKey("EquipoUnidadId");
+
+                    b.HasIndex("EquipoId");
+
+                    b.ToTable("EquipoUnidad", (string)null);
                 });
 
             modelBuilder.Entity("ProyectoFinalCalidad.Models.Pago", b =>
@@ -635,6 +691,11 @@ namespace ProyectoFinalCalidad.Data.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("distrito");
 
+                    b.Property<string>("Estado")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("estado");
+
                     b.Property<string>("NombreZona")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -738,9 +799,15 @@ namespace ProyectoFinalCalidad.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ProyectoFinalCalidad.Models.EquipoUnidad", "EquipoUnidad")
+                        .WithMany()
+                        .HasForeignKey("EquipoUnidadId");
+
                     b.Navigation("Contrato");
 
                     b.Navigation("Equipo");
+
+                    b.Navigation("EquipoUnidad");
                 });
 
             modelBuilder.Entity("ProyectoFinalCalidad.Models.Empleado", b =>
@@ -752,6 +819,17 @@ namespace ProyectoFinalCalidad.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Cargo");
+                });
+
+            modelBuilder.Entity("ProyectoFinalCalidad.Models.EquipoUnidad", b =>
+                {
+                    b.HasOne("ProyectoFinalCalidad.Models.Equipo", "Equipo")
+                        .WithMany()
+                        .HasForeignKey("EquipoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Equipo");
                 });
 
             modelBuilder.Entity("ProyectoFinalCalidad.Models.Pago", b =>

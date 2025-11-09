@@ -1,4 +1,4 @@
-﻿@model ProyectoFinalCalidad.Models.Contrato
+@model ProyectoFinalCalidad.Models.Contrato
 
 @{
     ViewData["Title"] = "Editar Contrato";
@@ -230,6 +230,13 @@
                     <option value="">-- Selecciona Empleado --</option>
                 </select>
                 <span asp-validation-for="EmpleadoId" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="equipoId"><i class="fas fa-microchip me-1"></i>Equipo principal</label>
+                <select id="equipoId" name="equipoId" asp-items="ViewBag.Equipos" class="form-control">
+                    <option value="">-- Selecciona Equipo --</option>
+                </select>
             </div>
 
             <div class="row">

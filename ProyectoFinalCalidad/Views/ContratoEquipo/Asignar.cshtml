@@ -11,6 +11,14 @@
             <h4 class="mb-0"><i class="fas fa-link"></i> Asignar Equipo a Contrato</h4>
         </div>
         <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
             <form asp-action="Asignar" method="post">
                 @Html.AntiForgeryToken()
 
@@ -50,6 +58,6 @@
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <!-- Activar validación del lado cliente -->
+    <!-- Activar validaciï¿½n del lado cliente -->
     <partial name="_ValidationScriptsPartial" />
 }

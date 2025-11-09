@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFinalCalidad.Data;
 using ProyectoFinalCalidad.Models;
+using ProyectoFinalCalidad.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,10 +13,12 @@ namespace ProyectoFinalCalidad.Controllers
     public class PedidoInstalacionController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IContratoEquipoService _contratoEquipoService;
 
-        public PedidoInstalacionController(ApplicationDbContext context)
+        public PedidoInstalacionController(ApplicationDbContext context, IContratoEquipoService contratoEquipoService)
         {
             _context = context;
+            _contratoEquipoService = contratoEquipoService;
         }
 
         // GET: /PedidoInstalacion/Index
@@ -80,6 +83,25 @@ namespace ProyectoFinalCalidad.Controllers
             if (pedido == null)
                 return NotFound();
 
+            // Cargar el equipo secundario actual del contrato (última asignación con unidad específica)
+            var equipoSecundario = await _context.ContratoEquipos
+                .Include(ce => ce.Equipo)
+                .Include(ce => ce.EquipoUnidad)
+                .Where(ce => ce.ContratoId == pedido.ContratoId && ce.EquipoUnidadId != null)
+                .OrderByDescending(ce => ce.FechaAsignacion)
+                .FirstOrDefaultAsync();
+
+            if (equipoSecundario != null)
+            {
+                ViewBag.EquipoSecundarioNombre = equipoSecundario.Equipo?.NombreEquipo;
+                ViewBag.EquipoSecundarioCodigoUnidad = equipoSecundario.EquipoUnidad?.CodigoUnidad;
+            }
+            else
+            {
+                ViewBag.EquipoSecundarioNombre = null;
+                ViewBag.EquipoSecundarioCodigoUnidad = null;
+            }
+
             return View(pedido);
         }
 
@@ -93,7 +115,7 @@ namespace ProyectoFinalCalidad.Controllers
         // POST: /PedidoInstalacion/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PedidoInstalacion model)
+        public async Task<IActionResult> Create(PedidoInstalacion model, int? equipoUnidadId)
         {
             if (ModelState.IsValid)
             {
@@ -138,6 +160,33 @@ namespace ProyectoFinalCalidad.Controllers
 
                     _context.Add(model);
                     await _context.SaveChangesAsync();
+
+                    // Asignar unidad física si se seleccionó: inferir equipo por contrato
+                    if (equipoUnidadId.HasValue)
+                    {
+                        try
+                        {
+                            var equipoId = await _context.ContratoEquipos
+                                .Where(ce => ce.ContratoId == model.ContratoId)
+                                .OrderBy(ce => ce.FechaAsignacion)
+                                .Select(ce => ce.EquipoId)
+                                .FirstOrDefaultAsync();
+
+                            if (equipoId == 0)
+                            {
+                                TempData["ErrorMessage"] = "El contrato seleccionado no tiene equipo asociado.";
+                            }
+                            else
+                            {
+                                await _contratoEquipoService.AsignarUnidadEspecificaAsync(model.ContratoId, equipoId, equipoUnidadId.Value, "asignado");
+                                TempData["SuccessMessage"] = "Unidad asignada al contrato exitosamente.";
+                            }
+                        }
+                        catch (Exception exAsignacion)
+                        {
+                            TempData["ErrorMessage"] = $"No se pudo asignar la unidad: {exAsignacion.Message}";
+                        }
+                    }
 
                     // Redirigir según rol
                     var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
@@ -210,7 +259,7 @@ namespace ProyectoFinalCalidad.Controllers
         // POST: /PedidoInstalacion/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(PedidoInstalacion model)
+        public async Task<IActionResult> Edit(PedidoInstalacion model, int? equipoUnidadId)
         {
             if (!ModelState.IsValid)
             {
@@ -248,6 +297,40 @@ namespace ProyectoFinalCalidad.Controllers
             pedido.JefeACargo = jefeACargo;
 
             await _context.SaveChangesAsync();
+
+            // Si se proporcionó una unidad física, asignarla al contrato
+            if (equipoUnidadId.HasValue && model.ContratoId > 0)
+            {
+                try
+                {
+                    // Inferir el equipo asociado al contrato (sin filtrar por estado)
+                    var equipoId = await _context.ContratoEquipos
+                        .Where(ce => ce.ContratoId == model.ContratoId)
+                        .OrderBy(ce => ce.FechaAsignacion)
+                        .Select(ce => ce.EquipoId)
+                        .FirstOrDefaultAsync();
+
+                    if (equipoId != 0)
+                    {
+                        await _contratoEquipoService.AsignarUnidadEspecificaAsync(model.ContratoId, equipoId, equipoUnidadId.Value, "asignado");
+                        TempData["SuccessMessage"] = "Unidad física asignada al contrato.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "El contrato seleccionado no tiene equipo asociado.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = ex.Message;
+                }
+            }
+
+            // Si la instalación se marcó como completada, redirigir a asignación de equipos
+            if (!string.IsNullOrEmpty(pedido.EstadoInstalacion) && pedido.EstadoInstalacion.ToLower() == "completado")
+            {
+                return RedirectToAction("Asignar", "ContratoEquipo", new { contratoId = pedido.ContratoId });
+            }
 
             // Redirigir según rol
             var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
@@ -304,6 +387,44 @@ namespace ProyectoFinalCalidad.Controllers
 
             ViewBag.Contratos = new SelectList(contratos, "Id", "NombreVisible", contratoId);
             ViewBag.Tecnicos = new SelectList(tecnicos, "empleado_id", "nombre", tecnicoId);
+        }
+
+        // Cargar unidades físicas disponibles de un equipo (para dropdown dependiente)
+        [HttpGet]
+        public async Task<IActionResult> UnidadesDisponibles(int equipoId)
+        {
+            // Asegurar que existen filas de unidades físicas para equipos antiguos
+            var equipo = await _context.Equipos.FindAsync(equipoId);
+            if (equipo == null)
+                return Json(Array.Empty<object>());
+
+            var totalUnidades = await _context.EquiposUnidades.CountAsync(u => u.EquipoId == equipoId);
+            if (totalUnidades == 0 && equipo.CantidadStock > 0)
+            {
+                // Backfill: crear unidades físicas "disponible" según el stock actual
+                var fecha = DateTime.Now;
+                for (int i = 1; i <= equipo.CantidadStock; i++)
+                {
+                    var codigoUnidad = Helpers.CodigoEquipoHelper.GenerarCodigoUnidad(equipo.NombreEquipo, fecha, i);
+                    _context.EquiposUnidades.Add(new Models.EquipoUnidad
+                    {
+                        EquipoId = equipo.EquipoId,
+                        CodigoUnidad = codigoUnidad,
+                        EstadoUnidad = "disponible",
+                        FechaRegistro = DateTime.Now,
+                        FechaModificacion = DateTime.Now
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            var unidades = await _context.EquiposUnidades
+                .Where(u => u.EquipoId == equipoId && u.EstadoUnidad != null && u.EstadoUnidad.Trim().ToLower() == "disponible")
+                .OrderBy(u => u.CodigoUnidad)
+                .Select(u => new { id = u.EquipoUnidadId, codigo = u.CodigoUnidad })
+                .ToListAsync();
+
+            return Json(unidades);
         }
 
     }

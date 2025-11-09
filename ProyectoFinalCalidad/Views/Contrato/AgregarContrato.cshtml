@@ -1,4 +1,4 @@
-﻿@model ProyectoFinalCalidad.Models.Contrato
+@model ProyectoFinalCalidad.Models.Contrato
 
 @{
     ViewData["Title"] = "Agregar Contrato";
@@ -202,6 +202,19 @@
                     <option value="">-- Selecciona Empleado --</option>
                 </select>
                 <span asp-validation-for="EmpleadoId" class="text-danger small"></span>
+            </div>
+
+            <!-- Equipo principal -->
+            <div class="form-group">
+                <label class="form-label" for="equipoId"><i class="fas fa-microchip me-1"></i>Equipo principal</label>
+                <select id="equipoId" name="equipoId" class="form-control" required>
+                    <option value="">-- Selecciona Equipo --</option>
+                    @foreach (var eq in (IEnumerable<SelectListItem>)ViewBag.Equipos ?? new List<SelectListItem>())
+                    {
+                        <option value="@eq.Value">@eq.Text</option>
+                    }
+                </select>
+                <span class="text-danger small" data-valmsg-for="equipoId" data-valmsg-replace="true"></span>
             </div>
 
             <div class="row">

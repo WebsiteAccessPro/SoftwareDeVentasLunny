@@ -702,6 +702,7 @@
                 <table id="tablaEquipos" class="custom-table">
                     <thead>
                         <tr>
+                            <th>Código</th>
                             <th>Nombre</th>
                             <th>Descripción</th>
                             <th>Stock</th>
@@ -715,6 +716,11 @@
                         @foreach (var equipo in Model)
                         {
                             <tr>
+                                <td>
+                                    <span class="badge bg-primary" style="font-family: monospace; font-size: 0.85rem;">
+                                        @equipo.CodigoEquipo
+                                    </span>
+                                </td>
                                 <td>@equipo.NombreEquipo</td>
                                 <td>@equipo.Descripcion</td>
                                 <td>
@@ -1264,6 +1270,9 @@
                 <button type="button" class="btn btn-success" onclick="descargarExcelEquipos()">
                     <i class="fas fa-file-excel me-2"></i>Descargar Excel
                 </button>
+                <button type="button" class="btn btn-danger" onclick="descargarPDFEquipos()">
+                    <i class="fas fa-file-pdf me-2"></i>Descargar PDF
+                </button>
             </div>
         </div>
     </div>
@@ -1345,18 +1354,19 @@
         
         // Preparar datos para el Excel
         const datos = [];
-        const encabezados = ['Nombre', 'Descripción', 'Stock', 'Estado', 'Fecha Registro'];
+        const encabezados = ['Código', 'Nombre', 'Descripción', 'Stock', 'Estado', 'Fecha Registro'];
         datos.push(encabezados);
         
         filas.forEach(fila => {
             const celdas = fila.querySelectorAll('td');
             if (celdas.length > 0) {
                 const filaDatos = [
-                    celdas[0].textContent.trim(), // Nombre
-                    celdas[1].textContent.trim(), // Descripción
-                    celdas[2].textContent.trim(), // Stock
-                    celdas[3].textContent.trim(), // Estado
-                    celdas[4].textContent.trim()  // Fecha Registro
+                    celdas[0].textContent.trim(), // Código
+                    celdas[1].textContent.trim(), // Nombre
+                    celdas[2].textContent.trim(), // Descripción
+                    celdas[3].textContent.trim(), // Stock
+                    celdas[4].textContent.trim(), // Estado
+                    celdas[5].textContent.trim()  // Fecha Registro
                 ];
                 datos.push(filaDatos);
             }
@@ -1382,6 +1392,7 @@
         
         // Ajustar ancho de columnas
         ws['!cols'] = [
+            { wch: 20 }, // Código
             { wch: 25 }, // Nombre
             { wch: 40 }, // Descripción
             { wch: 10 }, // Stock
@@ -1396,9 +1407,98 @@
         const fecha = new Date().toISOString().slice(0, 10);
         XLSX.writeFile(wb, `Equipos_${fecha}.xlsx`);
     }
+
+    // Función de descarga PDF mejorada
+    function descargarPDFEquipos() {
+        const tabla = document.getElementById('tablaEquipos');
+        const filas = Array.from(tabla.querySelectorAll('tbody tr'));
+        
+        // Crear contenido del PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Configuración
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const marginLeft = 14;
+        const marginRight = 14;
+        const tableWidth = pageWidth - marginLeft - marginRight;
+        
+        // Título
+        doc.setFontSize(16);
+        doc.setTextColor(44, 62, 80);
+        doc.text('Reporte de Equipos', pageWidth / 2, 20, { align: 'center' });
+        
+        // Fecha
+        doc.setFontSize(10);
+        doc.setTextColor(128, 128, 128);
+        const fecha = new Date().toLocaleDateString('es-ES');
+        doc.text(`Fecha: ${fecha}`, pageWidth / 2, 30, { align: 'center' });
+        
+        // Preparar datos para la tabla
+        const headers = ['Código', 'Nombre', 'Descripción', 'Stock', 'Estado'];
+        const data = [];
+        
+        filas.forEach(fila => {
+            const celdas = fila.querySelectorAll('td');
+            if (celdas.length > 0) {
+                data.push([
+                    celdas[0].textContent.trim(), // Código
+                    celdas[1].textContent.trim(), // Nombre
+                    celdas[2].textContent.trim(), // Descripción
+                    celdas[3].textContent.trim(), // Stock
+                    celdas[4].textContent.trim()  // Estado
+                ]);
+            }
+        });
+        
+        // Generar tabla
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            startY: 40,
+            margin: { left: marginLeft, right: marginRight },
+            styles: {
+                fontSize: 8,
+                cellPadding: 3,
+                textColor: [44, 62, 80]
+            },
+            headStyles: {
+                fillColor: [40, 167, 69],
+                textColor: 255,
+                fontStyle: 'bold',
+                halign: 'center'
+            },
+            columnStyles: {
+                0: { cellWidth: 25 }, // Código
+                1: { cellWidth: 30 }, // Nombre
+                2: { cellWidth: 60 }, // Descripción
+                3: { cellWidth: 15, halign: 'center' }, // Stock
+                4: { cellWidth: 25, halign: 'center' }  // Estado
+            },
+            alternateRowStyles: {
+                fillColor: [248, 249, 250]
+            }
+        });
+        
+        // Pie de página
+        const totalPages = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.setTextColor(128, 128, 128);
+            doc.text(`Página ${i} de ${totalPages}`, pageWidth - marginRight, doc.internal.pageSize.getHeight() - 10, { align: 'right' });
+        }
+        
+        // Guardar PDF
+        doc.save(`Equipos_${fecha.replace(/\//g, '-')}.pdf`);
+    }
 </script>
 
 <!-- Librería para exportación Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- Librerías para exportación PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
 }

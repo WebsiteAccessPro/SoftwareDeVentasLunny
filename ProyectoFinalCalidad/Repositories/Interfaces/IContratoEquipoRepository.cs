@@ -9,6 +9,7 @@ namespace ProyectoFinalCalidad.Repositories.Interfaces
         Task<List<ContratoEquipo>> ListarAsync();
         Task<ContratoEquipo> BuscarPorIdAsync(int id);
         Task CrearAsync(ContratoEquipo contratoEquipo);
+        Task ActualizarAsync(ContratoEquipo contratoEquipo);
         Task EliminarAsync(int id);
     }
 }

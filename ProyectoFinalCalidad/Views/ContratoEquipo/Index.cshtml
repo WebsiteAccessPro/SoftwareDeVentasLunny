@@ -1,0 +1,61 @@
+@model IEnumerable<ProyectoFinalCalidad.Models.ContratoEquipo>
+
+@{
+    ViewData["Title"] = "Asignaciones de Equipos";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>@ViewData["Title"]</h3>
+        <a asp-action="Asignar" class="btn btn-primary">Asignar nuevo equipo</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Contrato</th>
+                <th>Equipo</th>
+                <th>Unidad</th>
+                <th>Fecha Asignación</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ContratoId</td>
+                <td>@item.Equipo?.NombreEquipo (@item.EquipoId)</td>
+                <td>@item.EquipoUnidad?.CodigoUnidad ?? "-"</td>
+                <td>@item.FechaAsignacion.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.Estado</td>
+                <td>
+                    <form asp-action="CambiarEstado" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@item.ContratoEquipoId" />
+                        <select name="estado" class="form-select form-select-sm d-inline w-auto">
+                            <option value="asignado" selected="@(item.Estado == "asignado")">Asignado</option>
+                            <option value="entregado" selected="@(item.Estado == "entregado")">Entregado</option>
+                            <option value="mantenimiento" selected="@(item.Estado == "mantenimiento")">Mantenimiento</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">Actualizar</button>
+                    </form>
+                    <form asp-action="Devolver" method="post" class="d-inline ms-2">
+                        <input type="hidden" name="id" value="@item.ContratoEquipoId" />
+                        <button type="submit" class="btn btn-sm btn-outline-success" @(item.Estado == "devuelto" ? "disabled" : "")>Devolver</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

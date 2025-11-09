@@ -23,6 +23,7 @@ namespace ProyectoFinalCalidad.Data
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Pago> Pagos { get; set; }
         public DbSet<PedidoInstalacion> PedidosInstalacion { get; set; }
+        public DbSet<EquipoUnidad> EquiposUnidades { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,9 +79,10 @@ namespace ProyectoFinalCalidad.Data
             modelBuilder.Entity<Contrato>().ToTable("Contrato");
             modelBuilder.Entity<ContratoEquipo>().ToTable("ContratoEquipo");
             modelBuilder.Entity<Pago>().ToTable("Pago");
+            modelBuilder.Entity<EquipoUnidad>().ToTable("EquipoUnidad");
         }
 
-        // Método auxiliar para pagos pendientes
+        // Mï¿½todo auxiliar para pagos pendientes
         public IQueryable<Pago> GetPagosPendientesProximosTresDias()
         {
             var hoy = DateTime.Now.Date;

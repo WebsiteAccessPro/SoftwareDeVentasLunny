@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = Model.EquipoId == 0 ? "Agregar Equipo" : "Editar Equipo";
 
-    // Detecci髇 de rol actual
+    // Deteccion de rol actual
     var esAdmin = User.IsInRole("Administrador");
     var rutaCancelar = esAdmin ? "MostrarEquiposAdmin" : "MostrarEquipos";
 }
@@ -166,6 +166,14 @@
             <input type="hidden" asp-for="EquipoId" />
 
             <div class="form-columns">
+                <!-- C贸digo -->
+                <div class="form-group">
+                    <label asp-for="CodigoEquipo" class="form-label">C贸digo del Equipo</label>
+                    <input asp-for="CodigoEquipo" class="form-control" placeholder="Ejemplo: EQ-2024-001" />
+                    <span asp-validation-for="CodigoEquipo" class="text-danger"></span>
+                    <small class="form-text text-muted">Si deja vac铆o, se generar谩 autom谩ticamente</small>
+                </div>
+
                 <!-- Nombre -->
                 <div class="form-group">
                     <label asp-for="NombreEquipo" class="form-label">Nombre del Equipo</label>
@@ -173,10 +181,10 @@
                     <span asp-validation-for="NombreEquipo" class="text-danger"></span>
                 </div>
 
-                <!-- Descripci髇 -->
+                <!-- Descripcion -->
                 <div class="form-group">
-                    <label asp-for="Descripcion" class="form-label">Descripci髇</label>
-                    <textarea asp-for="Descripcion" class="form-control" rows="3" required placeholder="Escribe una breve descripci髇..."></textarea>
+                    <label asp-for="Descripcion" class="form-label">Descripci贸n</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="3" required placeholder="Escribe una breve descripci贸n..."></textarea>
                     <span asp-validation-for="Descripcion" class="text-danger"></span>
                 </div>
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,6 +11,12 @@ namespace ProyectoFinalCalidad.Models
         [Key]
         [Column("equipo_id")]
         public int EquipoId { get; set; }
+
+        [Required]
+        [Column("codigo_equipo")]
+        [StringLength(50)]
+        [Display(Name = "Código de Equipo")]
+        public string CodigoEquipo { get; set; }
 
         [Required]
         [Column("nombre_equipo")]

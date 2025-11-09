@@ -42,6 +42,15 @@ namespace ProyectoFinalCalidad.Controllers
                 "empleado_id",
                 "nombres"
             );
+
+            // Equipos para seleccionar el equipo principal del contrato
+            ViewBag.Equipos = new SelectList(
+                _context.Equipos
+                    .OrderBy(eq => eq.NombreEquipo)
+                    .ToList(),
+                "EquipoId",
+                "NombreEquipo"
+            );
         }
 
 
@@ -72,7 +81,7 @@ namespace ProyectoFinalCalidad.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AgregarContrato(Contrato contrato, int mesesDuracion)
+        public async Task<IActionResult> AgregarContrato(Contrato contrato, int mesesDuracion, int? equipoId)
         {
             if (!ModelState.IsValid)
             {
@@ -88,6 +97,19 @@ namespace ProyectoFinalCalidad.Controllers
             // Guardar
             _context.Contratos.Add(contrato);
             await _context.SaveChangesAsync();
+
+            // Registrar equipo principal del contrato (sin seleccionar unidad física aún)
+            if (equipoId.HasValue)
+            {
+                var contratoEquipo = new ContratoEquipo
+                {
+                    ContratoId = contrato.Id,
+                    EquipoId = equipoId.Value,
+                    Estado = "activo"
+                };
+                _context.ContratoEquipos.Add(contratoEquipo);
+                await _context.SaveChangesAsync();
+            }
 
             // Redirigir según rol
             var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
@@ -134,12 +156,39 @@ namespace ProyectoFinalCalidad.Controllers
                                                + (contrato.FechaFin.Month - contrato.FechaInicio.Month));
             ViewBag.MesesDuracion = mesesDuracion;
 
+            // Seleccionar el equipo principal actual para precargar en el combo
+            var equipoPrincipalId = await _context.ContratoEquipos
+                .Where(ce => ce.ContratoId == id && ce.EquipoUnidadId == null)
+                .OrderBy(ce => ce.FechaAsignacion)
+                .Select(ce => ce.EquipoId)
+                .FirstOrDefaultAsync();
+
+            if (equipoPrincipalId == 0)
+            {
+                // Si no hay asignación sin unidad, tomar la primera asignación
+                equipoPrincipalId = await _context.ContratoEquipos
+                    .Where(ce => ce.ContratoId == id)
+                    .OrderBy(ce => ce.FechaAsignacion)
+                    .Select(ce => ce.EquipoId)
+                    .FirstOrDefaultAsync();
+            }
+
+            // Reemplazar ViewBag.Equipos para tener seleccionado el equipo actual
+            ViewBag.Equipos = new SelectList(
+                _context.Equipos
+                    .OrderBy(eq => eq.NombreEquipo)
+                    .ToList(),
+                "EquipoId",
+                "NombreEquipo",
+                equipoPrincipalId
+            );
+
             return View(contrato);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditarContrato(int id, Contrato contrato, int mesesDuracion)
+        public async Task<IActionResult> EditarContrato(int id, Contrato contrato, int mesesDuracion, int? equipoId)
         {
             if (id != contrato.Id) return BadRequest();
 
@@ -162,6 +211,34 @@ namespace ProyectoFinalCalidad.Controllers
 
             _context.Update(contratoDb);
             await _context.SaveChangesAsync();
+
+            // Actualizar el equipo principal del contrato si se proporcionó
+            if (equipoId.HasValue)
+            {
+                var principal = await _context.ContratoEquipos
+                    .Where(ce => ce.ContratoId == contratoDb.Id && ce.EquipoUnidadId == null)
+                    .OrderBy(ce => ce.FechaAsignacion)
+                    .FirstOrDefaultAsync();
+
+                if (principal != null)
+                {
+                    principal.EquipoId = equipoId.Value;
+                    principal.Estado = string.IsNullOrWhiteSpace(principal.Estado) ? "activo" : principal.Estado;
+                    _context.ContratoEquipos.Update(principal);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    var nuevo = new ContratoEquipo
+                    {
+                        ContratoId = contratoDb.Id,
+                        EquipoId = equipoId.Value,
+                        Estado = "activo"
+                    };
+                    _context.ContratoEquipos.Add(nuevo);
+                    await _context.SaveChangesAsync();
+                }
+            }
 
             // Redirigir según rol
             var rolUsuario = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
@@ -250,17 +327,40 @@ namespace ProyectoFinalCalidad.Controllers
                     }
                     return RedirectToAction(nameof(MostrarContratos));
                 }
-
+                // Liberar unidades y eliminar asignaciones asociadas
                 if (contrato.ContratoEquipos != null && contrato.ContratoEquipos.Any())
                 {
-                    TempData["MensajeError"] = "No se puede eliminar el contrato porque tiene equipos asignados.";
+                    foreach (var ce in contrato.ContratoEquipos)
+                    {
+                        // Si hay unidad física asignada, devolverla a disponible y recuperar stock
+                        if (ce.EquipoUnidadId.HasValue)
+                        {
+                            var unidad = await _context.EquiposUnidades.FindAsync(ce.EquipoUnidadId.Value);
+                            if (unidad != null)
+                            {
+                                unidad.EstadoUnidad = "disponible";
+                                unidad.FechaModificacion = DateTime.Now;
+                                _context.EquiposUnidades.Update(unidad);
+                            }
+
+                            var equipo = await _context.Equipos.FindAsync(ce.EquipoId);
+                            if (equipo != null)
+                            {
+                                equipo.CantidadStock += 1;
+                                equipo.FechaModificacion = DateTime.Now;
+                                _context.Equipos.Update(equipo);
+                            }
+                        }
+                    }
+
+                    // Eliminar asignaciones del contrato
+                    _context.ContratoEquipos.RemoveRange(contrato.ContratoEquipos);
                 }
-                else
-                {
-                    _context.Contratos.Remove(contrato);
-                    await _context.SaveChangesAsync();
-                    TempData["Mensaje"] = "Contrato eliminado correctamente.";
-                }
+
+                // Eliminar el contrato
+                _context.Contratos.Remove(contrato);
+                await _context.SaveChangesAsync();
+                TempData["Mensaje"] = "Contrato eliminado correctamente.";
             }
             catch (Exception ex)
             {

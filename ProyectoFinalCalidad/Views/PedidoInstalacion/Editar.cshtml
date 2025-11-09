@@ -119,6 +119,14 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="form-label" for="equipoUnidadId">Unidad física</label>
+                        <select id="equipoUnidadId" name="equipoUnidadId" class="form-select" disabled>
+                            <option value="">Seleccione un contrato primero</option>
+                        </select>
+                        <small class="text-muted">Solo se listan unidades en estado disponible.</small>
+                    </div>
+
+                    <div class="form-group">
                         <label class="form-label" for="JefeACargo">Jefe a Cargo</label>
                         <input asp-for="JefeACargo" type="text" class="form-control" readonly />
                     </div>
@@ -173,6 +181,49 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
+        // Carga de unidades disponibles según el contrato seleccionado
+        const contratoSelect = document.getElementById('ContratoId');
+        const unidadSelect = document.getElementById('equipoUnidadId');
+
+        async function cargarUnidadesParaContrato(contratoId) {
+            unidadSelect.innerHTML = '';
+            if (!contratoId) {
+                unidadSelect.disabled = true;
+                unidadSelect.innerHTML = '<option value="">Seleccione un contrato primero</option>';
+                return;
+            }
+            try {
+                const respEquipo = await fetch(`/ContratoEquipo/EquipoPorContrato?contratoId=${contratoId}`);
+                if (!respEquipo.ok) {
+                    unidadSelect.disabled = true;
+                    unidadSelect.innerHTML = '<option value="">Contrato sin equipo asociado</option>';
+                    return;
+                }
+                const equipoData = await respEquipo.json();
+                const equipoId = equipoData.equipoId;
+
+                const resp = await fetch(`/PedidoInstalacion/UnidadesDisponibles?equipoId=${equipoId}`);
+                const data = await resp.json();
+                unidadSelect.disabled = false;
+                if (!Array.isArray(data) || data.length === 0) {
+                    unidadSelect.innerHTML = '<option value="">No hay unidades disponibles</option>';
+                    return;
+                }
+                unidadSelect.innerHTML = '<option value="">Seleccione una unidad</option>';
+                for (const u of data) {
+                    const opt = document.createElement('option');
+                    opt.value = u.id;
+                    opt.textContent = u.codigo;
+                    unidadSelect.appendChild(opt);
+                }
+            } catch (err) {
+                unidadSelect.disabled = true;
+                unidadSelect.innerHTML = '<option value="">Error al cargar unidades</option>';
+            }
+        }
+
+        contratoSelect?.addEventListener('change', (e) => cargarUnidadesParaContrato(e.target.value));
+
         function seleccionarEstado(valor) {
             const hiddenInput = document.getElementById("estadoHidden");
             const dropdown = document.getElementById("estadoDropdown");
@@ -200,6 +251,12 @@
             const updateCount = () => { obsCount.textContent = (obs.value || '').length; };
             obs.addEventListener('input', updateCount);
             updateCount();
+
+            // Cargar unidades si ya hay contrato seleccionado en edición
+            const contratoIdInicial = contratoSelect?.value;
+            if (contratoIdInicial) {
+                cargarUnidadesParaContrato(contratoIdInicial);
+            }
         });
     </script>
 }
